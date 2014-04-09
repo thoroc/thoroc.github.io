@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html>
-    {% include head.html %}
-    <body>
+---
+layout: default
+title: Home
+---
+{% include head.html %}
+<body>
+        
+        {% include nav.html %}
 
-        <div class="site">
-            <div class="header">
-                <h1 class="title"><a href="/">{{ site.name }}</a></h1>
-                <a class="extra" href="/">home</a>
-            </div>
+    <div class="site">
+        {{ content }}
 
-            {{ content }}
+    </div>
+        {% include foot.html %}
 
-            {% include foot.html %}
-
-        </div>
-
-        {% include javascript.html %}
-    </body>
-</html>
+    {% include javascript.html %}
+</body>
