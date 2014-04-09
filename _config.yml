@@ -1,3 +1,4 @@
 name: Testing Ground II
 markdown: redcarpet
+permalink: pretty
 pygments: true

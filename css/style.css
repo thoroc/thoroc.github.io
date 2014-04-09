@@ -30,6 +30,7 @@ a {
 
 a:hover {
     color: #69f;
+    text-decoration: none;
 }
 
 /* Custom text-selection colors (remove any text shadows:
