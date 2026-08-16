@@ -18,3 +18,9 @@ repository. See `.agents/skills/rules-management/` for how entries are added and
 **Directive:** ALWAYS log incomplete or mismatching documentation (a doc that no longer matches the code, or is missing content a change should have added) as a docs/TECH_DEBT.md row under Area "Code quality", but treat it as urgent: fix it in the same session it is discovered rather than leaving Status: Open for later spare-time cleanup like a routine tech-debt row. Do not route it to docs/RISK_REGISTER.md merely to avoid this urgency -- it still belongs in TECH_DEBT.md, just fixed immediately instead of deferred.
 
 **Rationale:** Stale or mismatched documentation actively misleads the next reader -- human or agent -- into following wrong guidance, and the cost compounds with every reader who trusts it before it's caught (e.g. the Cliffy/@agents-radar content found in typescript-standards.md on 2026-08-05, referencing a library and package that don't exist anywhere in this repo). That makes it categorically different from ordinary code-quality cleanup, which is genuinely fine to defer.
+
+## Rule: Create a handover file on session handover
+
+**Directive:** ALWAYS create a handover file under .context/handover/<date>-<slug>.md when handing over a session to another agent or human, before concluding the work.
+
+**Rationale:** Handovers need a durable, discoverable resume point; a dated handover file under .context/handover/ gives the next session the current state, what was tried, and what remains without re-discovery.
