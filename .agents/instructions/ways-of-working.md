@@ -34,7 +34,7 @@ as a result.
 ## Branch workflow
 
 > **Scope note - external repos vs this one.** This journal repository is local-only: it has no git remote (see the warning at the top of `AGENTS.md`). Every step below that touches a remote -
-> `git pull`, `git fetch origin`, `git push`, and opening a PR/MR (steps 1, 4, 5, 6 and "After merge") - applies **only when working in an external PLG repository**. In this repo: branch from your
+> `git pull`, `git fetch origin`, `git push`, and opening a PR/MR (steps 1, 4, 5, 6 and "After merge"). In this repo: branch from your
 > local `main`, run `hk check -c`, and squash-merge the branch locally into `main`. Never push, fetch, or open a PR here.
 
 1. **Start inside a worktree, from the latest `main`.** In this repo, call `EnterWorktree` (see Worktree-first sessions above) — it creates an isolated worktree already branched from local `main`,
