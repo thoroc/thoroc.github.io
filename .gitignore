@@ -8,3 +8,5 @@ npm-debug.log*
 *.local
 !mise.toml
 !mise.lock
+!AGENTS.md
+!CLAUDE.md
