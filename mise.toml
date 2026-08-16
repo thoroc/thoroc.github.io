@@ -52,6 +52,14 @@ run = "biome check --write ."
 description = "Scan the repo for AI slop and quality regressions"
 run = "aislop scan"
 
+[tasks."slop:check"]
+description = "Run the aislop quality gate over the whole repo"
+run = "aislop ci"
+
+[tasks."slop:changes"]
+description = "Run the aislop quality gate over changed files (AISLOP_BASE, default HEAD)"
+run = "aislop ci --changes --base ${AISLOP_BASE:-HEAD}"
+
 [tasks.ctx]
 description = "Check AI instruction files (AGENTS.md/CLAUDE.md) for drift"
 run = "ctxharness run --no-trend"
