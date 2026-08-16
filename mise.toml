@@ -38,7 +38,7 @@ run = "bun run typecheck"
 
 [tasks.test]
 description = "Run unit tests"
-run = "bun test"
+run = "bun test ./.agents/scripts ./.agents/hooks"
 
 [tasks.lint]
 description = "Check formatting and linting with biome and actionlint"
@@ -59,3 +59,11 @@ run = "ctxharness run --no-trend"
 [tasks.sigmap]
 description = "Regenerate the SigMap deterministic context map"
 run = "sigmap gen-context"
+
+[tasks.hooks-install]
+description = "Install project-scoped agent hooks (Claude hooks + opencode plugin)"
+run = "bun .agents/scripts/agent-hooks-install.ts"
+
+[tasks.hooks-uninstall]
+description = "Remove project-scoped agent hooks"
+run = "bun .agents/scripts/agent-hooks-install.ts --uninstall"

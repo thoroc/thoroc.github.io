@@ -1,17 +1,13 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit",
+        "matcher": "Bash|Read",
         "hooks": [
           {
             "type": "command",
-            "command": "mise exec -- aislop hook claude",
-            "__aislop": {
-              "v": 1,
-              "managed": true,
-              "hash": "sha256:76c5d8b7bfc1fd04c7b17dd5bf5c1d51"
-            }
+            "command": "bun ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secret-exposure.ts",
+            "timeout": 5
           }
         ]
       },
@@ -27,33 +23,7 @@
         ]
       }
     ],
-    "FileChanged": [
-      {
-        "matcher": ".aislop/config.yml|.aislop/rules.yml|package.json",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "mise exec -- aislop hook claude --on-file-changed",
-            "__aislop": {
-              "v": 1,
-              "managed": true,
-              "hash": "sha256:a7a5e96a04eac99b2d7f53066df9dc2e"
-            }
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash|Read",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun ${CLAUDE_PROJECT_DIR}/.claude/hooks/block-secret-exposure.ts",
-            "timeout": 5
-          }
-        ]
-      },
+    "PostToolUse": [
       {
         "matcher": "",
         "hooks": [
@@ -162,9 +132,5 @@
         ]
       }
     ]
-  },
-  "__agent-hooks": {
-    "v": 1,
-    "managed": true
   }
 }
