@@ -19,3 +19,9 @@ npm-debug.log*
 !.agents/skills/**/*.json
 !.agents/skills/**/*.txt
 !.agents/skills/**/*.yaml
+**/.aislop/**
+.aislop/*
+!.aislop/config.yml
+!.aislop/rules.yml
+.ctxharness/
+.context/
