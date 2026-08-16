@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/v0.40.0/schema/markdownlint-config-schema.json",
+  // Bound glob-discovered scans. Without these, a bare glob (e.g. `markdownlint-cli2 .`)
+  // walks node_modules/.git and exhausts the Node heap (OOM). gitignore:true reuses the
+  // repo .gitignore; the explicit ignores are belt-and-braces for the heaviest dirs.
+  "gitignore": true,
+  "ignores": ["node_modules/**", ".git/**", ".astro/**", "dist/**"],
+  "config": {
+    "MD003": false,
+    "MD012": false,
+    "MD013": {
+      "line_length": 200,
+      "heading_line_length": 200,
+      "tables": false,
+      "code_blocks": false
+    },
+    "MD022": {
+      "lines_above": 1,
+      "lines_below": 1
+    },
+    "MD024": {
+      "siblings_only": true
+    },
+    "MD025": {
+      "front_matter_title": ""
+    },
+    "MD031": true,
+    "MD032": false,
+    "MD041": false,
+    "MD055": false
+  }
+}

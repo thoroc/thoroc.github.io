@@ -26,6 +26,24 @@ local linters = new Mapping<String, Step> {
     ["aislop"] {
         check = "aislop ci --staged"
     }
+    ["markdownlint"] {
+        glob = List("**/*.md")
+        // Follows the Journal's pattern: exclude the files that predate (or deliberately
+        // violate) the tuned .markdownlint-cli2.jsonc — long one-line directives, tables
+        // that resist auto-alignment, sigmap-generated HTML. Keep all other markdown linted.
+        exclude = List(
+            "**/skills/**",
+            ".claude/worktrees/**",
+            "AGENTS.md",
+            "CLAUDE.md",
+            ".agents/RULES.md",
+            ".agents/instructions/aislop.md",
+            ".agents/instructions/skill-authoring.md",
+            ".agents/instructions/theme-vocabulary.md"
+        )
+        check = "markdownlint-cli2 {{files}}"
+        fix = "markdownlint-cli2 --fix {{files}}"
+    }
     ["trailing-whitespace"] = Builtins.trailing_whitespace
     ["end-of-file-fixer"] = Builtins.newlines
     ["check-merge-conflict"] = Builtins.check_merge_conflict
@@ -44,6 +62,26 @@ hooks {
     }
     ["pre-push"] {
         steps = slow_checks
+    }
+    ["post-commit"] {
+        // qmd-update indexes committed content into a local search DB and writes no
+        // tracked files, so post-commit is the right place for it.
+        steps {
+            ["qmd-update"] {
+                check = "qmd update"
+            }
+            ["qmd-embed-thoroc"] {
+                // `qmd update` only refreshes the BM25 keyword index; vec/hyde semantic
+                // search needs embeddings, which it does not touch. Embed the repo's
+                // agent docs after indexing so newly committed skills/instructions are
+                // semantically searchable. Gated on the .agents/ glob so it fires only
+                // when an instruction/skill changed, not on every commit. `depends` also
+                // serialises against qmd-update so the two never contend on the SQLite DB.
+                glob = List(".agents/**/*.md")
+                check = "qmd embed -c thoroc"
+                depends = List("qmd-update")
+            }
+        }
     }
     ["fix"] {
         fix = true
