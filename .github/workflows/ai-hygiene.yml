@@ -73,15 +73,16 @@ jobs:
           fi
           cat aislop.txt
 
-      # Build the shared report body (job summary + PR comment).
+      # Build the shared report body (job summary + PR comment). Default the
+      # status vars so the report still renders if a check step never ran.
       - name: Compose report
         run: |
           {
             echo "<!-- ai-hygiene-report -->"
             echo "## AI hygiene report"
             echo ""
-            slop_icon=$([ "$SLOP_OK" = "true" ] && echo "✅" || echo "⚠️")
-            ctx_icon=$([ "$CTX_OK" = "true" ] && echo "✅" || echo "⚠️")
+            slop_icon=$([ "${SLOP_OK:-false}" = "true" ] && echo "✅" || echo "⚠️")
+            ctx_icon=$([ "${CTX_OK:-false}" = "true" ] && echo "✅" || echo "⚠️")
             echo "- $slop_icon **aislop** (code slop)"
             echo "- $ctx_icon **ctxharness** (agent-doc drift)"
             echo ""
@@ -105,13 +106,21 @@ jobs:
           } > report.md
           cat report.md >> "$GITHUB_STEP_SUMMARY"
 
+      # Fork PRs run with a read-only GITHUB_TOKEN regardless of the permissions
+      # block above, so the gh api calls would 403. Skip explicitly and let the
+      # job summary carry the report.
+      - name: Skip PR comment for fork PRs
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true
+        run: echo "::notice::Fork PR — GITHUB_TOKEN is read-only, skipping the sticky comment. The full report is in this check's job summary."
+
       # Sticky PR comment: update the existing report comment or create one.
       # This report is advisory, so a transient GitHub API error (e.g. HTTP 503)
-      # or a fork PR without comment permission must never fail the check. The
-      # step is best-effort (continue-on-error) with a short retry; the full
-      # report is always in the job summary regardless.
+      # must never fail the check. The step is best-effort (continue-on-error)
+      # with a short retry; the full report is always in the job summary
+      # regardless. Runs under if: always() so a failed check step cannot leave
+      # an out-of-date comment behind.
       - name: Comment on PR
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == false
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
