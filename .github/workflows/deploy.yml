@@ -3,6 +3,16 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    # Rebuild only when site content, toolchain, or this workflow changes.
+    # workflow_dispatch below stays available for forced redeploys.
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "bun.lock"
+      - "astro.config.mjs"
+      - "tsconfig.json"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
 permissions:
