@@ -28,6 +28,10 @@ run = "bun run preview"
 description = "Type check with astro check"
 run = "bun run typecheck"
 
+[tasks.test]
+description = "Run unit tests"
+run = "bun test"
+
 [tasks.lint]
 description = "Check all files with hk"
 run = "hk check --all"

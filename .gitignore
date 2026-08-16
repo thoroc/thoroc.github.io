@@ -1,8 +1,10 @@
-node_modules/
-dist/
 .astro/
+dist/
+node_modules/
 .env
 .env.production
-npm-debug.log*
 .DS_Store
+npm-debug.log*
 *.local
+!mise.toml
+!mise.lock
