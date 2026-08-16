@@ -1,18 +1,18 @@
 ---
-import type { Project } from '../lib/projects';
-import { projectTagline } from '../lib/projects';
-import { useTranslations, type Lang } from '../i18n/ui';
+import { type Lang, useTranslations } from '../i18n/ui'
+import type { Project } from '../lib/projects'
+import { projectTagline } from '../lib/projects'
 
 interface Props {
-  project: Project;
-  lang: Lang;
-  hasDeepDive: boolean;
+  project: Project
+  lang: Lang
+  hasDeepDive: boolean
 }
 
-const { project, lang } = Astro.props;
-const t = useTranslations(lang);
-const tagline = projectTagline(project, lang);
-const detailHref = `/${lang}/projects/${project.slug}/`;
+const { project, lang } = Astro.props
+const t = useTranslations(lang)
+const tagline = projectTagline(project, lang)
+const detailHref = `/${lang}/projects/${project.slug}/`
 ---
 
 <article class={`card${project.featured ? ' card--featured' : ''}`}>

@@ -1,0 +1,37 @@
+amends "package://github.com/jdx/hk/releases/download/v1.54.0/hk@1.54.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.54.0/hk@1.54.0#/Builtins.pkl"
+
+min_hk_version = "1.54.0"
+
+exclude = List("node_modules", "dist", ".astro")
+
+local linters = new Mapping<String, Step> {
+    ["biome"] = (Builtins.biome) {
+        glob = List("**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.astro", "**/*.css", "**/*.json")
+        batch = true
+    }
+    ["actionlint"] = Builtins.actionlint
+    ["trailing-whitespace"] = Builtins.trailing_whitespace
+    ["end-of-file-fixer"] = Builtins.newlines
+    ["check-merge-conflict"] = Builtins.check_merge_conflict
+    ["check-added-large-files"] = Builtins.check_added_large_files
+    ["check-case-conflict"] = Builtins.check_case_conflict
+    ["detect-private-key"] = Builtins.detect_private_key
+    ["check-executables-have-shebangs"] = Builtins.check_executables_have_shebangs
+    ["mixed-line-ending"] = Builtins.mixed_line_ending
+}
+
+hooks {
+    ["pre-commit"] {
+        fix = true
+        stash = "git"
+        steps = linters
+    }
+    ["fix"] {
+        fix = true
+        steps = linters
+    }
+    ["check"] {
+        steps = linters
+    }
+}

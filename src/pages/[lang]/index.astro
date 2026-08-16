@@ -1,24 +1,26 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import { useTranslations, type Lang } from '../../i18n/ui';
-import { projects } from '../../lib/projects';
-import { getCollection } from 'astro:content';
+import { getCollection } from 'astro:content'
+import ProjectCard from '../../components/ProjectCard.astro'
+import { type Lang, useTranslations } from '../../i18n/ui'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { projects } from '../../lib/projects'
 
 export function getStaticPaths() {
-  return (['en', 'fr'] as const).map((lang) => ({ params: { lang } }));
+  return (['en', 'fr'] as const).map((lang) => ({ params: { lang } }))
 }
 
-const { lang } = Astro.params;
-const locale = lang as Lang;
-const t = useTranslations(locale);
+const { lang } = Astro.params
+const locale = lang as Lang
+const t = useTranslations(locale)
 
-const deepDives = await getCollection('projects');
+const deepDives = await getCollection('projects')
 const slugsWithDeepDive = new Set(
-  deepDives.filter((d) => d.id.startsWith(`${locale}/`)).map((d) => d.id.split('/').pop()),
-);
+  deepDives
+    .filter((d) => d.id.startsWith(`${locale}/`))
+    .map((d) => d.id.split('/').pop()),
+)
 
-const visible = projects.sort((a, b) => Number(b.featured) - Number(a.featured));
+const visible = projects.sort((a, b) => Number(b.featured) - Number(a.featured))
 ---
 
 <BaseLayout lang={locale}>

@@ -1,16 +1,15 @@
 ---
-import { useTranslations, type Lang } from '../i18n/ui';
-import '../styles/global.css';
+import { type Lang, useTranslations } from '../i18n/ui'
+import '../styles/global.css'
 
 interface Props {
-  lang: Lang;
-  title?: string;
+  lang: Lang
+  title?: string
 }
 
-const { lang, title } = Astro.props;
-const t = useTranslations(lang);
-const pageTitle = title ?? t('site.title');
-const fullTitle = title ? `${title} — ${t('site.title')}` : t('site.title');
+const { lang, title } = Astro.props
+const t = useTranslations(lang)
+const fullTitle = title ? `${title} — ${t('site.title')}` : t('site.title')
 ---
 
 <!doctype html>

@@ -1,31 +1,33 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { useTranslations, type Lang } from '../../../i18n/ui';
-import { projects, projectTagline } from '../../../lib/projects';
-import { getCollection, render } from 'astro:content';
+import { getCollection, render } from 'astro:content'
+import { type Lang, useTranslations } from '../../../i18n/ui'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { projects, projectTagline } from '../../../lib/projects'
 
 export async function getStaticPaths() {
-  const deepDives = await getCollection('projects');
-  const paths = [];
+  const deepDives = await getCollection('projects')
+  const paths = []
   for (const lang of ['en', 'fr'] as const) {
     for (const p of projects) {
       if (deepDives.some((d) => d.id === `${lang}/${p.slug}`)) {
         paths.push({
           params: { lang, slug: p.slug },
           props: { lang, project: p },
-        });
+        })
       }
     }
   }
-  return paths;
+  return paths
 }
 
-const { lang, project } = Astro.props;
-const t = useTranslations(lang as Lang);
+const { lang, project } = Astro.props
+const t = useTranslations(lang as Lang)
 
-const deepDive = (await getCollection('projects')).find((d) => d.id === `${lang}/${project.slug}`);
-const { Content } = await render(deepDive!);
-const title = deepDive?.data.title ?? project.name;
+const deepDive = (await getCollection('projects')).find(
+  (d) => d.id === `${lang}/${project.slug}`,
+)
+const { Content } = await render(deepDive!)
+const title = deepDive?.data.title ?? project.name
 ---
 
 <BaseLayout lang={lang as Lang} title={title}>

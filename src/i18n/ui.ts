@@ -1,11 +1,11 @@
 export const languages = {
   en: 'English',
   fr: 'Français',
-} as const;
+} as const
 
-export type Lang = keyof typeof languages;
+export type Lang = keyof typeof languages
 
-export const defaultLang: Lang = 'en';
+export const defaultLang: Lang = 'en'
 
 export const ui = {
   en: {
@@ -38,10 +38,10 @@ export const ui = {
     'notFound.text': 'Cette page n’existe pas.',
     'notFound.back': 'Retour à l’accueil',
   },
-} as const;
+} as const
 
-export type UiKey = keyof typeof ui.en;
+export type UiKey = keyof typeof ui.en
 
 export function useTranslations(lang: Lang) {
-  return (key: UiKey) => ui[lang][key];
+  return (key: UiKey) => ui[lang][key]
 }
