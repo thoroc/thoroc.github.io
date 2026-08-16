@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { useTranslations, type Lang } from '../../i18n/ui';
+import { projects } from '../../lib/projects';
+import { getCollection } from 'astro:content';
+
+export function getStaticPaths() {
+  return (['en', 'fr'] as const).map((lang) => ({ params: { lang } }));
+}
+
+const { lang } = Astro.params;
+const locale = lang as Lang;
+const t = useTranslations(locale);
+
+const deepDives = await getCollection('projects');
+const slugsWithDeepDive = new Set(
+  deepDives.filter((d) => d.id.startsWith(`${locale}/`)).map((d) => d.id.split('/').pop()),
+);
+
+const visible = projects.sort((a, b) => Number(b.featured) - Number(a.featured));
+---
+
+<BaseLayout lang={locale}>
+  <section class="hero">
+    <h1>{t('home.tagline')}</h1>
+    <p class="hero-intro">{t('home.intro')}</p>
+  </section>
+
+  <section id="projects" class="projects">
+    {visible.map((p) => (
+      <ProjectCard project={p} lang={locale} hasDeepDive={slugsWithDeepDive.has(p.slug)} />
+    ))}
+  </section>
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>thoroc</title>
+    <script>
+      const lang = (navigator.language || 'en').split('-')[0];
+      const target = lang === 'fr' ? '/fr/' : '/en/';
+      location.replace(target);
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=/en/" />
+    </noscript>
+  </head>
+  <body>
+    <p>
+      <a href="/en/">thoroc</a>
+    </p>
+  </body>
+</html>

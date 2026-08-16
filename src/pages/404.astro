@@ -1,0 +1,14 @@
+---
+import { defaultLang, useTranslations } from '../i18n/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const t = useTranslations(defaultLang);
+---
+
+<BaseLayout lang={defaultLang} title={t('notFound.title')}>
+  <section class="hero">
+    <h1>{t('notFound.title')}</h1>
+    <p>{t('notFound.text')}</p>
+    <p><a class="card-link" href={`/${defaultLang}/`}>{t('notFound.back')}</a></p>
+  </section>
+</BaseLayout>

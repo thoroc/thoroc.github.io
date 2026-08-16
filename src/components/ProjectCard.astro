@@ -1,0 +1,32 @@
+---
+import type { Project } from '../lib/projects';
+import { projectTagline } from '../lib/projects';
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  hasDeepDive: boolean;
+}
+
+const { project, lang } = Astro.props;
+const t = useTranslations(lang);
+const tagline = projectTagline(project, lang);
+const detailHref = `/${lang}/projects/${project.slug}/`;
+---
+
+<article class={`card${project.featured ? ' card--featured' : ''}`}>
+  <div class="card-head">
+    <h3 class="card-name">{project.name}</h3>
+    {project.year && <span class="card-year">{project.year}</span>}
+  </div>
+  <p class="card-tagline">{tagline}</p>
+  <ul class="card-tags">
+    {project.tags.map((tag) => <li class="card-tag">{tag}</li>)}
+  </ul>
+  <div class="card-links">
+    {Astro.props.hasDeepDive && <a class="card-link" href={detailHref}>{t('card.readMore')}</a>}
+    {project.github && <a class="card-link" href={project.github} rel="noopener">{t('card.source')}</a>}
+    {project.demo && <a class="card-link" href={project.demo} rel="noopener">{t('card.demo')}</a>}
+  </div>
+</article>

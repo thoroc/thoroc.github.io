@@ -1,1 +1,8 @@
-_site
+node_modules/
+dist/
+.astro/
+.env
+.env.production
+npm-debug.log*
+.DS_Store
+*.local

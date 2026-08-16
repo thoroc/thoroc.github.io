@@ -1,0 +1,10 @@
+projects:
+  - slug: placeholder-project
+    name: Placeholder Project
+    featured: true
+    year: 2026
+    github: https://github.com/thoroc
+    tags: [astro, typescript]
+    tagline:
+      en: A short one-liner describing this project.
+      fr: Une phrase courte décrivant ce projet.
