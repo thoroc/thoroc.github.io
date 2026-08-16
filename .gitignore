@@ -19,6 +19,9 @@ npm-debug.log*
 !.agents/skills/**/*.json
 !.agents/skills/**/*.txt
 !.agents/skills/**/*.yaml
+.claude/hooks
+.opencode/plugins
+opencode.json
 **/.aislop/**
 .aislop/*
 !.aislop/config.yml
