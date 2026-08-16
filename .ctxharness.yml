@@ -1,0 +1,188 @@
+# ctxharness configuration — validate AGENTS.md/CLAUDE.md claims against the repo
+# Run: ctxharness run --no-trend
+version: 1
+
+files:
+  include:
+    - 'AGENTS.md'
+    - 'CLAUDE.md'
+  exclude:
+    - 'node_modules/**'
+
+assertions:
+  # ---- L1: doc roots exist ----
+  - id: root-agents-md
+    extractor: fileExists
+    extractorArgs:
+      path: AGENTS.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'AGENTS.md'
+  - id: root-claude-md
+    extractor: fileExists
+    extractorArgs:
+      path: CLAUDE.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'CLAUDE.md'
+
+  # ---- L1: shared agent config paths ----
+  - id: shared-agents-skills
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/skills
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/skills'
+  - id: shared-claude-skills
+    extractor: fileExists
+    extractorArgs:
+      path: .claude/skills
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.claude/skills'
+
+  # ---- L1: instruction files referenced by AGENTS.md ----
+  - id: instr-aislop
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/aislop.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/aislop.md'
+  - id: instr-code-review-graph
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/code-review-graph.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/code-review-graph.md'
+  - id: instr-context-mode
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/context-mode.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/context-mode.md'
+  - id: instr-qmd
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/qmd.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/qmd.md'
+  - id: instr-rtk
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/rtk.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/rtk.md'
+  - id: instr-typescript-standards
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/typescript-standards.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/typescript-standards.md'
+  - id: instr-rule-of-three
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/rule-of-three.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/rule-of-three.md'
+  - id: instr-follow-up-triage
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/follow-up-triage.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/follow-up-triage.md'
+  - id: instr-planning-flow
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/planning-flow.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/planning-flow.md'
+  - id: instr-skill-authoring
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/skill-authoring.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/skill-authoring.md'
+  - id: instr-theme-vocabulary
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/theme-vocabulary.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/theme-vocabulary.md'
+  - id: instr-value-rubric
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/value-rubric.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/value-rubric.md'
+  - id: instr-ways-of-working
+    extractor: fileExists
+    extractorArgs:
+      path: .agents/instructions/ways-of-working.md
+    scanner: literalInMd
+    scannerArgs:
+      literal: '.agents/instructions/ways-of-working.md'
+
+  # ---- L1: toolchain claims ----
+  - id: toolchain-mise
+    extractor: fileExists
+    extractorArgs:
+      path: mise.toml
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'mise.toml'
+  - id: toolchain-hk
+    extractor: fileExists
+    extractorArgs:
+      path: hk.pkl
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'hk.pkl'
+  - id: script-typecheck
+    extractor: packageScript
+    extractorArgs:
+      script: typecheck
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'mise run typecheck'
+  - id: script-test
+    extractor: packageScript
+    extractorArgs:
+      script: test
+    scanner: literalInMd
+    scannerArgs:
+      literal: 'mise run test'
+
+  # ---- L2: instruction quality ----
+  - id: no-vague-language
+    extractor: constant
+    extractorArgs:
+      value: check
+    scanner: vaguenessPattern
+  - id: instruction-balance
+    extractor: constant
+    extractorArgs:
+      value: check
+    scanner: negativeConstraintDensity
+    scannerArgs:
+      minRatio: 1.0
+  - id: context-budget
+    extractor: constant
+    extractorArgs:
+      value: check
+    scanner: contextBudget
+    scannerArgs:
+      maxTokens: 4000
+      followImports: false

@@ -12,6 +12,9 @@ local slow_checks = new Mapping<String, Step> {
     ["test"] {
         check = "mise run test"
     }
+    ["ctxharness"] {
+        check = "ctxharness run --no-trend"
+    }
 }
 
 local linters = new Mapping<String, Step> {
@@ -20,6 +23,9 @@ local linters = new Mapping<String, Step> {
         batch = true
     }
     ["actionlint"] = Builtins.actionlint
+    ["aislop"] {
+        check = "aislop ci --staged"
+    }
     ["trailing-whitespace"] = Builtins.trailing_whitespace
     ["end-of-file-fixer"] = Builtins.newlines
     ["check-merge-conflict"] = Builtins.check_merge_conflict

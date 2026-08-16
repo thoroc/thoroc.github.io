@@ -1,0 +1,6 @@
+{
+  "srcDirs": ["src"],
+  "strategy": "full",
+  "outputs": [],
+  "autoMaxTokens": true
+}

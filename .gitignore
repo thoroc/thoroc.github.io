@@ -10,3 +10,12 @@ npm-debug.log*
 !mise.lock
 !AGENTS.md
 !CLAUDE.md
+!.agents/
+!.agents/instructions/
+!.agents/instructions/*.md
+!.agents/skills/
+!.agents/skills/**/*.md
+!.agents/skills/**/*.sh
+!.agents/skills/**/*.json
+!.agents/skills/**/*.txt
+!.agents/skills/**/*.yaml
