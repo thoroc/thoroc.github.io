@@ -57,8 +57,9 @@ src/lib/
 - Package manager / runtime: Bun. Use `bun` commands; never add `package-lock.json` or `yarn.lock`.
 - Tool versions are pinned in `mise.toml` (managed by mise). Install with `mise install`.
 - Lint, format, typecheck and tests run locally and in CI:
-  - `mise run lint` — hk/biome check (`hk check --all`)
-  - `mise run fix` — apply formatter/linter fixes
+  - `mise run lint` — `biome check` + `actionlint`
+  - `mise run fix` — apply biome formatter/linter fixes
   - `mise run typecheck` — `astro check`
   - `mise run test` — `bun test`
-- Pre-commit hooks are installed via hk (`hk install`); see `hk.pkl`.
+- Git hooks (pre-commit: lint/format; pre-push: typecheck/tests) are installed via hk (`hk install`); see `hk.pkl`.
+- CI runs `hk check --all` (same linters as the pre-commit hook) plus `mise run typecheck` and `mise run test` (same as the pre-push hook).

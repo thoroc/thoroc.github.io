@@ -33,13 +33,9 @@ description = "Run unit tests"
 run = "bun test"
 
 [tasks.lint]
-description = "Check all files with hk"
-run = "hk check --all"
+description = "Check formatting and linting with biome and actionlint"
+run = ["biome check .", "actionlint"]
 
 [tasks.fix]
-description = "Fix all files with hk"
-run = "hk fix --all"
-
-[tasks.pre-commit]
-description = "Run hk pre-commit checks"
-run = "hk run pre-commit"
+description = "Fix formatting and linting with biome"
+run = "biome check --write ."

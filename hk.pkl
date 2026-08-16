@@ -5,9 +5,18 @@ min_hk_version = "1.54.0"
 
 exclude = List("node_modules", "dist", ".astro")
 
+local slow_checks = new Mapping<String, Step> {
+    ["typecheck"] {
+        check = "mise run typecheck"
+    }
+    ["test"] {
+        check = "mise run test"
+    }
+}
+
 local linters = new Mapping<String, Step> {
     ["biome"] = (Builtins.biome) {
-        glob = List("**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.astro", "**/*.css", "**/*.json")
+        glob = List("**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.astro", "**/*.css", "**/*.json", "**/*.svg")
         batch = true
     }
     ["actionlint"] = Builtins.actionlint
@@ -26,6 +35,9 @@ hooks {
         fix = true
         stash = "git"
         steps = linters
+    }
+    ["pre-push"] {
+        steps = slow_checks
     }
     ["fix"] {
         fix = true
