@@ -1,4 +1,4 @@
-import { COSMIC_UNIVERSE, GALAXY_MOTION } from './constants.js'
+import { COSMIC_UNIVERSE, GALAXY_MOTION } from './constants'
 import { hashStr, hashUnit } from './hash'
 import { buildLanguageHubMotion } from './motion-hubs.js'
 import { motionSign, rotateTiltedY, rotateY } from './motion-math.js'

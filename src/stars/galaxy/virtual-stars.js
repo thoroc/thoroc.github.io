@@ -1,4 +1,4 @@
-import { GALAXY, MORPHOLOGY_LAYOUT } from './constants.js'
+import { GALAXY, MORPHOLOGY_LAYOUT } from './constants'
 import { gauss3, hashSeed, hashStr } from './hash'
 import { galaxyRadiusForLanguage } from './morphological-layout.js'
 

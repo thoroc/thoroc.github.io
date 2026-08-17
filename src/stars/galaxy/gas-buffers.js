@@ -1,5 +1,5 @@
 import { nebulaDustRgb, nebulaLangTint, repoLangRgb } from './colors.js'
-import { COSMIC_UNIVERSE } from './constants.js'
+import { COSMIC_UNIVERSE } from './constants'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 import {
   buildCosmicLanguageField,

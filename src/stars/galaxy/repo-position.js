@@ -9,7 +9,7 @@ import {
   STAR_YEAR_MIN,
   TWINKLE_RANK_GAMMA,
   TWINKLE_WEIGHTS,
-} from './constants.js'
+} from './constants'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 function starredYear(starredAt) {

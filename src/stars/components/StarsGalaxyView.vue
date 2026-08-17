@@ -21,7 +21,7 @@ import {
   GALAXY_ZOOM,
   LEGEND_LANG_TOP,
   SCENE_FOG,
-} from '../galaxy/constants.js'
+} from '../galaxy/constants'
 import {
   createCosmicSkyMesh,
   sceneBackgroundColor,

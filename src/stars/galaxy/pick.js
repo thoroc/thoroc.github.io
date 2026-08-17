@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { GALAXY_ZOOM } from './constants.js'
+import { GALAXY_ZOOM } from './constants'
 import { motionWorldPosition } from './motion.js'
 
 const _world = new THREE.Vector3()

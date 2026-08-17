@@ -1,8 +1,4 @@
-import {
-  COSMIC_UNIVERSE,
-  FORCE_LAYOUT,
-  MORPHOLOGY_LAYOUT,
-} from './constants.js'
+import { COSMIC_UNIVERSE, FORCE_LAYOUT, MORPHOLOGY_LAYOUT } from './constants'
 import {
   buildCosmicLanguageField,
   layoutLanguageKey,

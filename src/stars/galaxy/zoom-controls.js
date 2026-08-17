@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { GALAXY_ZOOM } from './constants.js'
+import { GALAXY_ZOOM } from './constants'
 
 const _dollyDir = new THREE.Vector3()
 const _orbitEye = new THREE.Vector3()

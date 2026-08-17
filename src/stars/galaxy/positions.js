@@ -1,5 +1,5 @@
 import { repoLangRgb } from './colors.js'
-import { COSMIC_UNIVERSE, GALAXY, R_MAX, R_MIN } from './constants.js'
+import { COSMIC_UNIVERSE, GALAXY, R_MAX, R_MIN } from './constants'
 import { findAnchorRepoId } from './force-similarity.js'
 import {
   buildGalaxyGasBuffers,

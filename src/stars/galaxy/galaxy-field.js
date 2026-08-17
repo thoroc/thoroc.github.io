@@ -1,4 +1,4 @@
-import { COSMIC_UNIVERSE, R_MAX, R_MIN } from './constants.js'
+import { COSMIC_UNIVERSE, R_MAX, R_MIN } from './constants'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 export function layoutLanguageKey(item, layout) {

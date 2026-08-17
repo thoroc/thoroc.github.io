@@ -1,4 +1,4 @@
-import { COSMIC_UNIVERSE } from './constants.js'
+import { COSMIC_UNIVERSE } from './constants'
 import { galaxyFrameAngles, rotateGalaxyLocal } from './galaxy-field.js'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 

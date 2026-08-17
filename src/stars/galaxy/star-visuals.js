@@ -2,7 +2,7 @@ import {
   PARTICLE_BRIGHT_RANGE,
   PARTICLE_SIZE_RANGE,
   PARTICLE_SIZE_WEIGHTS,
-} from './constants.js'
+} from './constants'
 import {
   mapInfluenceToRange,
   normLogCount,
