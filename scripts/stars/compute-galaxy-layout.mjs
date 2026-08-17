@@ -4,7 +4,7 @@ import {
   isSerializableGalaxyLayout,
   serializeVirtualGalaxyLayout,
 } from '../../src/stars/galaxy/layout-payload'
-import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions.js'
+import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions'
 import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position'
 import {
   buildTopicRingKeySet,

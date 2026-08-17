@@ -48,7 +48,7 @@ import {
   ownerSelfRepoId,
   repoLegendLanguageKey,
   repoStarTierKey,
-} from '../galaxy/positions.js'
+} from '../galaxy/positions'
 import {
   applyTrackballRotate,
   dollyCameraUniformRange,
