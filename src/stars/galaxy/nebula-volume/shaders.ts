@@ -1,19 +1,4 @@
-import * as THREE from 'three'
-
-/** 共享盒体几何（局部空间 -0.5..0.5，由 scale 拉成椭球） */
-let sharedBoxGeometry = null
-/** @type {THREE.ShaderMaterial | null} */
-let sharedNebulaMaterial = null
-const worldPosScratch = new THREE.Vector3()
-
-export function getNebulaBoxGeometry() {
-  if (!sharedBoxGeometry) {
-    sharedBoxGeometry = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1)
-  }
-  return sharedBoxGeometry
-}
-
-const nebulaVolumeVertexShader = `
+export const nebulaVolumeVertexShader: string = `
 varying vec3 vLocalPos;
 
 void main() {
@@ -22,7 +7,7 @@ void main() {
 }
 `
 
-const nebulaVolumeFragmentShader = `
+export const nebulaVolumeFragmentShader: string = `
 uniform vec3 uLangTint;
 uniform vec3 uEllipsoid;
 uniform float uSeed;
@@ -147,85 +132,3 @@ void main() {
   gl_FragColor = vec4(accum, clamp(alphaSum, 0.0, 0.94));
 }
 `
-
-/**
- * @param {{ uTime?: { value: number } }} [sharedUniforms]
- */
-export function getSharedNebulaVolumeMaterial(sharedUniforms = null) {
-  if (!sharedNebulaMaterial) {
-    sharedNebulaMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: sharedUniforms?.uTime ?? { value: 0 },
-        uLangTint: { value: new THREE.Vector3(0.5, 0.5, 0.5) },
-        uEllipsoid: { value: new THREE.Vector3(40, 32, 38) },
-        uSeed: { value: 0.5 },
-        uStepCount: { value: 10 },
-        uInvModelMatrix: { value: new THREE.Matrix4() },
-      },
-      vertexShader: nebulaVolumeVertexShader,
-      fragmentShader: nebulaVolumeFragmentShader,
-      transparent: true,
-      depthWrite: false,
-      side: THREE.FrontSide,
-      blending: THREE.AdditiveBlending,
-    })
-  }
-  return sharedNebulaMaterial
-}
-
-/** @deprecated 使用 getSharedNebulaVolumeMaterial */
-export function createNebulaVolumeMaterial(sharedUniforms = null) {
-  return getSharedNebulaVolumeMaterial(sharedUniforms)
-}
-
-/**
- * @param {[number, number, number]} langRgb
- * @param {[number, number, number]} ellipsoid half-extents xyz
- * @param {number} seed 0~1
- * @param {{ uTime?: { value: number } }} sharedUniforms
- * @param {{ isField?: boolean }} [opts]
- */
-export function createNebulaVolumeMesh(
-  langRgb,
-  ellipsoid,
-  seed,
-  sharedUniforms = null,
-  opts = {},
-) {
-  const mat = getSharedNebulaVolumeMaterial(sharedUniforms)
-  const mesh = new THREE.Mesh(getNebulaBoxGeometry(), mat)
-  mesh.name = opts.isField ? 'field-nebula-volume' : 'nebula-volume'
-  mesh.renderOrder = opts.isField ? -6 : -5
-  mesh.scale.set(ellipsoid[0] * 2, ellipsoid[1] * 2, ellipsoid[2] * 2)
-  mesh.frustumCulled = true
-  mesh.userData.langTint = langRgb
-  mesh.userData.ellipsoid = ellipsoid
-  mesh.userData.seed = seed
-  mesh.userData.isField = !!opts.isField
-
-  mesh.onBeforeRender = (_renderer, _scene, camera) => {
-    mat.uniforms.uInvModelMatrix.value.copy(mesh.matrixWorld).invert()
-    mat.uniforms.uLangTint.value.set(langRgb[0], langRgb[1], langRgb[2])
-    mat.uniforms.uEllipsoid.value.set(ellipsoid[0], ellipsoid[1], ellipsoid[2])
-    mat.uniforms.uSeed.value = seed
-    mesh.getWorldPosition(worldPosScratch)
-    const dist = camera.position.distanceTo(worldPosScratch)
-    if (mesh.userData.isField) {
-      mat.uniforms.uStepCount.value = dist > 220 ? 7 : dist > 120 ? 8 : 9
-    } else {
-      mat.uniforms.uStepCount.value = dist > 200 ? 8 : dist > 110 ? 10 : 12
-    }
-  }
-  return mesh
-}
-
-export function disposeNebulaSharedGeometry() {
-  if (sharedBoxGeometry) {
-    sharedBoxGeometry.dispose()
-    sharedBoxGeometry = null
-  }
-  if (sharedNebulaMaterial) {
-    sharedNebulaMaterial.dispose()
-    sharedNebulaMaterial = null
-  }
-}

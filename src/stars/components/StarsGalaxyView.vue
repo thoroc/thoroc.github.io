@@ -40,7 +40,7 @@ import {
 import {
   createNebulaVolumeMesh,
   disposeNebulaSharedGeometry,
-} from '../galaxy/nebula-volume.js'
+} from '../galaxy/nebula-volume'
 import { pickStarIndexScreen } from '../galaxy/pick.js'
 import {
   buildDustBuffers,
