@@ -32,5 +32,10 @@ opencode.json
 !.context/
 !.context/handover/
 !.context/learnings/
+!.context/plans/
+!.context/findings/
+!.context/analysis/
+!.context/follow-ups/
 !.context/index.yaml
 !.context/**/*.md
+coverage/
