@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { GALAXY_ZOOM } from './constants'
-import { motionWorldPosition } from './motion.js'
+import { motionWorldPosition } from './motion'
 
 const _world = new THREE.Vector3()
 const _mv = new THREE.Vector3()
@@ -94,7 +94,7 @@ function projectStarScreenDistSq(i, ctx) {
  *   sizes?: Float32Array | null,
  *   brights?: Float32Array | null,
  *   pixelRatio?: number,
- *   motionFields?: import('./motion.js').ReturnType<typeof import('./motion.js').buildMotionFields> | null,
+ *   motionFields?: import('./motion').ReturnType<typeof import('./motion').buildMotionFields> | null,
  *   motionTimeSec?: number,
  * }} opts
  * @returns {number | null}

@@ -17,7 +17,7 @@ import {
   buildHarmonizedRawLanguageHubs,
   buildMotionFields,
   fillGasMotionFields,
-} from './motion.js'
+} from './motion'
 import {
   buildLanguageLayout,
   buildTwinkleActivities,

@@ -36,4 +36,6 @@ coveragePathIgnorePatterns = [
   "test-support/**",
   "src/stars/utils/lang-colors.js",
   "src/stars/galaxy/gas-clump-field/buildGasClumpField.ts",
+  "src/stars/galaxy/motion-hubs.js",
+  "src/stars/galaxy/virtual-stars.js",
 ]

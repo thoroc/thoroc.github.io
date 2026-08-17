@@ -36,7 +36,7 @@ import {
   applyGalaxyHubMotionJs,
   GALAXY_MOTION_GLSL,
   motionWorldPosition,
-} from '../galaxy/motion.js'
+} from '../galaxy/motion'
 import {
   createNebulaVolumeMesh,
   disposeNebulaSharedGeometry,
@@ -206,7 +206,7 @@ let restPositions = null
 let starSizes = null
 /** @type {Float32Array | null} */
 let starBrights = null
-/** @type {import('../galaxy/motion.js').ReturnType<typeof import('../galaxy/motion.js').buildMotionFields> | null} */
+/** @type {import('../galaxy/motion').ReturnType<typeof import('../galaxy/motion').buildMotionFields> | null} */
 let motionFields = null
 /** @type {number} */
 let motionTimeSec = 0
