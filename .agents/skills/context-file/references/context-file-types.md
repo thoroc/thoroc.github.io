@@ -1,6 +1,6 @@
 # .context/ File Types Reference
 
-This reference documents the four types of `.context/` files and their distinct purposes.
+This reference documents the six types of `.context/` files and their distinct purposes.
 
 ## Plan
 
@@ -70,11 +70,43 @@ chat context does not survive `/clear`, compaction, or a new session.
 
 **File it the same turn it's identified.** A follow-up mentioned only in a chat reply is indistinguishable from one that was never noticed — the next session has no way to tell the difference.
 
+## Learning
+
+Learnings are distilled rules or lessons from past sessions — standing guidance until superseded, discovered by agents as needed.
+
+**Location:** `.context/learnings/YYYY-MM-DD-<slug>.md`
+
+**Required frontmatter fields:** `title`, `type: learning`, `status`, `date`
+
+| Field      | Convention                          | Example                                       |
+| ---------- | ----------------------------------- | --------------------------------------------- |
+| `title`    | `"<concise rule or lesson>"`        | `"Regenerate mise.lock when mise.toml changes"` |
+| `status`   | Start as active                     | `active`                                      |
+| `filename` | date-first (`YYYY-MM-DD-<slug>.md`) | `2026-08-17-mise-lock-regen.md`               |
+
+**Required sections:** Learning, Evidence, Rules
+
+## Handover
+
+Handovers capture session hand-off state so the next session can resume without re-discovery.
+
+**Location:** `.context/handover/YYYY-MM-DD-<slug>.md`
+
+**Required frontmatter fields:** `title`, `type: handover`, `status`, `date`
+
+| Field      | Convention                          | Example                                        |
+| ---------- | ----------------------------------- | ---------------------------------------------- |
+| `title`    | `"<YYYY-MM-DD>-<slug> session handover"` | `"2026-08-16-ci-workflow-port session handover"` |
+| `status`   | Start as active, flip to `done` when the next session closes it | `active`                     |
+| `filename` | date-first (`YYYY-MM-DD-<slug>.md`) | `2026-08-16-ci-workflow-port.md`               |
+
+**Required sections:** Current state, What changed, Key facts for the next session, Next steps / what remains
+
 ## Common Mistakes
 
 | Mistake                                 | Fix                                                                                                   |
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Using wrong type for the content        | Match type to subdirectory: plan↔plans/, finding↔findings/, analysis↔analysis/, follow-up↔follow-ups/ |
+| Using wrong type for the content        | Match type to subdirectory: plan↔plans/, finding↔findings/, analysis↔analysis/, follow-up↔follow-ups/, learning↔learnings/, handover↔handover/ |
 | Putting plans in `.context/audits/`     | Use `.context/plans/` instead — audits/ is owned by skill-auditor                                     |
 | Missing frontmatter that blocks commits | Always start with `---\ntitle:\ntype:\nstatus:\ndate:\n---`                                           |
 | Not regenerating the index              | Run `.agents/skills/context-index/regenerate-context-index.sh` after creation                         |

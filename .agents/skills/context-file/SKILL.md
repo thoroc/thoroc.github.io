@@ -12,8 +12,8 @@ Create a new `.context/` file with standard YAML frontmatter and appropriate sec
 
 ## Prerequisites
 
-- A clear understanding of the file type needed: plan (multi-step work), finding (research), analysis (review), or follow-up (deferred work)
-- Familiarity with the `.context/` directory structure: `plans/`, `findings/`, `analysis/`, `follow-ups/`
+- A clear understanding of the file type needed: plan (multi-step work), finding (research), analysis (review), follow-up (deferred work), learning (distilled rules from past sessions), or handover (session hand-off state)
+- Familiarity with the `.context/` directory structure: `plans/`, `findings/`, `analysis/`, `follow-ups/`, `learnings/`, `handover/`
 - The `context-index` skill available for index regeneration after creation
 
 ## When to Use
@@ -22,6 +22,8 @@ Create a new `.context/` file with standard YAML frontmatter and appropriate sec
 - **finding**: Research output, code review results, audit findings, prerequisite investigations
 - **analysis**: Duplication reports, benchmark results, comparative reviews, one-off audits
 - **follow-up**: Deferred work or open threads surfaced mid-session but out of scope for the current change — file it the same turn it's identified, do not just mention it in the response and move on
+- **learning**: Distilled rules or lessons from past sessions — standing guidance until superseded
+- **handover**: Session hand-off state for the next session to resume without re-discovery
 
 ## When Not to Use
 
@@ -36,7 +38,7 @@ Every `.context/` file MUST start with this exact block:
 ```yaml
 ---
 title: "Human-readable title"
-type: plan | finding | analysis | follow-up
+type: plan | finding | analysis | follow-up | learning | handover
 status: draft | active | done | superseded
 date: YYYY-MM-DD
 related:
@@ -47,7 +49,7 @@ related:
 Field rules:
 
 - `title` — prose title matching the H1 heading; wrap in quotes
-- `type` — matches the subdirectory (`plans/` → `plan`, `findings/` → `finding`, `analysis/` → `analysis`, `follow-ups/` → `follow-up`)
+- `type` — matches the subdirectory (`plans/` → `plan`, `findings/` → `finding`, `analysis/` → `analysis`, `follow-ups/` → `follow-up`, `learnings/` → `learning`, `handover/` → `handover`)
 - `status` — `draft` until reviewed, `active` for in-progress work, `done` when complete, `superseded` when replaced. For `follow-up`, `active` means still outstanding and `done` means actioned — flip
   it to `done` in the same change that resolves it, never delete the file
 - `date` — creation date in ISO format; do not update on edits
@@ -55,7 +57,7 @@ Field rules:
 
 ## Workflow
 
-1. Determine type: plan / finding / analysis / follow-up
+1. Determine type: plan / finding / analysis / follow-up / learning / handover
 2. Choose a filename: every `.context/` type is date-first, `YYYY-MM-DD-<slug>.md` (e.g. `2026-06-30-migrate-off-tessl-eval.md`) — same convention as journal entries
 3. Create the file using the template matching the type below
 4. Set `status: draft` until the content is reviewed (follow-ups start at `active` — they are already actionable, not draft)
@@ -158,6 +160,54 @@ One paragraph: what session/change surfaced this, and why it was out of scope th
 Set `status: done` in this file (do not delete it) once actioned.
 ```
 
+**Learning** (`.context/learnings/`):
+
+```markdown
+---
+title: "<concise rule or lesson>"
+type: learning
+status: active
+date: YYYY-MM-DD
+---
+
+# <concise rule or lesson>
+
+## Learning
+
+The rule, stated as one actionable sentence.
+
+## Evidence
+
+What happened, when, and why this rule emerged (commits/PRs/incidents).
+
+## Rules
+
+- Bullet-list the standing rules that follow.
+```
+
+**Handover** (`.context/handover/`):
+
+```markdown
+---
+title: "<YYYY-MM-DD>-<slug> session handover"
+type: handover
+status: active
+date: YYYY-MM-DD
+---
+
+# Handover — <slug>
+
+## Current state
+
+## What changed (commit → item)
+
+## Key facts for the next session
+
+## Next steps / what remains
+
+Set `status: done` once the next session closes the handover.
+```
+
 ## Mindset
 
 - Write for the next agent or human who reads this cold — assume no prior context
@@ -170,8 +220,8 @@ Set `status: done` in this file (do not delete it) once actioned.
 
 - **Pre-commit hook blocks commit:** Run `check-context-frontmatter.sh` to find files missing YAML frontmatter — add the required block and re-run
 - **Missing from index after creation:** Run `regenerate-context-index.sh` — the index is generated from frontmatter, not file existence alone
-- **Wrong type directory:** Files must live under the matching subdirectory — plans in `plans/`, findings in `findings/`, analysis in `analysis/`, follow-ups in `follow-ups/`
-- **Wrong filename convention:** Run `check-context-filenames.sh` — it enforces date-first (`YYYY-MM-DD-slug.md`) across every `.context/` subdirectory and rejects files outside the four canonical
+- **Wrong type directory:** Files must live under the matching subdirectory — plans in `plans/`, findings in `findings/`, analysis in `analysis/`, follow-ups in `follow-ups/`, learnings in `learnings/`, handovers in `handover/`
+- **Wrong filename convention:** Run `check-context-filenames.sh` — it enforces date-first (`YYYY-MM-DD-slug.md`) across every `.context/` subdirectory and rejects files outside the canonical
   ones; wired into `hk.pkl` as the `context-filenames` step so it runs on every commit
 
 ## Anti-Patterns
