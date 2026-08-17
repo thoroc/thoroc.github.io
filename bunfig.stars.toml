@@ -1,0 +1,14 @@
+[test]
+# Scoped to `bun test --config=bunfig.stars.toml src/stars` — kept out of the
+# root bunfig.toml (which doesn't exist) so the site's existing
+# .agents/scripts and .agents/hooks tests are unaffected by DOM globals or a
+# per-file coverage gate that doesn't apply to them.
+preload = ["./test-support/dom-setup.ts", "./test-support/vue-loader.ts"]
+coverage = true
+coverageThreshold = { lines = 0.9, functions = 0.9 }
+
+# WebGL/canvas call sites cannot be meaningfully exercised without a real GPU
+# context — a headless test DOM has no WebGL implementation. Excluded here,
+# explicitly, rather than silently landing under the coverage target.
+# See .context/plans/2026-08-17-stars-typescript-conversion.md.
+coveragePathIgnorePatterns = ["src/stars/galaxy/webgl.js"]

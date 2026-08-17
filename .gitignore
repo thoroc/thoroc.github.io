@@ -38,3 +38,4 @@ opencode.json
 !.context/follow-ups/
 !.context/index.yaml
 !.context/**/*.md
+coverage/

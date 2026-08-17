@@ -22,9 +22,12 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@happy-dom/global-registrator": "20.11.2",
     "@opencode-ai/plugin": "^1.18.18",
     "@types/bun": "latest",
     "@types/js-yaml": "^4.0.9",
+    "@vue/test-utils": "^2.4.11",
+    "happy-dom": "^20.11.2",
     "typescript": "^6"
   }
 }
