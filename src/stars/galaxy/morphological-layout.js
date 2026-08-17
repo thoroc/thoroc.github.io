@@ -15,4 +15,4 @@ export {
 export {
   buildMorphologicalVirtualPositions,
   harmonizeCosmicSpan,
-} from './virtual-star-placement.js'
+} from './virtual-star-placement'
