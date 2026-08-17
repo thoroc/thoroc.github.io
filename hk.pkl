@@ -28,9 +28,9 @@ local linters = new Mapping<String, Step> {
     }
     ["markdownlint"] {
         glob = List("**/*.md")
-        // Follows the Journal's pattern: exclude the files that predate (or deliberately
-        // violate) the tuned .markdownlint-cli2.jsonc — long one-line directives, tables
-        // that resist auto-alignment, sigmap-generated HTML. Keep all other markdown linted.
+        // Excludes files that predate (or deliberately violate) the tuned
+        // .markdownlint-cli2.jsonc — long one-line directives, tables that resist
+        // auto-alignment, sigmap-generated HTML. Keep all other markdown linted.
         exclude = List(
             "**/skills/**",
             ".claude/worktrees/**",

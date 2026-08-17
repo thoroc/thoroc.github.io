@@ -47,8 +47,8 @@ Before making any change, read `.agents/instructions/ways-of-working.md` for the
 
 1. **Create a branch from `main` first** — use `feat/`, `fix/`, `chore/` prefixes.
 2. Commit atomically with conventional messages.
-3. Rebase on `main` if it diverges, then merge the branch **locally** into `main` (no remote — see the warning at the top).
-4. Run `hk check -c` (read-only: format, lint, types, tests, journal validation) before merging locally into `main` (never push — there is no remote).
+3. Rebase on `main` if it diverges, push, and open a PR.
+4. Run `hk check -c` (read-only: format, lint, types, tests) before merging; squash-merge the PR.
 5. **Update plan frontmatter** (`active → done`) when you implement what a plan describes.
 
 ## TypeScript Standards — Quick Checklist
