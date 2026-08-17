@@ -1,17 +1,21 @@
 import { findAnchorRepoId } from '../../src/stars/galaxy/force-similarity'
 import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers'
+import type { GalaxyLayout } from '../../src/stars/galaxy/layout-payload'
 import {
   isSerializableGalaxyLayout,
   serializeVirtualGalaxyLayout,
 } from '../../src/stars/galaxy/layout-payload'
 import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions'
+import type { RepoLike } from '../../src/stars/galaxy/repo-position'
 import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position'
 import {
   buildTopicRingKeySet,
   expandReposToVirtualStars,
 } from '../../src/stars/galaxy/virtual-stars'
 
-export function computeGalaxyLayout(items) {
+export const computeGalaxyLayout = (
+  items: RepoLike[] | null | undefined,
+): GalaxyLayout => {
   const list = items || []
   if (!list.length) {
     return serializeVirtualGalaxyLayout(list, [], new Float32Array(0), -1)
