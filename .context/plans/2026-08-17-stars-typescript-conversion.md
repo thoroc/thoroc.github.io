@@ -1,7 +1,7 @@
 ---
 title: "Plan: Bring the ported stars app into TypeScript convention compliance"
 type: plan
-status: draft
+status: active
 date: 2026-08-17
 effort: "L"
 value: "MEDIUM"
@@ -83,7 +83,10 @@ the `adr-capture` skill's scope; no ADR filed.
 
 ## Phases
 
-### Phase 1: Tooling, conventions, and spike verification
+### Phase 1: Tooling, conventions, and spike verification — ✅ done
+
+See `.context/learnings/2026-08-17-stars-ts-conversion-conventions.md` for
+the recorded conventions and proof results.
 
 Exit criterion: dev dependencies installed; a trivial Vue component test runs
 green under `bun test`; the one-function-per-file/barrel directory layout,
