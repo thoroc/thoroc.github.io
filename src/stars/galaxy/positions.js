@@ -23,7 +23,7 @@ import {
   buildTwinkleActivities,
   repoVisualInfluence,
   virtualStarRgb,
-} from './repo-position.js'
+} from './repo-position'
 import {
   buildLanguageLegend,
   buildStarSizes,
@@ -39,7 +39,7 @@ import {
   virtualLanguageKey,
 } from './virtual-stars.js'
 
-export { buildLanguageLayout } from './repo-position.js'
+export { buildLanguageLayout } from './repo-position'
 export {
   ownerSelfRepoId,
   repoLegendLanguageKey,

@@ -5,7 +5,7 @@ import {
   serializeVirtualGalaxyLayout,
 } from '../../src/stars/galaxy/layout-payload'
 import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions.js'
-import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position.js'
+import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position'
 import {
   buildTopicRingKeySet,
   expandReposToVirtualStars,

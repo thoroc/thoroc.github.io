@@ -7,7 +7,7 @@ import {
   mapInfluenceToRange,
   normLogCount,
   repoVisualInfluence,
-} from './repo-position.js'
+} from './repo-position'
 
 /** 星点尺寸分数：stars + watchers + forks，不含 pushedAt */
 function repoSizeScore(item, ctx) {
