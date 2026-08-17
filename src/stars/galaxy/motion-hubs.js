@@ -1,5 +1,5 @@
 import { GALAXY_MOTION } from './constants.js'
-import { hashStr, hashUnit } from './hash.js'
+import { hashStr, hashUnit } from './hash'
 import { buildLanguageGalaxyHubs } from './morphological-layout.js'
 import { motionSign, rotateTiltedY, rotateY } from './motion-math.js'
 import { virtualLanguageKey } from './virtual-stars.js'

@@ -1,5 +1,5 @@
 import { GALAXY, MORPHOLOGY_LAYOUT } from './constants.js'
-import { gauss3, hashSeed, hashStr } from './hash.js'
+import { gauss3, hashSeed, hashStr } from './hash'
 import { galaxyRadiusForLanguage } from './morphological-layout.js'
 
 /** @typedef {{ repoId: string, item: object, language: string, topic: string | null, virtualKey: string }} VirtualStar */

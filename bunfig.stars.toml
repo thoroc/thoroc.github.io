@@ -11,4 +11,9 @@ coverageThreshold = { lines = 0.9, functions = 0.9 }
 # context — a headless test DOM has no WebGL implementation. Excluded here,
 # explicitly, rather than silently landing under the coverage target.
 # See .context/plans/2026-08-17-stars-typescript-conversion.md.
-coveragePathIgnorePatterns = ["src/stars/galaxy/webgl.js"]
+#
+# test-support/** is test infrastructure (the SFC loader, DOM setup, the
+# regression-oracle fixtures/script), not application code under
+# conversion — it's exempt from the src/stars/ coverage target for the same
+# reason .agents/scripts tooling isn't held to it either.
+coveragePathIgnorePatterns = ["src/stars/galaxy/webgl.js", "test-support/**"]

@@ -1,5 +1,5 @@
 import { COSMIC_UNIVERSE, GALAXY_MOTION } from './constants.js'
-import { hashStr, hashUnit } from './hash.js'
+import { hashStr, hashUnit } from './hash'
 import { buildLanguageHubMotion } from './motion-hubs.js'
 import { motionSign, rotateTiltedY, rotateY } from './motion-math.js'
 import { virtualLanguageKey } from './virtual-stars.js'

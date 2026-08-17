@@ -10,7 +10,7 @@ import {
   TWINKLE_RANK_GAMMA,
   TWINKLE_WEIGHTS,
 } from './constants.js'
-import { gauss3, hashSeed, hashStr, hashUnit } from './hash.js'
+import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 function starredYear(starredAt) {
   const y = parseInt(String(starredAt || '').slice(0, 4), 10)

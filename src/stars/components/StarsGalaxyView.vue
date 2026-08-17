@@ -27,7 +27,7 @@ import {
   sceneBackgroundColor,
   sceneFogColor,
 } from '../galaxy/cosmic-background.js'
-import { hashStr } from '../galaxy/hash.js'
+import { hashStr } from '../galaxy/hash'
 import {
   GALAXY_RUNTIME_LAYOUT_TAG,
   hasValidGalaxyLayout,

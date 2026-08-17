@@ -1,6 +1,6 @@
 import { COSMIC_UNIVERSE } from './constants.js'
 import { galaxyFrameAngles, rotateGalaxyLocal } from './galaxy-field.js'
-import { gauss3, hashSeed, hashStr, hashUnit } from './hash.js'
+import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 /**
  * 多 clump 气体场：椭球团 + 丝状链，模拟真实星云结构

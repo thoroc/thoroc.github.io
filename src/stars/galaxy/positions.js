@@ -5,7 +5,7 @@ import {
   buildGalaxyGasBuffers,
   buildGalaxyGasDustBuffers,
 } from './gas-buffers.js'
-import { hashStr, hashUnit } from './hash.js'
+import { hashStr, hashUnit } from './hash'
 import {
   extractVirtualLayoutPositions,
   hasValidGalaxyLayout,

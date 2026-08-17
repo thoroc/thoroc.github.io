@@ -1,5 +1,5 @@
 import { COSMIC_UNIVERSE, R_MAX, R_MIN } from './constants.js'
-import { gauss3, hashSeed, hashStr, hashUnit } from './hash.js'
+import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 export function layoutLanguageKey(item, layout) {
   const lang = item.language || '其他'

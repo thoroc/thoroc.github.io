@@ -9,7 +9,7 @@ import {
   sampleCosmicFieldPosition,
   sampleCosmicVoid,
 } from './galaxy-field.js'
-import { gauss3, hashSeed, hashStr, hashUnit } from './hash.js'
+import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 function buildCosmicRepoAnchors(repos, layout) {
   const sf = Math.min(layout.spreadFactor ?? 1, 1.32)
