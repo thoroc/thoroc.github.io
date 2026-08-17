@@ -1,4 +1,6 @@
-export const messages = {
+import type { MessagePack } from './types'
+
+export const messages: Record<string, MessagePack> = {
   'zh-CN': {
     loading: '正在加载 Star 数据…',
     loadError: '无法加载 stars.json：{error}。',
@@ -210,56 +212,4 @@ export const messages = {
     langZh: '中文',
     langEn: 'EN',
   },
-}
-
-export function normalizeUiLocale(value) {
-  return value === 'en' ? 'en' : 'zh-CN'
-}
-
-export function resolveUiLocale(search = '', fallback = 'zh-CN') {
-  const params = new URLSearchParams(search)
-  if (params.has('lang')) {
-    return normalizeUiLocale(params.get('lang'))
-  }
-  return normalizeUiLocale(fallback)
-}
-
-export function createTranslator(localeRef) {
-  return (key, params = {}) => {
-    const locale =
-      typeof localeRef === 'function'
-        ? localeRef()
-        : (localeRef.value ?? localeRef)
-    const pack = messages[locale] || messages['zh-CN']
-    let text = pack[key] ?? messages['zh-CN'][key] ?? key
-    for (const [k, v] of Object.entries(params)) {
-      text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v))
-    }
-    return text
-  }
-}
-
-export function formatGeneratedAt(iso, locale) {
-  if (!iso) return '—'
-  const date = new Date(iso)
-  if (locale === 'en') {
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'UTC',
-      timeZoneName: 'short',
-    })
-  }
-  return date.toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: 'Asia/Shanghai',
-  })
 }
