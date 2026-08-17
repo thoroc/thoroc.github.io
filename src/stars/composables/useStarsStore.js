@@ -24,7 +24,7 @@ import {
   filterStars,
   mapLegacySort,
 } from '../utils/stars-filter'
-import { isMobileViewport } from './useMediaQuery.js'
+import { isMobileViewport } from './useMediaQuery'
 
 const PAGE_TITLE_CACHE_KEY = 'stars-page-title'
 
