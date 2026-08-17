@@ -1,5 +1,5 @@
 /** Shared by GALAXY_MOTION_GLSL and GALAXY_HUB_MOTION_GLSL below — both shaders rotate around the same tilted galaxy plane. */
-const GALAXY_ROTATION_GLSL = `
+const GALAXY_ROTATION_GLSL: string = `
 vec3 rotateGalaxyY(vec3 p, float ang) {
   float c = cos(ang);
   float s = sin(ang);
@@ -21,7 +21,7 @@ vec3 rotateTiltedGalaxyY(vec3 p, float ang, float tilt) {
 }
 `
 
-export const GALAXY_MOTION_GLSL = `
+export const GALAXY_MOTION_GLSL: string = `
 attribute vec3 aGalaxyHub;
 attribute vec3 aNebulaCenter;
 attribute vec4 aMotionOmega;
@@ -71,7 +71,7 @@ vec3 applyGalaxyMotion(vec3 rest) {
 `
 
 /** 星系气体云：仅宇宙公转 + 绕 hub 的星系自转/轨道 */
-export const GALAXY_HUB_MOTION_GLSL = `
+export const GALAXY_HUB_MOTION_GLSL: string = `
 ${GALAXY_ROTATION_GLSL}
 
 vec3 applyGalaxyHubMotion(vec3 rest) {
