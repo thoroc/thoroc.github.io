@@ -30,7 +30,7 @@ This repo is developed with both Claude Code and opencode. Instructions and skil
 
 ## Learnings
 
-Distilled rules from past sessions live under `.context/learnings/` (`.context/**/*.md` files are committed — logs and other non-md `.context/` files stay gitignored). Discover knowledge from that directory as needed rather than from a fixed list: read the relevant entries before making changes and treat them as standing guidance until superseded.
+Distilled rules from past sessions live under `.context/learnings/` (`.context/**/*.md` files are committed — logs and other non-md `.context/` files stay gitignored). Discover knowledge from that directory rather than from a fixed list: read the relevant entries before making changes and treat them as standing guidance until superseded.
 
 ## Context files
 
