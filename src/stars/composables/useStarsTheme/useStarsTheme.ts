@@ -4,25 +4,26 @@ import {
   persistColorThemePreference,
   readColorThemePreference,
   resolveColorTheme,
-} from '../theme/color-theme'
+} from '../../theme/color-theme'
+import type { StarsTheme } from './types'
 
-export function useStarsTheme() {
+export const useStarsTheme = (): StarsTheme => {
   const preference = ref(readColorThemePreference())
   const resolvedTheme = ref(resolveColorTheme(preference.value))
 
-  function syncTheme() {
+  const syncTheme = (): void => {
     resolvedTheme.value = applyColorTheme(preference.value)
   }
 
-  function setColorTheme(next) {
+  const setColorTheme: StarsTheme['setColorTheme'] = (next) => {
     const value = next === 'dark' ? 'dark' : 'light'
     preference.value = value
     persistColorThemePreference(value)
     syncTheme()
   }
 
-  let mediaQuery
-  let onMediaChange
+  let mediaQuery: MediaQueryList | undefined
+  let onMediaChange: (() => void) | undefined
 
   onMounted(() => {
     syncTheme()

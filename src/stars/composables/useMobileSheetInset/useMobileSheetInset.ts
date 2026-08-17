@@ -1,18 +1,13 @@
 import { onUnmounted, watch } from 'vue'
+import {
+  CHROME_SELECTORS,
+  FALLBACK_TOP_PX,
+  GAP_PX,
+  MOBILE_SHEET_TOP_VAR,
+} from './constants'
+import type { OpenSource } from './types'
 
-/** 弹层顶部不得高于该线，避免挡住「当前筛选」等主区控件 */
-export const MOBILE_SHEET_TOP_VAR = '--stars-mobile-sheet-top'
-
-const CHROME_SELECTORS = [
-  '.stars-active-filters',
-  '.stars-stats--mobile',
-  '.stars-mobile-toolbar',
-]
-
-const GAP_PX = 8
-const FALLBACK_TOP_PX = 112
-
-function measureSheetTopInset() {
+const measureSheetTopInset = (): void => {
   let bottom = 0
   for (const selector of CHROME_SELECTORS) {
     const el = document.querySelector(selector)
@@ -27,27 +22,23 @@ function measureSheetTopInset() {
   )
 }
 
-function clearSheetTopInset() {
+const clearSheetTopInset = (): void => {
   document.documentElement.style.removeProperty(MOBILE_SHEET_TOP_VAR)
 }
 
-/**
- * @param {import('vue').Ref<boolean> | import('vue').ComputedRef<boolean> | (() => boolean)} openSource
- */
-export function useMobileSheetInset(openSource) {
-  /** @type {ResizeObserver | null} */
-  let resizeObserver = null
+export const useMobileSheetInset = (openSource: OpenSource): void => {
+  let resizeObserver: ResizeObserver | null = null
 
-  function isOpen() {
+  const isOpen = (): boolean => {
     const v = typeof openSource === 'function' ? openSource() : openSource.value
     return Boolean(v)
   }
 
-  function onLayoutChange() {
+  const onLayoutChange = (): void => {
     if (isOpen()) measureSheetTopInset()
   }
 
-  function observeChrome() {
+  const observeChrome = (): void => {
     resizeObserver?.disconnect()
     if (typeof ResizeObserver === 'undefined') return
     resizeObserver = new ResizeObserver(onLayoutChange)
@@ -57,14 +48,14 @@ export function useMobileSheetInset(openSource) {
     }
   }
 
-  function bindListeners() {
+  const bindListeners = (): void => {
     window.addEventListener('resize', onLayoutChange)
     window.visualViewport?.addEventListener('resize', onLayoutChange)
     window.visualViewport?.addEventListener('scroll', onLayoutChange)
     observeChrome()
   }
 
-  function unbindListeners() {
+  const unbindListeners = (): void => {
     window.removeEventListener('resize', onLayoutChange)
     window.visualViewport?.removeEventListener('resize', onLayoutChange)
     window.visualViewport?.removeEventListener('scroll', onLayoutChange)
