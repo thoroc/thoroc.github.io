@@ -6,7 +6,7 @@ import {
   GALAXY_LAYOUT_VERSION,
   hasValidGalaxyLayout,
 } from '../galaxy/layout-payload'
-import { expandReposToVirtualStars } from '../galaxy/virtual-stars.js'
+import { expandReposToVirtualStars } from '../galaxy/virtual-stars'
 import { normalizeUiLocale, resolveUiLocale } from '../i18n'
 import {
   readStoredGalaxyAreaExpanded,

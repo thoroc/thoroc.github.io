@@ -37,7 +37,7 @@ import {
   expandReposToVirtualStars,
   topicRingKey,
   virtualLanguageKey,
-} from './virtual-stars.js'
+} from './virtual-stars'
 
 export { buildLanguageLayout } from './repo-position'
 export {
@@ -49,7 +49,7 @@ export {
 /**
  * 分层摆位：语言星系 → 开放星团（topic）→ 单星（仓）
  * @param {Array<object>} repos
- * @param {import('./virtual-stars.js').VirtualStar[]} virtualStars
+ * @param {import('./virtual-stars').VirtualStar[]} virtualStars
  * @param {ReturnType<typeof buildLanguageLayout>} layout
  * @param {Set<string>} ringKeys
  */

@@ -9,7 +9,7 @@ import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position'
 import {
   buildTopicRingKeySet,
   expandReposToVirtualStars,
-} from '../../src/stars/galaxy/virtual-stars.js'
+} from '../../src/stars/galaxy/virtual-stars'
 
 export function computeGalaxyLayout(items) {
   const list = items || []

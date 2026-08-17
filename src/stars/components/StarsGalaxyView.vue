@@ -134,7 +134,7 @@ let resizeObserver = null
 let idToIndex = new Map()
 /** @type {Map<string, number[]>} */
 let repoIdToIndices = new Map()
-/** @type {import('../galaxy/virtual-stars.js').VirtualStar[]} */
+/** @type {import('../galaxy/virtual-stars').VirtualStar[]} */
 let currentVirtualStars = []
 /** @type {Float32Array | null} */
 let interactionData = null

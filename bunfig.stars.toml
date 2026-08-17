@@ -31,11 +31,18 @@ coverageThreshold = { lines = 0.9, functions = 0.9 }
 # least 3 clumps. Left in place unmodified (this is a conversion, not a
 # cleanup pass) but excluded here rather than silently landing under the
 # coverage target with an uncoverable branch.
+#
+# virtual-stars/nebulaSampleRadius.ts has the same class of issue: its
+# `u < coreRatio` check uses the module-local `hashUnitLocal(h, 10)` (a
+# distinct, ported-as-is formula — NOT the canonical ../hash hashUnit), whose
+# `((h >>> 10) & 0xfffffff) / 0xfffffff` shape caps the result at 2^22/2^28 =
+# 0.015625 for any 32-bit h. MORPHOLOGY_LAYOUT.NEBULA_CORE_RATIO is a fixed
+# 0.22, so `u < coreRatio` is always true and the halo/outer-radius branch is
+# unreachable. Left in place unmodified, excluded here for the same reason.
 coveragePathIgnorePatterns = [
   "src/stars/galaxy/webgl.ts",
   "test-support/**",
   "src/stars/utils/lang-colors.js",
   "src/stars/galaxy/gas-clump-field/buildGasClumpField.ts",
-  "src/stars/galaxy/motion-hubs.js",
-  "src/stars/galaxy/virtual-stars.js",
+  "src/stars/galaxy/virtual-stars/nebulaSampleRadius.ts",
 ]
