@@ -29,7 +29,7 @@ import {
   buildStarSizes,
   buildStarTierLegend,
   repoBrightness,
-} from './star-visuals.js'
+} from './star-visuals'
 import {
   applyTopicRingRefinement,
   buildRepoIdToVirtualIndices,
@@ -44,7 +44,7 @@ export {
   ownerSelfRepoId,
   repoLegendLanguageKey,
   repoStarTierKey,
-} from './star-visuals.js'
+} from './star-visuals'
 
 /**
  * 分层摆位：语言星系 → 开放星团（topic）→ 单星（仓）
