@@ -1,5 +1,5 @@
 import { findAnchorRepoId } from '../../src/stars/galaxy/force-similarity'
-import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers.js'
+import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers'
 import {
   isSerializableGalaxyLayout,
   serializeVirtualGalaxyLayout,

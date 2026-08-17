@@ -1,10 +1,7 @@
 import { repoLangRgb } from './colors'
 import { COSMIC_UNIVERSE, GALAXY, R_MAX, R_MIN } from './constants'
 import { findAnchorRepoId } from './force-similarity'
-import {
-  buildGalaxyGasBuffers,
-  buildGalaxyGasDustBuffers,
-} from './gas-buffers.js'
+import { buildGalaxyGasBuffers, buildGalaxyGasDustBuffers } from './gas-buffers'
 import { hashStr, hashUnit } from './hash'
 import {
   extractVirtualLayoutPositions,
