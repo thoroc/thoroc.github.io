@@ -1,5 +1,5 @@
 import { computed, nextTick, reactive, ref, watch } from 'vue'
-import { STARS_DATA_BASE } from '../config/paths'
+import { STARS_DATA_BASE } from '../config'
 import {
   buildGalaxyVirtualIndexMap,
   GALAXY_LAYOUT_CACHE_TAG,

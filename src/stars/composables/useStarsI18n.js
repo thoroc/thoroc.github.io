@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { STARS_ROUTE_BASE } from '../config/paths'
+import { STARS_ROUTE_BASE } from '../config'
 import { createTranslator } from '../i18n'
 import { useStarsStore } from './useStarsStore'
 
