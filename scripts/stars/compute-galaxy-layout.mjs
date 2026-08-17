@@ -3,7 +3,7 @@ import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers.js'
 import {
   isSerializableGalaxyLayout,
   serializeVirtualGalaxyLayout,
-} from '../../src/stars/galaxy/layout-payload.js'
+} from '../../src/stars/galaxy/layout-payload'
 import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions.js'
 import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position.js'
 import {

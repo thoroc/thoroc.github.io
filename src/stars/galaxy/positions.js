@@ -9,7 +9,7 @@ import { hashStr, hashUnit } from './hash'
 import {
   extractVirtualLayoutPositions,
   hasValidGalaxyLayout,
-} from './layout-payload.js'
+} from './layout-payload'
 import {
   buildLanguageGalaxyHubs,
   buildMorphologicalVirtualPositions,

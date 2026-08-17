@@ -31,7 +31,7 @@ import { hashStr } from '../galaxy/hash'
 import {
   GALAXY_RUNTIME_LAYOUT_TAG,
   hasValidGalaxyLayout,
-} from '../galaxy/layout-payload.js'
+} from '../galaxy/layout-payload'
 import {
   applyGalaxyHubMotionJs,
   GALAXY_MOTION_GLSL,

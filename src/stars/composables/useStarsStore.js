@@ -5,7 +5,7 @@ import {
   GALAXY_LAYOUT_CACHE_TAG,
   GALAXY_LAYOUT_VERSION,
   hasValidGalaxyLayout,
-} from '../galaxy/layout-payload.js'
+} from '../galaxy/layout-payload'
 import { expandReposToVirtualStars } from '../galaxy/virtual-stars.js'
 import { normalizeUiLocale, resolveUiLocale } from '../i18n'
 import {
