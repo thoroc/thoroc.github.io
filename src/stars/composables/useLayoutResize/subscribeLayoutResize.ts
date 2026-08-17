@@ -1,9 +1,8 @@
-/** 窗口尺寸变化时通知订阅方（虚拟列表内多卡片共享一条监听） */
-const subscribers = new Set()
+const subscribers = new Set<() => void>()
 let listening = false
 let rafId = 0
 
-function flush() {
+const flush = (): void => {
   rafId = 0
   subscribers.forEach((fn) => {
     try {
@@ -14,12 +13,13 @@ function flush() {
   })
 }
 
-function onWindowResize() {
+const onWindowResize = (): void => {
   if (rafId) return
   rafId = requestAnimationFrame(flush)
 }
 
-export function subscribeLayoutResize(fn) {
+/** 窗口尺寸变化时通知订阅方（虚拟列表内多卡片共享一条监听） */
+export const subscribeLayoutResize = (fn: () => void): (() => void) => {
   subscribers.add(fn)
   if (!listening) {
     listening = true
