@@ -13,7 +13,7 @@ import {
 } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import { useStarsStore } from '../composables/useStarsStore'
-import { createCameraTransition } from '../galaxy/camera-transition.js'
+import { createCameraTransition } from '../galaxy/camera-transition'
 import { nebulaLangTint, repoLangRgb } from '../galaxy/colors'
 import {
   COSMIC_UNIVERSE,
