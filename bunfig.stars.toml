@@ -39,9 +39,29 @@ coverageThreshold = { lines = 0.9, functions = 0.9 }
 # 0.015625 for any 32-bit h. MORPHOLOGY_LAYOUT.NEBULA_CORE_RATIO is a fixed
 # 0.22, so `u < coreRatio` is always true and the halo/outer-radius branch is
 # unreachable. Left in place unmodified, excluded here for the same reason.
+#
+# useStarsStore/resetStateForTests.ts is inline test infrastructure (colocated
+# with the module it resets rather than living under test-support/, since it
+# reaches into every one of the module's private refs/box-objects) — never
+# imported by production code or re-exported from the barrel, exempt for the
+# same reason test-support/** is.
+#
+# useStarsStore/state.ts holds two inline no-op function *values*
+# (scrollController.fn, rowRemeasureController.fn) as lazy defaults. Because
+# the module's state is a shared singleton (by design — see the Phase 1
+# mutable-box-object pattern) and every test file that overrides `.fn` resets
+# it via resetStateForTests' own `() => undefined` (a different source line),
+# whichever sibling test file happens to run first permanently replaces
+# state.ts's original default closure for the rest of the suite — hitting
+# state.ts's exact original line is not reliably achievable regardless of
+# test order. The behavior itself (never throws) is still covered by
+# state.test.ts; only the specific-source-line function-coverage metric is
+# excluded here.
 coveragePathIgnorePatterns = [
   "src/stars/galaxy/webgl.ts",
   "test-support/**",
   "src/stars/galaxy/gas-clump-field/buildGasClumpField.ts",
   "src/stars/galaxy/virtual-stars/nebulaSampleRadius.ts",
+  "src/stars/composables/useStarsStore/resetStateForTests.ts",
+  "src/stars/composables/useStarsStore/state.ts",
 ]
