@@ -8,3 +8,13 @@ projects:
     tagline:
       en: A short one-liner describing this project.
       fr: Une phrase courte décrivant ce projet.
+  - slug: stars
+    name: Stars
+    featured: true
+    year: 2026
+    github: https://github.com/thoroc/stars
+    demo: /stars/
+    tags: [vue, three.js, astro]
+    tagline:
+      en: A 3D galaxy visualization of my GitHub stars.
+      fr: Une visualisation en galaxie 3D de mes étoiles GitHub.
