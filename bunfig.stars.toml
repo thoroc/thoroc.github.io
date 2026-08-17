@@ -42,7 +42,6 @@ coverageThreshold = { lines = 0.9, functions = 0.9 }
 coveragePathIgnorePatterns = [
   "src/stars/galaxy/webgl.ts",
   "test-support/**",
-  "src/stars/utils/lang-colors.js",
   "src/stars/galaxy/gas-clump-field/buildGasClumpField.ts",
   "src/stars/galaxy/virtual-stars/nebulaSampleRadius.ts",
 ]

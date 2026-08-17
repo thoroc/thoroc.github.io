@@ -1,5 +1,5 @@
 /** GitHub Linguist–style accent colors for language chips */
-const LANG_COLORS = {
+export const LANG_COLORS: Record<string, string> = {
   TypeScript: '#3178c6',
   JavaScript: '#d4a017',
   Python: '#3572a5',
@@ -18,16 +18,4 @@ const LANG_COLORS = {
   CSS: '#563d7c',
   HTML: '#e34c26',
   其他: '#8b949e',
-}
-
-export function langColor(name) {
-  if (!name || name === 'all') return '#8b949e'
-  return LANG_COLORS[name] || '#6e7681'
-}
-
-export function langSlug(name) {
-  return (name || 'other')
-    .replace(/\+/g, 'plus')
-    .replace(/\s+/g, '-')
-    .toLowerCase()
 }
