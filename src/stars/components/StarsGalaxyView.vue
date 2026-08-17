@@ -56,7 +56,7 @@ import {
   nudgeOrbitCamera,
   resolveDollyCameraView,
   resolveFocusCameraView,
-} from '../galaxy/zoom-controls.js'
+} from '../galaxy/zoom-controls'
 import StarsGalaxyControls from './StarsGalaxyControls.vue'
 import StarsGalaxyDetail from './StarsGalaxyDetail.vue'
 import StarsGalaxyLegend from './StarsGalaxyLegend.vue'
