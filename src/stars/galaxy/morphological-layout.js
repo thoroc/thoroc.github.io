@@ -11,7 +11,7 @@ export {
   buildGasClumpField,
   sampleGasCloudParticle,
   sampleGasDustParticle,
-} from './gas-clump-field.js'
+} from './gas-clump-field'
 export {
   buildMorphologicalVirtualPositions,
   harmonizeCosmicSpan,
