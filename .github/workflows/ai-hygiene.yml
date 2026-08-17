@@ -95,7 +95,7 @@ jobs:
             echo "- $slop_icon **aislop** (code slop)"
             echo "- $ctx_icon **ctxharness** (agent-doc drift)"
             echo ""
-            echo "This report is advisory. The blocking gates run in the pre-commit hooks and the aislop CI check."
+            echo "This report is advisory. The blocking gates run in the pre-commit hooks."
             echo ""
             echo "<details><summary>aislop output</summary>"
             echo ""
