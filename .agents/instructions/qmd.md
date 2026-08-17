@@ -1,32 +1,31 @@
 # QMD — Search Index Instructions
 
-QMD is the local search engine over journal and odyssey markdown documents. Always prefer the MCP tools (`query`, `get`, `multi_get`, `status`) over CLI commands when inside Claude Code.
+QMD is the local search engine over this project's markdown documents. Always prefer the MCP tools (`query`, `get`, `multi_get`, `status`) over CLI commands when inside Claude Code.
 
-QMD covers conceptual/keyword search ("find entries about X"). For enumeration QMD cannot do (full tag taxonomy, complete chronological listing), read `docs/journal-index.md` instead — see
-`.agents/instructions/journal-index.md` for the full routing rules.
+QMD covers conceptual/keyword search ("find entries about X").
 
 ## Index maintenance
 
 The index is maintained automatically by the git post-commit hook (defined in `hk.pkl`), which runs two steps:
 
-| Step                | Trigger                       | Action                                                                                   |
-| ------------------- | ----------------------------- | ---------------------------------------------------------------------------------------- |
-| `qmd-update`        | every commit                  | `qmd update` — refresh the BM25 keyword index for all collections (incremental)          |
-| `qmd-embed-journal` | commit touches `202*/**/*.md` | `qmd embed -c journal` — refresh `vec`/`hyde` embeddings for new/changed journal entries |
+| Step               | Trigger                          | Action                                                                                  |
+| ------------------ | -------------------------------- | --------------------------------------------------------------------------------------- |
+| `qmd-update`       | every commit                     | `qmd update` — refresh the BM25 keyword index for all collections (incremental)         |
+| `qmd-embed-thoroc` | commit touches `.agents/**/*.md` | `qmd embed -c thoroc` — refresh `vec`/`hyde` embeddings for changed instructions/skills |
 
-So a normal journal commit leaves both keyword and semantic search current with no manual step. If the index appears stale (search misses a file you know exists), run manually:
+So a normal commit touching `.agents/**/*.md` leaves both keyword and semantic search current with no manual step. If the index appears stale (search misses a file you know exists), run manually:
 
 ```bash
 qmd update         # reindex all collections (incremental)
 qmd status         # check doc counts, last_updated, and needsEmbedding count
 ```
 
-Only journal entries are embedded on commit. Other collections, or a batch imported outside a commit, still need a manual embed. Vector search (`vec`/`hyde`) requires embeddings to be up to date; if
+Only `thoroc` is embedded on commit. Other collections, or a batch imported outside a commit, still need a manual embed. Vector search (`vec`/`hyde`) requires embeddings to be up to date; if
 `qmd status` shows a non-zero `needsEmbedding` count, run:
 
 ```bash
 qmd embed                        # embed new/changed docs only (all collections)
-qmd embed -c journal             # embed only the journal collection
+qmd embed -c thoroc              # embed only the thoroc collection
 qmd embed -f                     # force re-embed everything
 qmd embed --chunk-strategy auto  # AST-aware chunking (better for code files)
 ```
@@ -73,15 +72,14 @@ Use `minScore: 0.5` to filter low-confidence noise.
 
 ## Collections
 
-| Name      | Path                                                                | Pattern      |
-| --------- | ------------------------------------------------------------------- | ------------ |
-| `journal` | `/Users/thomas.roche/Documents/Journal`                             | `2*/**/*.md` |
-| `odyssey` | `/Users/thomas.roche/Projects/github/pantheon-org/odyssey/.context` | `**/*.md`    |
+| Name      | Path       | Pattern            |
+| --------- | ---------- | ------------------ |
+| `thoroc`  | this repo  | `.agents/**/*.md`  |
 
 Scope searches to a collection when the target is known:
 
 ```json
-{ "collections": ["journal"], "searches": [...] }
+{ "collections": ["thoroc"], "searches": [...] }
 ```
 
 ## Cleanup

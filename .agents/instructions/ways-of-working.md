@@ -13,14 +13,12 @@ date: 2026-07-01
 
 ## Worktree-first sessions
 
-**Every agent session must call `EnterWorktree` before making any file change in this repo, and must merge back into `main` (see Branch workflow) before finishing.** This repo has no remote, so
-multiple sessions — interactive and background, or several people/agents — share one local checkout. Without a worktree, a session that switches or commits on a branch changes `HEAD` for every other
+**Every agent session must call `EnterWorktree` before making any file change in this repo, and must merge back into `main` (see Branch workflow) before finishing.** Multiple sessions — interactive
+and background, or several people/agents — share one local checkout. Without a worktree, a session that switches or commits on a branch changes `HEAD` for every other
 session pointed at the same directory. This is not theoretical: two sessions' branch checkouts interleaved mid-task on 2026-08-10, and the second session's untracked files briefly appeared to vanish
 as a result.
 
 - Call `EnterWorktree` as the first action of any session that will `Write`/`Edit` a file or run a mutating `Bash` command (branch, commit, etc.) — read-only exploration first is fine.
-- This repo sets `worktree.baseRef: "head"` in `.claude/settings.local.json`. That's required: `EnterWorktree`'s default (`"fresh"`) branches from `origin/<default-branch>`, which does not exist here.
-  Do not remove that setting — without it, `EnterWorktree` cannot resolve a base ref in this repo.
 - Untracked files do not carry over into a new worktree automatically. If a session already has uncommitted new files before calling `EnterWorktree`, copy them into the worktree directory after
   entering it (they live in a separate working tree, sharing only the `.git` object store).
 - Run `mise trust` once per worktree directory before the first commit. `mise`'s trust is path-scoped, so a freshly created worktree path starts untrusted, and `hk`'s `mise`-shelled pre-commit jobs
@@ -33,12 +31,10 @@ as a result.
 
 ## Branch workflow
 
-> **Scope note - external repos vs this one.** This journal repository is local-only: it has no git remote (see the warning at the top of `AGENTS.md`). Every step below that touches a remote -
-> `git pull`, `git fetch origin`, `git push`, and opening a PR/MR (steps 1, 4, 5, 6 and "After merge"). In this repo: branch from your
-> local `main`, run `hk check -c`, and squash-merge the branch locally into `main`. Never push, fetch, or open a PR here.
+This repo has a remote (`origin` = `thoroc/thoroc.github.io` on GitHub) — branch, push, and open a PR like any normal repo.
 
-1. **Start inside a worktree, from the latest `main`.** In this repo, call `EnterWorktree` (see Worktree-first sessions above) — it creates an isolated worktree already branched from local `main`,
-   which covers this step. Do not manually run `git checkout -b` in the shared checkout. In an external repo with a remote, fetch the latest state before branching instead:
+1. **Start inside a worktree, from the latest `main`.** Call `EnterWorktree` (see Worktree-first sessions above) — it creates an isolated worktree already branched from `main`. Do not manually run
+   `git checkout -b` in the shared checkout; fetch the latest state before branching:
 
    ```bash
    git checkout main && git pull && git checkout -b <type>/<short-description>
@@ -64,10 +60,10 @@ as a result.
 
    This keeps history linear. Resolve conflicts if they arise.
 
-5. Run checks before merging (external repos: before pushing):
+5. Run checks before pushing:
 
    ```text
-   hk check -c       # read-only gate: format, lint, types, tests, journal validation
+   hk check -c       # read-only gate: format, lint, types, tests
    ```
 
    Use `hk check -c` (or `HK_FIX=0 hk check`) for a non-mutating run; a bare `hk check` defaults to fix mode and will rewrite files. `hk fix` applies fixes to the working tree on demand.
@@ -76,16 +72,16 @@ as a result.
    days. If you see one, don't just check the date: check whether the work it describes already landed under a different name (see "Keeping plans in sync with implementation" below) before deciding
    whether to update it.
 
-   > Correction (2026-07-28): this used to say the check ran on pre-push. It did not exist there, or anywhere; this repo also has no remote, so a pre-push hook would never fire regardless. It is now a
+   > Correction (2026-07-28): this used to say the check ran on pre-push. It did not exist there, or anywhere. It is now a
    > real `hk check -c` job.
 
-6. **External repos only** - push and open a PR:
+6. Push and open a PR:
 
    ```bash
    git push -u origin <branch-name>
    ```
 
-   Use `gh pr create` or push and open via GitHub. In this local-only repo, skip this step entirely and squash-merge the branch into `main` locally instead.
+   Use `gh pr create` or push and open via GitHub.
 
 ## Merge strategy — always squash
 
@@ -117,7 +113,7 @@ merge):
 git checkout main && git pull && git branch -d <branch-name>
 ```
 
-`git branch -d` is a safe delete: it refuses any branch not fully merged, so it will never drop unmerged work — use this form in external repos, where merges are typically real merge commits.
+`git branch -d` is a safe delete: it refuses any branch not fully merged, so it will never drop unmerged work — use this form for a repo whose merges are real merge commits, not squashes.
 
 **Squash-merged branches in this repo need `-D`, not `-d`.** Because the golden path here is squash-merge into `main` (see Merge strategy below), the branch's own commits are never ancestors of the
 new squashed commit — `git branch -d` will refuse with "not fully merged" even though the content landed correctly. Once you've confirmed the squash commit is on `main` (e.g.
