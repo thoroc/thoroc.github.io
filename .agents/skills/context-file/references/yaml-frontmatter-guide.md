@@ -7,7 +7,7 @@ This reference covers the YAML frontmatter schema used by all `.context/` files.
 ```yaml
 ---
 title: "Human-readable title"
-type: plan | finding | analysis
+type: plan | finding | analysis | follow-up | learning | handover
 status: draft | active | done | superseded
 date: YYYY-MM-DD
 ---
@@ -16,7 +16,7 @@ date: YYYY-MM-DD
 | Field | Type | Rules |
 |-------|------|-------|
 | `title` | string | Prose title matching the H1 heading; wrap in quotes |
-| `type` | enum | One of: `plan`, `finding`, `analysis` — must match the subdirectory |
+| `type` | enum | One of: `plan`, `finding`, `analysis`, `follow-up`, `learning`, `handover` — must match the subdirectory |
 | `status` | enum | `draft` until reviewed, `active` for in-progress, `done` when complete, `superseded` when replaced |
 | `date` | string (date) | ISO 8601 date `YYYY-MM-DD` — set once on creation, never updated |
 
@@ -68,6 +68,26 @@ title: "CLI Flag Audit — 2026-06-30"
 type: analysis
 status: done
 date: 2026-06-30
+---
+```
+
+**Learning** (`.context/learnings/`):
+```yaml
+---
+title: "Regenerate mise.lock when mise.toml changes"
+type: learning
+status: active
+date: 2026-08-17
+---
+```
+
+**Handover** (`.context/handover/`):
+```yaml
+---
+title: "2026-08-16-ci-workflow-port session handover"
+type: handover
+status: done
+date: 2026-08-16
 ---
 ```
 

@@ -20,7 +20,9 @@
         "analysis",
         "instruction",
         "audit",
-        "follow-up"
+        "follow-up",
+        "learning",
+        "handover"
       ],
       "description": "File category — matches the subdirectory (plans/ → plan, findings/ → finding, analysis/ → analysis, follow-ups/ → follow-up)."
     },

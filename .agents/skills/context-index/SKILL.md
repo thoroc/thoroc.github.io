@@ -81,7 +81,7 @@ Every `.context/*.md` file requires this frontmatter block (template at `assets/
 ```yaml
 ---
 title: "Human-readable title"
-type: plan | finding | analysis | follow-up
+type: plan | finding | analysis | follow-up | learning | handover
 status: draft | active | done | superseded
 date: YYYY-MM-DD
 related:

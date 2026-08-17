@@ -4,7 +4,7 @@ set -euo pipefail
 # Enforces the .context/ filename convention documented in
 # .agents/skills/context-file/SKILL.md and references/context-file-types.md:
 # every type is date-first, YYYY-MM-DD-<slug>.md, matching journal-entry
-# convention. Also rejects any .md file living outside the four canonical
+# convention. Also rejects any .md file living outside the canonical
 # subdirectories (audits/ is exempt — it is owned by skill-auditor, not this
 # schema).
 
@@ -20,7 +20,7 @@ else
 fi
 
 date_first_re='^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9]+(-[a-z0-9]+)*\.md$'
-allowed_dirs=("plans" "findings" "analysis" "follow-ups" "audits")
+allowed_dirs=("plans" "findings" "analysis" "follow-ups" "audits" "learnings" "handover")
 
 errors=()
 
@@ -44,7 +44,7 @@ for f in "${files[@]}"; do
         fi
     done
     if [[ "$known" == false ]]; then
-        errors+=("$rel: lives in .context/$subdir/, not one of plans/findings/analysis/follow-ups")
+        errors+=("$rel: lives in .context/$subdir/, not one of plans/findings/analysis/follow-ups/learnings/handover")
         continue
     fi
     [[ "$subdir" == "audits" ]] && continue
