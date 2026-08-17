@@ -15,7 +15,7 @@ import {
   writeStoredGalaxyAreaExpanded,
   writeStoredUiLocale,
   writeStoredViewMode,
-} from '../storage/ui-prefs.js'
+} from '../storage/ui-prefs'
 import {
   buildLanguageOptions,
   buildLicenseOptions,
