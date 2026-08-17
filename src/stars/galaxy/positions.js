@@ -11,7 +11,7 @@ import {
   buildLanguageGalaxyHubs,
   buildMorphologicalVirtualPositions,
   harmonizeCosmicSpan,
-} from './morphological-layout.js'
+} from './morphological-layout'
 import {
   buildHarmonizedLanguageHubs,
   buildHarmonizedRawLanguageHubs,
