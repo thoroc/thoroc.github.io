@@ -4,7 +4,7 @@ import {
   layoutLanguageKey,
   sampleCosmicFieldPosition,
   sampleCosmicVoid,
-} from './galaxy-field.js'
+} from './galaxy-field'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 
 function buildCosmicRepoAnchors(repos, layout) {

@@ -6,7 +6,7 @@ export {
   gasCloudFrameAngles,
   qualifyingGasLanguages,
   rotateGalaxyLocal,
-} from './galaxy-field.js'
+} from './galaxy-field'
 export {
   buildGasClumpField,
   sampleGasCloudParticle,
