@@ -1,4 +1,4 @@
-import { blendCosmicColor, stellarTempRgb } from './colors.js'
+import { blendCosmicColor, stellarTempRgb } from './colors'
 import {
   GALAXY,
   PARTICLE_VISUAL_WEIGHTS,

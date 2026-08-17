@@ -1,4 +1,4 @@
-import { repoLangRgb } from './colors.js'
+import { repoLangRgb } from './colors'
 import { COSMIC_UNIVERSE, GALAXY, R_MAX, R_MIN } from './constants'
 import { findAnchorRepoId } from './force-similarity'
 import {

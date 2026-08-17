@@ -1,4 +1,4 @@
-import { nebulaDustRgb, nebulaLangTint, repoLangRgb } from './colors.js'
+import { nebulaDustRgb, nebulaLangTint, repoLangRgb } from './colors'
 import { COSMIC_UNIVERSE } from './constants'
 import { gauss3, hashSeed, hashStr, hashUnit } from './hash'
 import {
