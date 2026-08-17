@@ -13,42 +13,42 @@ import {
 } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import { useStarsStore } from '../composables/useStarsStore'
-import { createCameraTransition } from '../galaxy/camera-transition.js'
-import { nebulaLangTint, repoLangRgb } from '../galaxy/colors.js'
+import { createCameraTransition } from '../galaxy/camera-transition'
+import { nebulaLangTint, repoLangRgb } from '../galaxy/colors'
 import {
   COSMIC_UNIVERSE,
   GALAXY_MOTION,
   GALAXY_ZOOM,
   LEGEND_LANG_TOP,
   SCENE_FOG,
-} from '../galaxy/constants.js'
+} from '../galaxy/constants'
 import {
   createCosmicSkyMesh,
   sceneBackgroundColor,
   sceneFogColor,
-} from '../galaxy/cosmic-background.js'
-import { hashStr } from '../galaxy/hash.js'
+} from '../galaxy/cosmic-background'
+import { hashStr } from '../galaxy/hash'
 import {
   GALAXY_RUNTIME_LAYOUT_TAG,
   hasValidGalaxyLayout,
-} from '../galaxy/layout-payload.js'
+} from '../galaxy/layout-payload'
 import {
   applyGalaxyHubMotionJs,
   GALAXY_MOTION_GLSL,
   motionWorldPosition,
-} from '../galaxy/motion.js'
+} from '../galaxy/motion'
 import {
   createNebulaVolumeMesh,
   disposeNebulaSharedGeometry,
-} from '../galaxy/nebula-volume.js'
-import { pickStarIndexScreen } from '../galaxy/pick.js'
+} from '../galaxy/nebula-volume'
+import { pickStarIndexScreen } from '../galaxy/pick'
 import {
   buildDustBuffers,
   buildGalaxyBuffers,
   ownerSelfRepoId,
   repoLegendLanguageKey,
   repoStarTierKey,
-} from '../galaxy/positions.js'
+} from '../galaxy/positions'
 import {
   applyTrackballRotate,
   dollyCameraUniformRange,
@@ -56,7 +56,7 @@ import {
   nudgeOrbitCamera,
   resolveDollyCameraView,
   resolveFocusCameraView,
-} from '../galaxy/zoom-controls.js'
+} from '../galaxy/zoom-controls'
 import StarsGalaxyControls from './StarsGalaxyControls.vue'
 import StarsGalaxyDetail from './StarsGalaxyDetail.vue'
 import StarsGalaxyLegend from './StarsGalaxyLegend.vue'
@@ -134,7 +134,7 @@ let resizeObserver = null
 let idToIndex = new Map()
 /** @type {Map<string, number[]>} */
 let repoIdToIndices = new Map()
-/** @type {import('../galaxy/virtual-stars.js').VirtualStar[]} */
+/** @type {import('../galaxy/virtual-stars').VirtualStar[]} */
 let currentVirtualStars = []
 /** @type {Float32Array | null} */
 let interactionData = null
@@ -206,7 +206,7 @@ let restPositions = null
 let starSizes = null
 /** @type {Float32Array | null} */
 let starBrights = null
-/** @type {import('../galaxy/motion.js').ReturnType<typeof import('../galaxy/motion.js').buildMotionFields> | null} */
+/** @type {import('../galaxy/motion').ReturnType<typeof import('../galaxy/motion').buildMotionFields> | null} */
 let motionFields = null
 /** @type {number} */
 let motionTimeSec = 0

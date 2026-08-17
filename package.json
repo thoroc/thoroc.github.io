@@ -26,6 +26,7 @@
     "@opencode-ai/plugin": "^1.18.18",
     "@types/bun": "latest",
     "@types/js-yaml": "^4.0.9",
+    "@types/three": "0.170.0",
     "@vue/test-utils": "^2.4.11",
     "happy-dom": "^20.11.2",
     "typescript": "^6"

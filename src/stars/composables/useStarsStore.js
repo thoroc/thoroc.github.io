@@ -5,8 +5,8 @@ import {
   GALAXY_LAYOUT_CACHE_TAG,
   GALAXY_LAYOUT_VERSION,
   hasValidGalaxyLayout,
-} from '../galaxy/layout-payload.js'
-import { expandReposToVirtualStars } from '../galaxy/virtual-stars.js'
+} from '../galaxy/layout-payload'
+import { expandReposToVirtualStars } from '../galaxy/virtual-stars'
 import { normalizeUiLocale, resolveUiLocale } from '../i18n'
 import {
   readStoredGalaxyAreaExpanded,
@@ -15,7 +15,7 @@ import {
   writeStoredGalaxyAreaExpanded,
   writeStoredUiLocale,
   writeStoredViewMode,
-} from '../storage/ui-prefs.js'
+} from '../storage/ui-prefs'
 import {
   buildLanguageOptions,
   buildLicenseOptions,

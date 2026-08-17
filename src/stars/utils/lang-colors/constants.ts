@@ -1,0 +1,21 @@
+/** GitHub Linguist–style accent colors for language chips */
+export const LANG_COLORS: Record<string, string> = {
+  TypeScript: '#3178c6',
+  JavaScript: '#d4a017',
+  Python: '#3572a5',
+  Rust: '#dea584',
+  Go: '#00add8',
+  Java: '#b07219',
+  Ruby: '#cc342d',
+  'C++': '#f34b7d',
+  'C#': '#178600',
+  PHP: '#4f5d95',
+  Swift: '#fa7343',
+  Kotlin: '#a97bff',
+  Dart: '#00b4ab',
+  Shell: '#89e051',
+  Vue: '#41b883',
+  CSS: '#563d7c',
+  HTML: '#e34c26',
+  其他: '#8b949e',
+}

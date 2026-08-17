@@ -1,15 +1,15 @@
-import { findAnchorRepoId } from '../../src/stars/galaxy/force-similarity.js'
-import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers.js'
+import { findAnchorRepoId } from '../../src/stars/galaxy/force-similarity'
+import { buildGalaxyGasBuffers } from '../../src/stars/galaxy/gas-buffers'
 import {
   isSerializableGalaxyLayout,
   serializeVirtualGalaxyLayout,
-} from '../../src/stars/galaxy/layout-payload.js'
-import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions.js'
-import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position.js'
+} from '../../src/stars/galaxy/layout-payload'
+import { buildStructuredVirtualPositions } from '../../src/stars/galaxy/positions'
+import { buildLanguageLayout } from '../../src/stars/galaxy/repo-position'
 import {
   buildTopicRingKeySet,
   expandReposToVirtualStars,
-} from '../../src/stars/galaxy/virtual-stars.js'
+} from '../../src/stars/galaxy/virtual-stars'
 
 export function computeGalaxyLayout(items) {
   const list = items || []
