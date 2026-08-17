@@ -38,6 +38,15 @@ jobs:
           # not capped at the 60 req/hr unauthenticated rate limit.
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      # aislop's tsc needs the project deps and the astro-generated content types
+      # (tsconfig includes .astro/types.d.ts), which only exist after astro sync in
+      # a fresh checkout. Without them the whole-repo gate would report TS2307 for
+      # astro:content / ?raw imports.
+      - name: Install dependencies and generate astro types
+        run: |
+          bun install --frozen-lockfile
+          bun run astro sync
+
       # ctxharness: agent-doc drift. Never fails the step (report only).
       - name: Check agent docs (ctxharness)
         run: |
@@ -86,7 +95,7 @@ jobs:
             echo "- $slop_icon **aislop** (code slop)"
             echo "- $ctx_icon **ctxharness** (agent-doc drift)"
             echo ""
-            echo "This report is advisory. The blocking gates run in the pre-commit hooks and the aislop CI check."
+            echo "This report is advisory. The blocking gates run in the pre-commit hooks."
             echo ""
             echo "<details><summary>aislop output</summary>"
             echo ""
