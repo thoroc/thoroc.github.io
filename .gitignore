@@ -27,4 +27,9 @@ opencode.json
 !.aislop/config.yml
 !.aislop/rules.yml
 .ctxharness/
-.context/
+.context/*
+!.context/
+!.context/handover/
+!.context/learnings/
+!.context/index.yaml
+!.context/**/*.md
