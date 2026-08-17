@@ -1,8 +1,6 @@
-import * as THREE from 'three'
+export const SKY_RADIUS: number = 6500
 
-const SKY_RADIUS = 6500
-
-const skyVertexShader = `
+export const skyVertexShader: string = `
 varying vec3 vWorldDir;
 
 void main() {
@@ -12,7 +10,7 @@ void main() {
 }
 `
 
-const skyFragmentShader = `
+export const skyFragmentShader: string = `
 varying vec3 vWorldDir;
 
 float skyHash(vec2 p) {
@@ -52,30 +50,3 @@ void main() {
   gl_FragColor = vec4(col, 1.0);
 }
 `
-
-/** 深空渐变穹顶 + 微弱银河感 */
-export function createCosmicSkyMesh() {
-  const geometry = new THREE.SphereGeometry(SKY_RADIUS, 32, 24)
-  const material = new THREE.ShaderMaterial({
-    vertexShader: skyVertexShader,
-    fragmentShader: skyFragmentShader,
-    side: THREE.BackSide,
-    depthWrite: false,
-    fog: false,
-  })
-  const mesh = new THREE.Mesh(geometry, material)
-  mesh.name = 'cosmic-sky'
-  mesh.renderOrder = -100
-  mesh.frustumCulled = false
-  return mesh
-}
-
-/** @returns {number} */
-export function sceneBackgroundColor() {
-  return 0x060a12
-}
-
-/** @returns {number} */
-export function sceneFogColor() {
-  return 0x080e18
-}

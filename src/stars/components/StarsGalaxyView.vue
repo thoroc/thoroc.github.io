@@ -26,7 +26,7 @@ import {
   createCosmicSkyMesh,
   sceneBackgroundColor,
   sceneFogColor,
-} from '../galaxy/cosmic-background.js'
+} from '../galaxy/cosmic-background'
 import { hashStr } from '../galaxy/hash'
 import {
   GALAXY_RUNTIME_LAYOUT_TAG,
