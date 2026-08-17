@@ -1,7 +1,7 @@
 import { GALAXY_MOTION } from './constants'
 import { hashStr, hashUnit } from './hash'
 import { buildLanguageGalaxyHubs } from './morphological-layout'
-import { motionSign, rotateTiltedY, rotateY } from './motion-math.js'
+import { motionSign, rotateTiltedY, rotateY } from './motion-math'
 import { virtualLanguageKey } from './virtual-stars.js'
 
 export function buildHarmonizedRawLanguageHubs(layout, harmonizeMeta) {
