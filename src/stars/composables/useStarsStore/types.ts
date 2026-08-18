@@ -18,12 +18,19 @@ export interface StarsRepoItem {
   topics?: string[]
   language: string | null
   license: string | null
+  licenseUrl?: string
   fork: boolean
   stars: number
   forksCount?: number
   watchersCount?: number
   starredAt: string
+  createdAt?: string
   pushedAt: string
+  homepage?: string
+  // Not produced by scripts/stars/generate — StarCard.vue reads it
+  // defensively, same vestigial-upstream-field class as StarsSiteMeta's
+  // toolRepoOwner/toolRepoName/toolVersion.
+  url?: string
 }
 
 export interface StarsUiConfig {
@@ -37,13 +44,34 @@ export interface StarsUiConfig {
   siteName?: string
 }
 
+export interface StarsStatsBucket {
+  name: string
+  count: number
+}
+
+export interface StarsStatsYearBucket {
+  year: string
+  count: number
+}
+
+export interface StarsStats {
+  totals: {
+    total: number
+    languages: number
+    licenses: number
+  }
+  topLanguages: StarsStatsBucket[]
+  topLicenses: StarsStatsBucket[]
+  starredByYear: StarsStatsYearBucket[]
+}
+
 export interface StarsPayload {
   items?: StarsRepoItem[]
   total?: number
   owner?: string
   repoName?: string
   generatedAt?: string
-  stats?: unknown
+  stats?: StarsStats
   ui?: StarsUiConfig
 }
 
@@ -52,6 +80,12 @@ export interface StarsSiteMeta {
   repoName?: string
   generatedAt?: string
   title?: string
+  // Not produced by this repo's own scripts/stars/generate/writeSiteJson.ts —
+  // optional upstream-tool fields App.vue reads defensively (same class as
+  // __STARS_DEFAULT_SITE_TITLE__/GALAXY_RUNTIME_LAYOUT_TAG elsewhere).
+  toolRepoOwner?: string
+  toolRepoName?: string
+  toolVersion?: string
 }
 
 export interface GalaxyRenderStats {
@@ -121,7 +155,7 @@ export interface StarsStore {
   readonly repoName: string
   readonly generatedAt: string
   readonly pageTitle: string
-  readonly stats: unknown
+  readonly stats: StarsStats | null
   readonly galaxyLayout: GalaxyLayout | null
   readonly galaxyVirtualIndexMap: Map<string, number>
   readonly licenseOptions: CountOption[]

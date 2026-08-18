@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { MOBILE_MEDIA } from '../composables/useMediaQuery'
 import { useMobileSheetInset } from '../composables/useMobileSheetInset'
@@ -11,11 +11,15 @@ import StarsStatsCharts from './StarsStatsCharts.vue'
 
 const STATS_EXPANDED_KEY = 'stars-stats-expanded'
 
-const props = defineProps({
-  isMobile: { type: Boolean, default: false },
+interface StarsStatsBarProps {
+  isMobile?: boolean
+}
+
+const props = withDefaults(defineProps<StarsStatsBarProps>(), {
+  isMobile: false,
 })
 
-function readStatsExpanded() {
+const readStatsExpanded = (): boolean => {
   if (typeof sessionStorage === 'undefined') return false
   try {
     const v = sessionStorage.getItem(STATS_EXPANDED_KEY)
@@ -61,7 +65,7 @@ watch(
   },
 )
 
-function onKeydown(e) {
+const onKeydown = (e: KeyboardEvent): void => {
   if (e.key === 'Escape' && props.isMobile && expanded.value) {
     void closeSheet()
   }
@@ -76,7 +80,7 @@ onUnmounted(() => {
   if (props.isMobile) document.body.style.overflow = ''
 })
 
-async function closeSheet() {
+const closeSheet = async (): Promise<void> => {
   if (!expanded.value) return
   expanded.value = false
   try {
@@ -88,7 +92,7 @@ async function closeSheet() {
   requestStarsRowRemeasure()
 }
 
-async function toggleExpanded() {
+const toggleExpanded = async (): Promise<void> => {
   expanded.value = !expanded.value
   try {
     sessionStorage.setItem(STATS_EXPANDED_KEY, expanded.value ? '1' : '0')

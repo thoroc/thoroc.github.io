@@ -1,23 +1,33 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { CountOption, YearOption } from '../utils/stars-filter'
 import StarsSelect from './StarsSelect.vue'
 
-const props = defineProps({
-  type: { type: String, default: 'all' },
-  sort: { type: String, default: 'recently_starred' },
-  license: { type: String, default: 'all' },
-  starredYear: { type: String, default: 'all' },
-  licenseOptions: { type: Array, default: () => [] },
-  yearOptions: { type: Array, default: () => [] },
+interface StarsFiltersProps {
+  type?: string
+  sort?: string
+  license?: string
+  starredYear?: string
+  licenseOptions?: CountOption[]
+  yearOptions?: YearOption[]
+}
+
+const props = withDefaults(defineProps<StarsFiltersProps>(), {
+  type: 'all',
+  sort: 'recently_starred',
+  license: 'all',
+  starredYear: 'all',
+  licenseOptions: () => [],
+  yearOptions: () => [],
 })
 
-const emit = defineEmits([
-  'update:type',
-  'update:sort',
-  'update:license',
-  'update:starredYear',
-])
+const emit = defineEmits<{
+  'update:type': [value: string]
+  'update:sort': [value: string]
+  'update:license': [value: string]
+  'update:starredYear': [value: string]
+}>()
 
 const { t } = useStarsI18n()
 

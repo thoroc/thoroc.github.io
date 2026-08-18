@@ -109,8 +109,14 @@ describe('computed', () => {
 
   it('stats reads from the payload, defaulting to null', () => {
     expect(stats.value).toBeNull()
-    payload.value = { stats: { total: 5 } }
-    expect(stats.value).toEqual({ total: 5 })
+    const fixtureStats = {
+      totals: { total: 5, languages: 1, licenses: 1 },
+      topLanguages: [],
+      topLicenses: [],
+      starredByYear: [],
+    }
+    payload.value = { stats: fixtureStats }
+    expect(stats.value).toEqual(fixtureStats)
   })
 
   it('galaxyLayout mirrors the galaxyLayoutPayload ref', () => {

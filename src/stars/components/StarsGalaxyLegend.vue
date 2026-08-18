@@ -1,22 +1,35 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { LegendEntry, StarTierBucket } from '../galaxy/star-visuals'
 import { langColor } from '../utils/lang-colors'
 
-const props = defineProps({
-  items: { type: Array, default: () => [] },
-  starTiers: { type: Array, default: () => [] },
-  activeFilter: {
-    type: Object,
-    default: () => ({ langs: [], tiers: [] }),
-  },
+interface GalaxyLegendActiveFilter {
+  langs: string[]
+  tiers: string[]
+}
+
+interface StarsGalaxyLegendProps {
+  items?: LegendEntry[]
+  starTiers?: StarTierBucket[]
+  activeFilter?: GalaxyLegendActiveFilter
+}
+
+const props = withDefaults(defineProps<StarsGalaxyLegendProps>(), {
+  items: () => [],
+  starTiers: () => [],
+  activeFilter: () => ({ langs: [], tiers: [] }),
 })
 
-const emit = defineEmits(['select-lang', 'select-tier', 'clear-filter'])
+const emit = defineEmits<{
+  'select-lang': [name: string]
+  'select-tier': [key: string]
+  'clear-filter': []
+}>()
 
 const { t } = useStarsI18n()
 
-const tierColors = {
+const tierColors: Record<string, string> = {
   '50k+': '#ffd700',
   '10k+': '#ff9f43',
   '1k+': '#54a0ff',
@@ -24,16 +37,14 @@ const tierColors = {
 }
 
 const hasSelection = computed(() => {
-  const f = props.activeFilter || {}
+  const f = props.activeFilter || { langs: [], tiers: [] }
   return (f.langs?.length || 0) > 0 || (f.tiers?.length || 0) > 0
 })
 
-function tierColor(key) {
-  return tierColors[key] || '#8b949e'
-}
+const tierColor = (key: string): string => tierColors[key] || '#8b949e'
 
-function tierLabel(key) {
-  const map = {
+const tierLabel = (key: string): string => {
+  const map: Record<string, string> = {
     '50k+': t.value('galaxyTier50k'),
     '10k+': t.value('galaxyTier10k'),
     '1k+': t.value('galaxyTier1k'),
@@ -42,23 +53,20 @@ function tierLabel(key) {
   return map[key] || key
 }
 
-function langLabel(name) {
-  return name === '其他' ? t.value('otherLang') : name
-}
+const langLabel = (name: string): string =>
+  name === '其他' ? t.value('otherLang') : name
 
-function isTierActive(key) {
-  return props.activeFilter?.tiers?.includes(key) ?? false
-}
+const isTierActive = (key: string): boolean =>
+  props.activeFilter?.tiers?.includes(key) ?? false
 
-function isLangActive(name) {
-  return props.activeFilter?.langs?.includes(name) ?? false
-}
+const isLangActive = (name: string): boolean =>
+  props.activeFilter?.langs?.includes(name) ?? false
 
-function onTierClick(key) {
+const onTierClick = (key: string): void => {
   emit('select-tier', key)
 }
 
-function onLangClick(name) {
+const onLangClick = (name: string): void => {
   emit('select-lang', name)
 }
 </script>

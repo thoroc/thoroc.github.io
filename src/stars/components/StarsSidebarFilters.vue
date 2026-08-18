@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useStarsStore } from '../composables/useStarsStore'
 import StarsFilters from './StarsFilters.vue'
 

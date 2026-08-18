@@ -1,15 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { useStarsI18n } from '../composables/useStarsI18n'
 import { useStarsStore } from '../composables/useStarsStore'
 
 const store = useStarsStore()
 const { t } = useStarsI18n()
 
-function onInput(e) {
-  store.qInput = e.target.value
+const onInput = (e: Event): void => {
+  store.qInput = (e.target as HTMLInputElement).value
 }
 
-function onKeydown(e) {
+const onKeydown = (e: KeyboardEvent): void => {
   if (e.key === 'Enter') {
     e.preventDefault()
     store.onSearch()

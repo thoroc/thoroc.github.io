@@ -1,25 +1,34 @@
-<script setup>
+<script setup lang="ts">
 import { useStarsI18n } from '../composables/useStarsI18n'
 
-defineProps({
-  autoRotate: { type: Boolean, default: true },
-  showLegend: { type: Boolean, default: false },
-  showFocusCenter: { type: Boolean, default: true },
-  showFocusOwner: { type: Boolean, default: false },
-  showFullscreen: { type: Boolean, default: true },
-  isFullscreen: { type: Boolean, default: false },
+interface StarsGalaxyControlsProps {
+  autoRotate?: boolean
+  showLegend?: boolean
+  showFocusCenter?: boolean
+  showFocusOwner?: boolean
+  showFullscreen?: boolean
+  isFullscreen?: boolean
+}
+
+withDefaults(defineProps<StarsGalaxyControlsProps>(), {
+  autoRotate: true,
+  showLegend: false,
+  showFocusCenter: true,
+  showFocusOwner: false,
+  showFullscreen: true,
+  isFullscreen: false,
 })
 
-const emit = defineEmits([
-  'zoom-in',
-  'zoom-out',
-  'reset',
-  'toggle-auto-rotate',
-  'toggle-legend',
-  'focus-center',
-  'focus-owner',
-  'toggle-fullscreen',
-])
+const emit = defineEmits<{
+  'zoom-in': []
+  'zoom-out': []
+  reset: []
+  'toggle-auto-rotate': []
+  'toggle-legend': []
+  'focus-center': []
+  'focus-owner': []
+  'toggle-fullscreen': []
+}>()
 
 const { t } = useStarsI18n()
 </script>

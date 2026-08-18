@@ -1,7 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { subscribeLayoutResize } from '../composables/useLayoutResize'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { StarsRepoItem } from '../composables/useStarsStore'
 import {
   applyTopicSearch,
   requestStarsRowRemeasure,
@@ -19,34 +20,42 @@ import {
 import { githubRepoUrl } from '../utils/github-repo'
 import { langColor, langSlug } from '../utils/lang-colors'
 
-const props = defineProps({
-  item: { type: Object, required: true },
-  itemIndex: { type: Number, required: true },
-  showLanguage: { type: Boolean, default: true },
-  showStarsCount: { type: Boolean, default: true },
-  showLicense: { type: Boolean, default: true },
+interface StarCardProps {
+  item: StarsRepoItem
+  itemIndex: number
+  showLanguage?: boolean
+  showStarsCount?: boolean
+  showLicense?: boolean
   /** 星图详情面板：默认收起 meta/标签，由面板头按钮展开 */
-  detailMode: { type: Boolean, default: false },
-  detailExpanded: { type: Boolean, default: true },
+  detailMode?: boolean
+  detailExpanded?: boolean
+}
+
+const props = withDefaults(defineProps<StarCardProps>(), {
+  showLanguage: true,
+  showStarsCount: true,
+  showLicense: true,
+  detailMode: false,
+  detailExpanded: true,
 })
 
 const store = useStarsStore()
 const { t, locale } = useStarsI18n()
-const descExpanded = computed(() => store.isDescExpanded(props.item.id))
+const descExpanded = computed(() => store.isDescExpanded(props.item.id ?? ''))
 
 const rawDescription = computed(() => props.item.description || '')
 const hasDescription = computed(() => !!rawDescription.value.trim())
 const descText = computed(() =>
   hasDescription.value ? rawDescription.value : t.value('descNone'),
 )
-const cardRef = ref(null)
-const descWrapRef = ref(null)
-const descRef = ref(null)
+const cardRef = ref<HTMLElement | null>(null)
+const descWrapRef = ref<HTMLElement | null>(null)
+const descRef = ref<HTMLElement | null>(null)
 const descOverflows = ref(false)
-let descResizeObserver
-let unsubscribeLayoutResize
+let descResizeObserver: ResizeObserver | undefined
+let unsubscribeLayoutResize: (() => void) | undefined
 let measureRaf = 0
-let resizeDebounceTimer
+let resizeDebounceTimer: ReturnType<typeof setTimeout> | undefined
 
 const owner = computed(() => props.item.fullName.split('/')[0] || '?')
 const ownerProfileUrl = computed(() => githubOwnerProfileUrl(owner.value))
@@ -70,9 +79,9 @@ const avatarSrc = computed(() => githubOwnerAvatarUrl(owner.value, 80))
 const showAvatarImg = computed(
   () => avatarInView.value && !!avatarSrc.value && !avatarFailed.value,
 )
-let avatarObserver
+let avatarObserver: IntersectionObserver | undefined
 
-function scheduleDescOverflowMeasure() {
+const scheduleDescOverflowMeasure = (): void => {
   if (measureRaf) cancelAnimationFrame(measureRaf)
   measureRaf = requestAnimationFrame(() => {
     measureRaf = requestAnimationFrame(() => {
@@ -82,12 +91,14 @@ function scheduleDescOverflowMeasure() {
   })
 }
 
-async function applyDescOverflowState(nextOverflows) {
+const applyDescOverflowState = async (
+  nextOverflows: boolean,
+): Promise<void> => {
   const prevOverflows = descOverflows.value
   descOverflows.value = nextOverflows
 
   if (!nextOverflows) {
-    store.collapseDescExpanded(props.item.id)
+    store.collapseDescExpanded(props.item.id ?? '')
   }
 
   if (prevOverflows !== nextOverflows) {
@@ -97,7 +108,7 @@ async function applyDescOverflowState(nextOverflows) {
 }
 
 /** 离屏克隆测量，不剥离页面上的 is-collapsed */
-async function runDescOverflowMeasure() {
+const runDescOverflowMeasure = async (): Promise<void> => {
   await nextTick()
   const el = descRef.value
   if (!el || !hasDescription.value) {
@@ -109,7 +120,7 @@ async function runDescOverflowMeasure() {
 }
 
 /** 渲染后复核，去掉「看得见 3 行却还有展开」的误判 */
-async function auditDescOverflowAfterRender() {
+const auditDescOverflowAfterRender = async (): Promise<void> => {
   await nextTick()
   const el = descRef.value
   if (!el || !descOverflows.value || descExpanded.value) return
@@ -119,7 +130,7 @@ async function auditDescOverflowAfterRender() {
   await applyDescOverflowState(false)
 }
 
-function connectDescResizeObservers() {
+const connectDescResizeObservers = (): void => {
   descResizeObserver?.disconnect()
   if (typeof ResizeObserver === 'undefined') return
 
@@ -185,7 +196,7 @@ onUnmounted(() => {
   unsubscribeLayoutResize = undefined
 })
 
-function onAvatarError() {
+const onAvatarError = (): void => {
   avatarFailed.value = true
 }
 const hasHomepage = computed(() => !!props.item.homepage)
@@ -206,8 +217,8 @@ const showMeta = computed(
     createdLabel.value ||
     pushedLabel.value ||
     hasHomepage.value ||
-    props.item.forksCount > 0 ||
-    props.item.watchersCount > 0,
+    (props.item.forksCount ?? 0) > 0 ||
+    (props.item.watchersCount ?? 0) > 0,
 )
 const topicList = computed(() =>
   (Array.isArray(props.item.topics) ? props.item.topics : []).slice(0, 8),
@@ -220,19 +231,19 @@ const descCollapsed = computed(() => {
 })
 const showDescToggle = computed(() => !props.detailMode && descOverflows.value)
 
-async function toggleDesc() {
-  store.toggleDescExpanded(props.item.id)
+const toggleDesc = async (): Promise<void> => {
+  store.toggleDescExpanded(props.item.id ?? '')
   await nextTick()
   auditDescOverflowAfterRender()
   requestStarsRowRemeasure(props.itemIndex)
 }
 
-function onTopicClick(topic) {
+const onTopicClick = (topic: string): void => {
   applyTopicSearch(topic)
 }
 
 /** Shields 风格数值：25k / 1.2M */
-function formatShieldCount(n) {
+const formatShieldCount = (n: number): string => {
   const num = Number(n) || 0
   if (num >= 1_000_000) {
     const v = num / 1_000_000

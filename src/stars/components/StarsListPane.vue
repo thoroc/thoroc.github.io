@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
@@ -13,7 +13,7 @@ import StarCard from './StarCard.vue'
 const store = useStarsStore()
 const { t } = useStarsI18n()
 
-const listViewportRef = ref(null)
+const listViewportRef = ref<HTMLElement | null>(null)
 
 const virtualizer = useVirtualizer(
   computed(() => ({
@@ -27,19 +27,19 @@ const virtualizer = useVirtualizer(
 
 const virtualRows = computed(() => virtualizer.value.getVirtualItems())
 
-function measureRow(el) {
+const measureRow = (el: Element | null): void => {
   if (el) {
     virtualizer.value.measureElement(el)
   }
 }
 
-function scrollListToTop() {
+const scrollListToTop = (): void => {
   listViewportRef.value?.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 onMounted(() => {
   registerStarsListScroller(scrollListToTop)
-  registerStarsRowRemeasure((index) =>
+  registerStarsRowRemeasure((index?: number | null) =>
     remeasureStarsList(virtualizer, listViewportRef.value, index),
   )
 })
