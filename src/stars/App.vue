@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { MOBILE_MEDIA, useMediaQuery } from './composables/useMediaQuery'
 import { useStarsI18n } from './composables/useStarsI18n'
@@ -12,6 +12,14 @@ import {
 import { initColorTheme } from './theme/color-theme'
 import './styles/app.css'
 
+declare global {
+  // Injected via a Vite `define` in a downstream build config, if
+  // configured; not currently wired up in this repo's astro.config.mjs
+  // (same vestigial class as useStarsStore's __STARS_DEFAULT_SITE_TITLE__).
+  // eslint-disable-next-line no-var
+  const __STARS_TOOL_VERSION__: string | undefined
+}
+
 initColorTheme()
 
 import StarsExplorer from './components/StarsExplorer.vue'
@@ -24,15 +32,13 @@ const isMobile = useMediaQuery(MOBILE_MEDIA)
 const filtersSheetOpen = ref(false)
 const sidebarCollapsed = ref(false)
 
-function readSidebarCollapsed() {
-  return readSidebarCollapsedPref()
-}
+const readSidebarCollapsed = (): boolean => readSidebarCollapsedPref()
 
-function persistSidebarCollapsed() {
+const persistSidebarCollapsed = (): void => {
   writeSidebarCollapsedPref(sidebarCollapsed.value)
 }
 
-function toggleSidebarCollapsed() {
+const toggleSidebarCollapsed = (): void => {
   sidebarCollapsed.value = !sidebarCollapsed.value
   persistSidebarCollapsed()
 }
@@ -91,11 +97,11 @@ const homeHref = computed(() => {
   return `${basePath.value}${qs ? `?${qs}` : ''}`
 })
 
-function switchUiLang(lang) {
+const switchUiLang = (lang: string): void => {
   store.setUiLocale(lang)
 }
 
-function goHome() {
+const goHome = (): void => {
   store.clearAllFilters()
 }
 
