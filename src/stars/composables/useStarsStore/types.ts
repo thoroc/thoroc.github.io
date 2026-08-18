@@ -52,6 +52,12 @@ export interface StarsSiteMeta {
   repoName?: string
   generatedAt?: string
   title?: string
+  // Not produced by this repo's own scripts/stars/generate/writeSiteJson.ts —
+  // optional upstream-tool fields App.vue reads defensively (same class as
+  // __STARS_DEFAULT_SITE_TITLE__/GALAXY_RUNTIME_LAYOUT_TAG elsewhere).
+  toolRepoOwner?: string
+  toolRepoName?: string
+  toolVersion?: string
 }
 
 export interface GalaxyRenderStats {
