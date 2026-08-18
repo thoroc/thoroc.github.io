@@ -13,7 +13,21 @@ related:
 Originally written when no browser tool was available; `agent-browser` (installed via mise, see
 `chore(tooling)` commit) was used afterward to independently cross-check most items automatically. Combined
 results below (`[x]` = confirmed by manual pass, automated pass, or both; see the Automated verification
-notes for specifics). Re-run both passes after the composable split and diff against this baseline.
+notes for specifics).
+
+## Post-split re-verification (commit dfc9fd4)
+
+Re-ran the automated pass against the 5-composable split. Every item confirmed above re-confirmed
+identically post-split: initial render, zoom in/out, reset+focus-center+auto-select+detail-panel (pixel-
+identical camera framing and selected star to the pre-split screenshot), close-detail, drag-to-orbit
+(visible rotation), wheel-zoom, sidebar search/filter rebuild (pixel-identical 14/3,736 "vue" result and
+legend breakdown), legend toggle, fullscreen expand, and the galaxy→(list attempt)→galaxy round trip
+(state — filter, legend — persisted correctly). Zero console errors or warnings across the entire pass.
+One pre-existing automation-timing quirk reproduced identically in both passes (a `find text "List" click`
+right after a fullscreen-restore animation gets blocked by the header's click-covering check) — not a
+regression, same failure mode both before and after.
+Hover-tooltip precision remains untested by either automated pass (same inconclusive status as baseline)
+and by manual re-check; still flagged as worth a careful look, not assumed working or broken.
 
 ## Setup
 
