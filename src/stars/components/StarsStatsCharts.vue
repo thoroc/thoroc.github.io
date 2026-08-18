@@ -1,6 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { StarsStatsYearBucket } from '../composables/useStarsStore'
 import {
   patchLanguageInQuery,
   patchLicenseInQuery,
@@ -75,20 +76,22 @@ const maxYear = computed(() =>
   Math.max(1, ...(stats.value?.starredByYear || []).map((x) => x.count)),
 )
 
-function barWidth(count, max) {
-  return `${Math.round((count / max) * 100)}%`
-}
+const barWidth = (count: number, max: number): string =>
+  `${Math.round((count / max) * 100)}%`
 
-function overlayShare(filtered, total) {
+const overlayShare = (filtered: number, total: number): string => {
   if (!total || filtered <= 0) return '0%'
   return `${Math.min(100, Math.round((filtered / total) * 100))}%`
 }
 
-function overlayCount(map, key) {
-  return map?.get(key) ?? 0
-}
+const overlayCount = (map: Map<string, number> | null, key: string): number =>
+  map?.get(key) ?? 0
 
-function countLabel(map, key, total) {
+const countLabel = (
+  map: Map<string, number> | null,
+  key: string,
+  total: number,
+): string => {
   const f = overlayCount(map, key)
   if (!showOverlay.value || f === total) return String(total)
   return t.value('statCountFiltered', {
@@ -97,21 +100,21 @@ function countLabel(map, key, total) {
   })
 }
 
-function yearTitle(row) {
+const yearTitle = (row: StarsStatsYearBucket): string => {
   const f = overlayCount(yearOverlay.value, row.year)
   if (!showOverlay.value) return `${row.year}: ${row.count.toLocaleString()}`
   return `${row.year}: ${f.toLocaleString()} / ${row.count.toLocaleString()}`
 }
 
-function onLangClick(name) {
+const onLangClick = (name: string): void => {
   patchLanguageInQuery(store.language === name ? 'all' : name)
 }
 
-function onLicClick(name) {
+const onLicClick = (name: string): void => {
   patchLicenseInQuery(store.license === name ? 'all' : name)
 }
 
-function onYearClick(year) {
+const onYearClick = (year: string): void => {
   patchStarredYearInQuery(store.starredYear === year ? 'all' : year)
 }
 </script>
