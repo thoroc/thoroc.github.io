@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import * as THREE from 'three'
 import { MOUSE } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
@@ -12,7 +12,9 @@ import {
   watch,
 } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { StarsRepoItem } from '../composables/useStarsStore'
 import { useStarsStore } from '../composables/useStarsStore'
+import type { CameraTransition } from '../galaxy/camera-transition'
 import { createCameraTransition } from '../galaxy/camera-transition'
 import { nebulaLangTint, repoLangRgb } from '../galaxy/colors'
 import {
@@ -32,6 +34,7 @@ import {
   GALAXY_RUNTIME_LAYOUT_TAG,
   hasValidGalaxyLayout,
 } from '../galaxy/layout-payload'
+import type { MotionFields, Vec3 } from '../galaxy/motion'
 import {
   applyGalaxyHubMotionJs,
   GALAXY_MOTION_GLSL,
@@ -42,6 +45,12 @@ import {
   disposeNebulaSharedGeometry,
 } from '../galaxy/nebula-volume'
 import { pickStarIndexScreen } from '../galaxy/pick'
+import type {
+  GalaxyBuffers,
+  GalaxyGasBuffersResult,
+  GalaxyGasDustBuffersResult,
+  RepoLike,
+} from '../galaxy/positions'
 import {
   buildDustBuffers,
   buildGalaxyBuffers,
@@ -49,6 +58,9 @@ import {
   repoLegendLanguageKey,
   repoStarTierKey,
 } from '../galaxy/positions'
+import type { LegendEntry, StarTierBucket } from '../galaxy/star-visuals'
+import type { VirtualStar } from '../galaxy/virtual-stars'
+import type { CameraView, OrbitControls } from '../galaxy/zoom-controls'
 import {
   applyTrackballRotate,
   dollyCameraUniformRange,
@@ -61,127 +73,122 @@ import StarsGalaxyControls from './StarsGalaxyControls.vue'
 import StarsGalaxyDetail from './StarsGalaxyDetail.vue'
 import StarsGalaxyLegend from './StarsGalaxyLegend.vue'
 
-const props = defineProps({
-  items: { type: Array, required: true },
-  focusId: { type: String, default: '' },
-  isMobile: { type: Boolean, default: false },
+interface StarsGalaxyViewProps {
+  items: StarsRepoItem[]
+  focusId?: string
+  isMobile?: boolean
+}
+
+const props = withDefaults(defineProps<StarsGalaxyViewProps>(), {
+  focusId: '',
+  isMobile: false,
 })
 
-const emit = defineEmits(['select'])
+const emit = defineEmits<{
+  select: [item: StarsRepoItem]
+}>()
 
 const { t } = useStarsI18n()
 const store = useStarsStore()
-const containerRef = ref(null)
-const galaxyRootRef = ref(null)
+const containerRef = ref<HTMLDivElement | null>(null)
+const galaxyRootRef = ref<HTMLDivElement | null>(null)
 const loadingScene = ref(true)
 const layoutComputing = ref(false)
-const legendItems = ref([])
-const starTierItems = ref([])
+const legendItems = ref<LegendEntry[]>([])
+const starTierItems = ref<StarTierBucket[]>([])
 const autoRotate = ref(true)
 const showLegend = ref(false)
 const showFocusOwnerRepo = ref(false)
-/** @typedef {{ langs: string[], tiers: string[] }} GalaxyLegendFilter */
 
-/** @returns {GalaxyLegendFilter} */
-function emptyLegendFilter() {
+interface GalaxyLegendFilter {
+  langs: string[]
+  tiers: string[]
+}
+
+function emptyLegendFilter(): GalaxyLegendFilter {
   return { langs: [], tiers: [] }
 }
 
-function isLegendFilterActive(filter) {
+function isLegendFilterActive(filter: GalaxyLegendFilter): boolean {
   return filter.langs.length > 0 || filter.tiers.length > 0
 }
-/** @type {import('vue').Ref<GalaxyLegendFilter>} */
-const legendFilter = ref(emptyLegendFilter())
+const legendFilter = ref<GalaxyLegendFilter>(emptyLegendFilter())
 
-/** @type {Set<string>} */
-let legendLangSet = new Set()
-/** @type {number} */
+let legendLangSet: Set<string> = new Set()
 let anchorStarIndex = -1
-/** @type {number} */
 let ownerStarIndex = -1
-/** @type {THREE.Vector3 | null} */
-let starFocusScratch = null
+let starFocusScratch: THREE.Vector3 | null = null
 
-const sceneRef = shallowRef(null)
-/** @type {import('vue').ShallowRef<THREE.WebGLRenderer | null>} */
-const rendererRef = shallowRef(null)
+const sceneRef = shallowRef<THREE.Scene | null>(null)
+const rendererRef = shallowRef<THREE.WebGLRenderer | null>(null)
 
-/** @type {THREE.PerspectiveCamera | null} */
-let camera = null
-/** @type {TrackballControls | null} */
-let controls = null
-/** @type {THREE.Vector3} */
-let autoRotateScratch = null
-/** @type {THREE.Group | null} */
-let viewPivot = null
-/** @type {THREE.Group | null} */
-let galaxyGroup = null
-/** @type {THREE.Points | null} */
-let points = null
-/** @type {THREE.Points | null} */
-let dust = null
-/** @type {THREE.ShaderMaterial | null} */
-let pointMaterial = null
-/** @type {THREE.ShaderMaterial | null} */
-let gasMaterial = null
-/** @type {THREE.ShaderMaterial | null} */
-let gasDustMaterial = null
-/** @type {number | null} */
-let animationId = null
-/** @type {ResizeObserver | null} */
-let resizeObserver = null
-/** @type {Map<string, number>} */
-let idToIndex = new Map()
-/** @type {Map<string, number[]>} */
-let repoIdToIndices = new Map()
-/** @type {import('../galaxy/virtual-stars').VirtualStar[]} */
-let currentVirtualStars = []
-/** @type {Float32Array | null} */
-let interactionData = null
-/** @type {Array<object>} */
-let currentItems = []
-/** @type {number | null} */
-let hoveredIndex = null
-/** @type {number | null} */
-let selectedIndex = null
-/** @type {{ position: THREE.Vector3, target: THREE.Vector3, pivotQuaternion: THREE.Quaternion } | null} */
-let defaultView = null
-/** @type {boolean} */
+let camera: THREE.PerspectiveCamera | null = null
+let controls: TrackballControls | null = null
+let autoRotateScratch: THREE.Vector3 | null = null
+let viewPivot: THREE.Group | null = null
+let galaxyGroup: THREE.Group | null = null
+let points: THREE.Points | null = null
+let dust: THREE.Points | null = null
+let pointMaterial: THREE.ShaderMaterial | null = null
+let gasMaterial: THREE.ShaderMaterial | null = null
+let gasDustMaterial: THREE.ShaderMaterial | null = null
+let animationId: number | null = null
+let resizeObserver: ResizeObserver | null = null
+let idToIndex: Map<string, number> = new Map()
+let repoIdToIndices: Map<string, number[]> = new Map()
+let currentVirtualStars: VirtualStar[] = []
+let interactionData: Float32Array | null = null
+let currentItems: RepoLike[] = []
+let hoveredIndex: number | null = null
+let selectedIndex: number | null = null
+let defaultView: {
+  position: THREE.Vector3
+  target: THREE.Vector3
+  pivotQuaternion: THREE.Quaternion
+} | null = null
 let needsRender = true
-/** @type {number} */
 let hoverRaf = 0
-/** @type {{ x: number, y: number } | null} */
-let pendingHover = null
-/** @type {{ x: number, y: number, pointerId: number, button: number } | null} */
-let pointerDown = null
-/** @type {boolean} */
+let pendingHover: { x: number; y: number } | null = null
+let pointerDown: {
+  x: number
+  y: number
+  pointerId: number
+  button: number
+} | null = null
 let orbitGestureActive = false
 /** 主键按下后是否超过拖拽阈值（区分点击选星与 orbit） */
 let pointerDragMoved = false
-/** @type {Map<number, { x: number, y: number }>} */
-let activePointers = new Map()
+let activePointers: Map<number, { x: number; y: number }> = new Map()
 /** 双指 pinch 缩放中 */
 let pinchActive = false
-/** @type {number | null} */
-let lastPinchDistance = null
-/** @type {number | null} */
-let middleDragLastY = null
+let lastPinchDistance: number | null = null
+let middleDragLastY: number | null = null
 /** 左键拖拽环视：上一帧指针位置 */
-let orbitDragLastX = null
-/** @type {number | null} */
-let orbitDragLastY = null
+let orbitDragLastX: number | null = null
+let orbitDragLastY: number | null = null
 /** 滚轮 delta 累积，对齐工具栏按钮离散步进 */
 let wheelDeltaAccum = 0
-/** @type {number | null} */
-let pointerPickIdx = null
-/** @type {{ motionSec: number, camPos: THREE.Vector3, target: THREE.Vector3 } | null} */
-let pointerPickView = null
+let pointerPickIdx: number | null = null
+let pointerPickView: {
+  motionSec: number
+  camPos: THREE.Vector3
+  target: THREE.Vector3
+} | null = null
 /** 按下期间冻结星系运动，避免自转时星点漂移导致点不中 */
 let galaxyMotionFrozen = false
-/** @type {ReturnType<typeof createCameraTransition> | null} */
-let cameraTransition = null
-/** @type {number} */
+let cameraTransition: CameraTransition | null = null
 let lastRenderMs = 0
+
+/**
+ * zoom-controls' pure functions type their `controls` param against three's
+ * OrbitControls, but this view drives a TrackballControls instance — both
+ * expose the `.target`/camera-transform surface those functions actually
+ * read (OrbitControls-only members like autoRotate/damping are never
+ * touched). Cast at this boundary rather than widening zoom-controls'
+ * own (Phase 2) types.
+ */
+const asOrbitControls = (c: TrackballControls): OrbitControls =>
+  c as unknown as OrbitControls
 
 const DRAG_THRESHOLD_SQ = 100
 const TWINKLE_FRAME_MS = 33
@@ -198,34 +205,48 @@ const hoverLabel = computed(() => {
   return `${item.fullName} · ★ ${stars.toLocaleString()}${topic}`
 })
 
-/** @type {number} */
 let starCount = 0
-/** @type {Float32Array | null} */
-let restPositions = null
-/** @type {Float32Array | null} */
-let starSizes = null
-/** @type {Float32Array | null} */
-let starBrights = null
-/** @type {import('../galaxy/motion').ReturnType<typeof import('../galaxy/motion').buildMotionFields> | null} */
-let motionFields = null
-/** @type {number} */
+let restPositions: Float32Array | null = null
+let starSizes: Float32Array | null = null
+let starBrights: Float32Array | null = null
+let motionFields: MotionFields | null = null
 let motionTimeSec = 0
-/** @type {number} */
 let lastFrameMs = 0
-/** @type {Array<{ pivot: THREE.Group, geometry: THREE.BufferGeometry, hub: number[], omega: number[], omega2: number[] }>} */
-let gasLangLayers = []
-/** @type {Array<{ pivot: THREE.Group, geometry: THREE.BufferGeometry, hub: number[], omega: number[], omega2: number[] }>} */
-let gasDustLangLayers = []
-/** @type {THREE.Points | null} */
-let fieldGasMesh = null
-/** @type {THREE.Mesh | null} */
-let cosmicSky = null
-/** @type {THREE.Points | null} */
-let fieldGasDustMesh = null
-/** @type {THREE.Mesh | null} */
-let fieldVolumeMesh = null
-/** @type {{ value: number }} */
-const nebulaVolumeTimeUniform = { value: 0 }
+
+interface GasLangLayer {
+  pivot: THREE.Group
+  geometry: THREE.BufferGeometry
+  hub: Vec3
+  omega: [number, number, number, number]
+  omega2: [number, number, number, number]
+}
+
+interface GasLangMotion {
+  hub: Vec3
+  omega: [number, number, number, number]
+  omega2: [number, number, number, number]
+}
+
+/**
+ * finalizeGalaxyMotion always attaches `langMotions` onto the gas/gas-dust
+ * buffers via fillGasMotionFields (see motion/fillGasMotionFields.ts), but
+ * GalaxyGasBuffersResult/GalaxyGasDustBuffersResult (Phase 2) don't declare
+ * the field — this view is the first strictly-typed consumer to read it.
+ * Extending locally here rather than widening those upstream interfaces.
+ */
+type GasBuffersWithMotion = GalaxyGasBuffersResult & {
+  langMotions?: GasLangMotion[]
+}
+type GasDustBuffersWithMotion = GalaxyGasDustBuffersResult & {
+  langMotions?: GasLangMotion[]
+}
+let gasLangLayers: GasLangLayer[] = []
+let gasDustLangLayers: GasLangLayer[] = []
+let fieldGasMesh: THREE.Points | null = null
+let cosmicSky: THREE.Mesh | null = null
+let fieldGasDustMesh: THREE.Points | null = null
+let fieldVolumeMesh: THREE.Mesh | null = null
+const nebulaVolumeTimeUniform: { value: number } = { value: 0 }
 /** 交互中暂停自转，避免点击时星点漂移 */
 let autoRotateSuspended = false
 /** 页面隐藏时暂停渲染循环；恢复后仅当 autoRotate 仍为 true 时才继续自转 */
@@ -504,7 +525,7 @@ function markRender() {
   needsRender = true
 }
 
-function itemMatchesLegendFilter(item) {
+function itemMatchesLegendFilter(item: RepoLike): boolean {
   const filter = legendFilter.value
   if (!isLegendFilterActive(filter)) return true
   if (
@@ -522,20 +543,23 @@ function itemMatchesLegendFilter(item) {
   return true
 }
 
-function syncLegendHighlight() {
+function syncLegendHighlight(): void {
   if (!points || starCount <= 0) return
   const attr = points.geometry.getAttribute('aInteraction')
   if (!attr) return
   const arr = attr.array
   const active = isLegendFilterActive(legendFilter.value)
   for (let i = 0; i < starCount; i += 1) {
-    arr[i * 3] = !active || itemMatchesLegendFilter(currentItems[i]) ? 1 : 0
+    // currentItems is populated 1:1 with starCount by applyBuffers.
+    const item = currentItems[i]
+    arr[i * 3] =
+      !active || (item ? itemMatchesLegendFilter(item) : true) ? 1 : 0
   }
   attr.needsUpdate = true
   markRender()
 }
 
-function toggleLegendLang(name) {
+function toggleLegendLang(name: string): void {
   const langs = legendFilter.value.langs.slice()
   const idx = langs.indexOf(name)
   if (idx >= 0) langs.splice(idx, 1)
@@ -544,7 +568,7 @@ function toggleLegendLang(name) {
   syncLegendHighlight()
 }
 
-function toggleLegendTier(key) {
+function toggleLegendTier(key: string): void {
   const tiers = legendFilter.value.tiers.slice()
   const idx = tiers.indexOf(key)
   if (idx >= 0) tiers.splice(idx, 1)
@@ -553,35 +577,35 @@ function toggleLegendTier(key) {
   syncLegendHighlight()
 }
 
-function clearLegendFilter() {
+function clearLegendFilter(): void {
   legendFilter.value = emptyLegendFilter()
   syncLegendHighlight()
 }
 
-function onLegendSelectLang(name) {
+function onLegendSelectLang(name: string): void {
   toggleLegendLang(name)
 }
 
-function onLegendSelectTier(key) {
+function onLegendSelectTier(key: string): void {
   toggleLegendTier(key)
 }
 
-function getMotionTimeSec() {
+function getMotionTimeSec(): number {
   return motionTimeSec
 }
 
-function suspendGalaxyMotion() {
+function suspendGalaxyMotion(): void {
   galaxyMotionFrozen = true
   autoRotateSuspended = true
 }
 
-function syncAutoRotateAfterInteraction() {
+function syncAutoRotateAfterInteraction(): void {
   if (pointerDown || orbitGestureActive) return
   galaxyMotionFrozen = false
   autoRotateSuspended = false
 }
 
-function applyCameraAutoRotate(dtSec) {
+function applyCameraAutoRotate(dtSec: number): void {
   if (
     !camera ||
     !controls ||
@@ -607,12 +631,16 @@ function applyCameraAutoRotate(dtSec) {
   markRender()
 }
 
-function clearPointerPick() {
+function clearPointerPick(): void {
   pointerPickIdx = null
   pointerPickView = null
 }
 
-function snapshotPickView() {
+function snapshotPickView(): {
+  motionSec: number
+  camPos: THREE.Vector3
+  target: THREE.Vector3
+} | null {
   if (!camera || !controls) return null
   return {
     motionSec: motionTimeSec,
@@ -621,7 +649,15 @@ function snapshotPickView() {
   }
 }
 
-function pickIndexWithView(clientX, clientY, view) {
+function pickIndexWithView(
+  clientX: number,
+  clientY: number,
+  view: {
+    motionSec: number
+    camPos: THREE.Vector3
+    target: THREE.Vector3
+  } | null,
+): number | null {
   if (!view || !camera || !controls)
     return pickIndex(clientX, clientY, view?.motionSec)
   const savedPos = camera.position.clone()
@@ -639,11 +675,11 @@ function pickIndexWithView(clientX, clientY, view) {
   return idx
 }
 
-function resolveStarLocalPosition(index) {
+function resolveStarLocalPosition(index: number): Vec3 | null {
   if (!restPositions || index < 0 || index >= starCount) return null
-  const rx = restPositions[index * 3]
-  const ry = restPositions[index * 3 + 1]
-  const rz = restPositions[index * 3 + 2]
+  const rx = restPositions[index * 3] ?? 0
+  const ry = restPositions[index * 3 + 1] ?? 0
+  const rz = restPositions[index * 3 + 2] ?? 0
   if (motionFields) {
     return motionWorldPosition(
       rx,
@@ -657,7 +693,7 @@ function resolveStarLocalPosition(index) {
   return [rx, ry, rz]
 }
 
-function starWorldPosition(index) {
+function starWorldPosition(index: number): THREE.Vector3 | null {
   const local = resolveStarLocalPosition(index)
   if (!local || !points) return null
   if (!starFocusScratch) starFocusScratch = new THREE.Vector3()
@@ -668,18 +704,21 @@ function starWorldPosition(index) {
   return points.localToWorld(starFocusScratch.clone())
 }
 
-function cancelCameraTransition() {
+function cancelCameraTransition(): void {
   if (cameraTransition?.active) {
     cameraTransition.cancel()
     autoRotateSuspended = false
   }
 }
 
-/** @param {{ position: THREE.Vector3, target: THREE.Vector3 }} view */
-function animateCameraTo(view, durationMs, onComplete) {
+function animateCameraTo(
+  view: CameraView,
+  durationMs: number,
+  onComplete?: () => void,
+): void {
   if (!controls || !camera || !cameraTransition || !view) return
   autoRotateSuspended = true
-  cameraTransition.start(controls, camera, view, {
+  cameraTransition.start(asOrbitControls(controls), camera, view, {
     durationMs,
     onComplete: () => {
       autoRotateSuspended = false
@@ -690,14 +729,24 @@ function animateCameraTo(view, durationMs, onComplete) {
   markRender()
 }
 
-function animateDolly(notches, durationMs = GALAXY_ZOOM.CAMERA_DOLLY_MS) {
+function animateDolly(
+  notches: number,
+  durationMs: number = GALAXY_ZOOM.CAMERA_DOLLY_MS,
+): void {
   if (!controls || !camera) return
-  const view = resolveDollyCameraView(controls, camera, notches)
+  const view = resolveDollyCameraView(
+    asOrbitControls(controls),
+    camera,
+    notches,
+  )
   if (!view) return
   animateCameraTo(view, durationMs)
 }
 
-function focusStarByIndex(index, opts = {}) {
+function focusStarByIndex(
+  index: number,
+  opts: { emitSelect?: boolean } = {},
+): void {
   const { emitSelect = true } = opts
   if (!controls || !camera || index < 0 || index >= starCount) return
   const world = starWorldPosition(index)
@@ -723,14 +772,14 @@ function focusStarByIndex(index, opts = {}) {
   }
 }
 
-function focusCenterStar() {
+function focusCenterStar(): void {
   if (anchorStarIndex >= 0) {
     focusStarByIndex(anchorStarIndex)
     return
   }
   if (controls && camera) {
     const view = resolveFocusCameraView(
-      controls,
+      asOrbitControls(controls),
       camera,
       new THREE.Vector3(0, 0, 0),
       { span: 6 },
@@ -739,7 +788,7 @@ function focusCenterStar() {
   }
 }
 
-function focusGalaxySelected() {
+function focusGalaxySelected(): void {
   const id = store.galaxySelected?.id ?? props.focusId
   if (!id || !controls || !camera) return
   const idx = idToIndex.get(id)
@@ -748,11 +797,11 @@ function focusGalaxySelected() {
   }
 }
 
-function focusOwnerStar() {
+function focusOwnerStar(): void {
   if (ownerStarIndex >= 0) focusStarByIndex(ownerStarIndex)
 }
 
-function initScene() {
+function initScene(): void {
   const el = containerRef.value
   if (!el) return
 
@@ -900,7 +949,7 @@ function initScene() {
   markRender()
 }
 
-function resize() {
+function resize(): void {
   const el = containerRef.value
   const renderer = rendererRef.value
   if (!el || !renderer || !camera) return
@@ -922,7 +971,7 @@ function resize() {
   markRender()
 }
 
-function syncRepoHighlightMask(channelOffset, repoId) {
+function syncRepoHighlightMask(channelOffset: number, repoId: string): void {
   if (!interactionData) return
   for (let i = 0; i < starCount; i += 1) {
     interactionData[i * 3 + channelOffset] = 0
@@ -935,7 +984,7 @@ function syncRepoHighlightMask(channelOffset, repoId) {
   }
 }
 
-function syncSelectedIndex(id) {
+function syncSelectedIndex(id: string): void {
   if (!id) {
     selectedIndex = null
   } else {
@@ -947,10 +996,15 @@ function syncSelectedIndex(id) {
   markRender()
 }
 
-function setHoverIndex(idx, clientX, clientY) {
+function setHoverIndex(
+  idx: number | null,
+  clientX?: number,
+  clientY?: number,
+): void {
   hoveredIndex = idx
-  if (idx != null && currentItems[idx]?.id) {
-    syncRepoHighlightMask(2, currentItems[idx].id)
+  const hoveredItem = idx != null ? currentItems[idx] : undefined
+  if (hoveredItem?.id) {
+    syncRepoHighlightMask(2, hoveredItem.id)
   } else if (interactionData) {
     for (let i = 0; i < starCount; i += 1) interactionData[i * 3 + 2] = 0
   }
@@ -967,7 +1021,7 @@ function setHoverIndex(idx, clientX, clientY) {
   markRender()
 }
 
-function saveDefaultView() {
+function saveDefaultView(): void {
   if (!camera || !controls) return
   defaultView = {
     position: camera.position.clone(),
@@ -978,13 +1032,13 @@ function saveDefaultView() {
   }
 }
 
-function resetViewPivot() {
+function resetViewPivot(): void {
   if (!viewPivot) return
   viewPivot.rotation.set(0, 0, 0)
   viewPivot.quaternion.set(0, 0, 0, 1)
 }
 
-function syncMotionAttributes(buffers) {
+function syncMotionAttributes(buffers: GalaxyBuffers): void {
   starCount = buffers.count
   const densityScale = 1 / Math.sqrt(Math.max(buffers.count, 1) / 4200)
   if (pointMaterial) {
@@ -999,7 +1053,7 @@ function syncMotionAttributes(buffers) {
   motionFields = buffers.motion ?? null
 }
 
-function syncPickPositions() {
+function syncPickPositions(): void {
   if (!points || !restPositions || starCount <= 0) return
   const posAttr = points.geometry.getAttribute('position')
   if (!posAttr || posAttr.array.length !== restPositions.length) return
@@ -1007,14 +1061,14 @@ function syncPickPositions() {
   posAttr.needsUpdate = true
 }
 
-function canUsePrecomputedLayout() {
+function canUsePrecomputedLayout(): boolean {
   return (
     hasValidGalaxyLayout(store.galaxyLayout) &&
     store.galaxyVirtualIndexMap.size > 0
   )
 }
 
-function buildGalaxyBuffersForItems(items) {
+function buildGalaxyBuffersForItems(items: StarsRepoItem[]): GalaxyBuffers {
   if (canUsePrecomputedLayout()) {
     return buildGalaxyBuffers(items, {
       layout: store.galaxyLayout,
@@ -1024,7 +1078,7 @@ function buildGalaxyBuffersForItems(items) {
   return buildGalaxyBuffers(items)
 }
 
-function refreshGalaxyShaderSources() {
+function refreshGalaxyShaderSources(): void {
   if (pointMaterial) {
     pointMaterial.vertexShader = vertexShader
     pointMaterial.fragmentShader = fragmentShader
@@ -1037,7 +1091,7 @@ function refreshGalaxyShaderSources() {
   }
 }
 
-function runGalaxyRebuild(items) {
+function runGalaxyRebuild(items: StarsRepoItem[]): void {
   refreshGalaxyShaderSources()
   const run = () => {
     try {
@@ -1064,12 +1118,12 @@ function runGalaxyRebuild(items) {
   window.setTimeout(run, 0)
 }
 
-function rebuildGalaxy(items) {
+function rebuildGalaxy(items: StarsRepoItem[]): void {
   if (!sceneRef.value) return
   runGalaxyRebuild(items)
 }
 
-function disposeGasLangLayers() {
+function disposeGasLangLayers(): void {
   for (const layer of gasLangLayers) {
     if (galaxyGroup) galaxyGroup.remove(layer.pivot)
     layer.geometry.dispose()
@@ -1096,7 +1150,7 @@ function disposeGasLangLayers() {
   }
 }
 
-function updateGasLangLayers() {
+function updateGasLangLayers(): void {
   if (!gasLangLayers.length && !gasDustLangLayers.length) return
   const t = motionTimeSec
   for (const layer of gasLangLayers) {
@@ -1127,7 +1181,7 @@ function updateGasLangLayers() {
   }
 }
 
-function syncGasClouds(gasBuffers) {
+function syncGasClouds(gasBuffers: GasBuffersWithMotion | undefined): void {
   if (!galaxyGroup || !gasMaterial) return
 
   disposeGasLangLayers()
@@ -1184,7 +1238,11 @@ function syncGasClouds(gasBuffers) {
       pivot.name = `gas-${langs[li]}`
 
       const gR = langRadii[li] ?? 36
-      const ellipsoid = [gR * 1.52, gR * 1.22, gR * 1.42]
+      const ellipsoid: [number, number, number] = [
+        gR * 1.52,
+        gR * 1.22,
+        gR * 1.42,
+      ]
       const langTint = nebulaLangTint(repoLangRgb(langs[li]), 0.58)
       const volSeed = (hashStr(`nebula-vol:${langs[li]}`) % 10000) / 10000
       const volumeMesh = createNebulaVolumeMesh(langTint, ellipsoid, volSeed, {
@@ -1200,9 +1258,9 @@ function syncGasClouds(gasBuffers) {
       gasLangLayers.push({
         pivot,
         geometry,
-        hub: hub.slice(),
-        omega: motion.omega.slice(),
-        omega2: motion.omega2.slice(),
+        hub: [...hub],
+        omega: [...motion.omega],
+        omega2: [...motion.omega2],
       })
       offset += particlesPerLayer
     }
@@ -1272,7 +1330,9 @@ function syncGasClouds(gasBuffers) {
   updateGasLangLayers()
 }
 
-function syncGasDustClouds(gasDustBuffers) {
+function syncGasDustClouds(
+  gasDustBuffers: GasDustBuffersWithMotion | undefined,
+): void {
   if (!galaxyGroup || !gasDustMaterial || !gasDustBuffers?.count) return
 
   const langs = gasDustBuffers.languages || []
@@ -1319,9 +1379,9 @@ function syncGasDustClouds(gasDustBuffers) {
       gasDustLangLayers.push({
         pivot,
         geometry,
-        hub: hub.slice(),
-        omega: motion.omega.slice(),
-        omega2: motion.omega2.slice(),
+        hub: [...hub],
+        omega: [...motion.omega],
+        omega2: [...motion.omega2],
       })
       offset += perGalaxy
     }
@@ -1364,7 +1424,7 @@ function syncGasDustClouds(gasDustBuffers) {
   updateGasLangLayers()
 }
 
-function applyBuffers(buffers) {
+function applyBuffers(buffers: GalaxyBuffers): void {
   const scene = sceneRef.value
   if (!scene || !pointMaterial || !galaxyGroup) return
 
@@ -1481,20 +1541,26 @@ function applyBuffers(buffers) {
   markRender()
 }
 
-function fitCamera(positions, count) {
+function fitCamera(positions: Float32Array, count: number): void {
   if (!camera || !controls || count === 0) return
-  fitCameraInsideObserver(controls, camera, positions, count, { padding: 0.76 })
+  fitCameraInsideObserver(asOrbitControls(controls), camera, positions, count, {
+    padding: 0.76,
+  })
   resetViewPivot()
   if (galaxyGroup) galaxyGroup.rotation.y = 0
   saveDefaultView()
 }
 
 /** 同步选中高亮（不移动相机） */
-function highlightItem(id) {
+function highlightItem(id: string): void {
   syncSelectedIndex(id)
 }
 
-function pickIndex(clientX, clientY, motionSecOverride) {
+function pickIndex(
+  clientX: number,
+  clientY: number,
+  motionSecOverride?: number,
+): number | null {
   const renderer = rendererRef.value
   if (!renderer || !camera || !points || !restPositions || starCount <= 0)
     return null
@@ -1521,14 +1587,14 @@ function pickIndex(clientX, clientY, motionSecOverride) {
   return idx
 }
 
-function dollyByNotches(notches) {
+function dollyByNotches(notches: number): void {
   if (!controls || !camera || !notches) return
   cancelCameraTransition()
-  dollyCameraUniformRange(controls, camera, notches)
+  dollyCameraUniformRange(asOrbitControls(controls), camera, notches)
   markRender()
 }
 
-function beginPinchGesture(event) {
+function beginPinchGesture(event: PointerEvent): void {
   if (event?.cancelable) event.preventDefault()
   pinchActive = true
   cancelCameraTransition()
@@ -1542,37 +1608,36 @@ function beginPinchGesture(event) {
   markRender()
 }
 
-function endPinchGestureIfNeeded() {
+function endPinchGestureIfNeeded(): void {
   if (activePointers.size >= 2) return
   pinchActive = false
   lastPinchDistance = null
   syncControlsForPointerCount()
 }
 
-function pinchPointerDistance() {
+function pinchPointerDistance(): number | null {
   if (activePointers.size < 2) return null
-  const pts = [...activePointers.values()]
-  const dx = pts[0].x - pts[1].x
-  const dy = pts[0].y - pts[1].y
-  return Math.hypot(dx, dy)
+  const [a, b] = [...activePointers.values()]
+  if (!a || !b) return null
+  return Math.hypot(a.x - b.x, a.y - b.y)
 }
 
-function syncControlsForPointerCount() {
+function syncControlsForPointerCount(): void {
   if (!controls) return
   controls.enabled = !pinchActive && activePointers.size < 2
 }
 
-function isGalaxyKeyboardContext() {
+function isGalaxyKeyboardContext(): boolean {
   if (store.viewMode !== 'galaxy') return false
   const el = document.activeElement
   if (!el) return true
   const tag = el.tagName
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return false
-  if (el.isContentEditable) return false
+  if ((el as HTMLElement).isContentEditable) return false
   return true
 }
 
-function onGalaxyKeyDown(event) {
+function onGalaxyKeyDown(event: KeyboardEvent): void {
   if (!isGalaxyKeyboardContext() || !controls || !camera) return
 
   const key = event.key
@@ -1620,11 +1685,11 @@ function onGalaxyKeyDown(event) {
   }
 }
 
-function onGalaxyAuxClick(event) {
+function onGalaxyAuxClick(event: MouseEvent): void {
   if (event.button === 1) event.preventDefault()
 }
 
-function applyOrbitDragFromPointer(event) {
+function applyOrbitDragFromPointer(event: PointerEvent): void {
   if (!controls || !camera || pinchActive || activePointers.size > 1) return
   if (!pointerDown || pointerDown.button !== 0 || !(event.buttons & 1)) return
 
@@ -1660,14 +1725,14 @@ function applyOrbitDragFromPointer(event) {
   markRender()
 }
 
-function trackPointerDrag(event) {
+function trackPointerDrag(event: PointerEvent): void {
   if (!pointerDown || event.pointerId !== pointerDown.pointerId) return
   const dx = event.clientX - pointerDown.x
   const dy = event.clientY - pointerDown.y
   if (dx * dx + dy * dy > DRAG_THRESHOLD_SQ) pointerDragMoved = true
 }
 
-function onPointerDown(event) {
+function onPointerDown(event: PointerEvent): void {
   activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
 
   if (activePointers.size >= 2) {
@@ -1703,7 +1768,7 @@ function onPointerDown(event) {
   orbitDragLastY = event.clientY
 }
 
-function onPointerMove(event) {
+function onPointerMove(event: PointerEvent): void {
   trackPointerDrag(event)
   activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
 
@@ -1742,7 +1807,7 @@ function onPointerMove(event) {
   onCanvasHover(event)
 }
 
-function onPointerUp(event) {
+function onPointerUp(event: PointerEvent): void {
   activePointers.delete(event.pointerId)
   endPinchGestureIfNeeded()
   if (event.button === 1) middleDragLastY = null
@@ -1781,7 +1846,7 @@ function onPointerUp(event) {
   syncAutoRotateAfterInteraction()
 }
 
-function onPointerCancel(event) {
+function onPointerCancel(event: PointerEvent): void {
   activePointers.delete(event.pointerId)
   endPinchGestureIfNeeded()
   middleDragLastY = null
@@ -1796,14 +1861,14 @@ function onPointerCancel(event) {
   if (renderer) renderer.domElement.style.cursor = 'grab'
 }
 
-function onCanvasHover(event) {
+function onCanvasHover(event: PointerEvent): void {
   pendingHover = { x: event.clientX, y: event.clientY }
   if (!hoverRaf) {
     hoverRaf = requestAnimationFrame(flushCanvasHover)
   }
 }
 
-function flushCanvasHover() {
+function flushCanvasHover(): void {
   hoverRaf = 0
   const renderer = rendererRef.value
   if (!renderer || !pendingHover) return
@@ -1814,13 +1879,13 @@ function flushCanvasHover() {
   renderer.domElement.style.cursor = idx != null ? 'pointer' : 'grab'
 }
 
-function onCanvasLeave() {
+function onCanvasLeave(): void {
   setHoverIndex(null)
   const renderer = rendererRef.value
   if (renderer) renderer.domElement.style.cursor = 'grab'
 }
 
-function onGalaxyWheel(event) {
+function onGalaxyWheel(event: WheelEvent): void {
   if (!controls || !camera || !rendererRef.value) return
   event.preventDefault()
 
@@ -1837,32 +1902,33 @@ function onGalaxyWheel(event) {
   animateDolly(steps * GALAXY_ZOOM.ZOOM_SPEED, GALAXY_ZOOM.CAMERA_DOLLY_MS)
 }
 
-function zoomIn() {
+function zoomIn(): void {
   if (!controls || !camera) return
   animateDolly(-GALAXY_ZOOM.ZOOM_SPEED, GALAXY_ZOOM.CAMERA_DOLLY_MS)
 }
 
-function zoomOut() {
+function zoomOut(): void {
   if (!controls || !camera) return
   animateDolly(GALAXY_ZOOM.ZOOM_SPEED, GALAXY_ZOOM.CAMERA_DOLLY_MS)
 }
 
-function toggleLegend() {
+function toggleLegend(): void {
   showLegend.value = !showLegend.value
 }
 
-function toggleFullscreen() {
+function toggleFullscreen(): void {
   if (props.isMobile) return
   store.toggleGalaxyAreaExpanded()
   markRender()
   window.requestAnimationFrame(() => resize())
 }
 
-function resetView() {
+function resetView(): void {
   if (!defaultView || !controls || !camera) return
+  const view = defaultView
   cancelCameraTransition()
-  animateCameraTo(defaultView, GALAXY_ZOOM.CAMERA_RESET_MS, () => {
-    if (viewPivot) viewPivot.quaternion.copy(defaultView.pivotQuaternion)
+  animateCameraTo(view, GALAXY_ZOOM.CAMERA_RESET_MS, () => {
+    if (viewPivot) viewPivot.quaternion.copy(view.pivotQuaternion)
     if (galaxyGroup) galaxyGroup.rotation.y = 0
     motionTimeSec = 0
     lastFrameMs = 0
@@ -1873,12 +1939,12 @@ function resetView() {
   })
 }
 
-function toggleAutoRotate() {
+function toggleAutoRotate(): void {
   autoRotate.value = !autoRotate.value
   markRender()
 }
 
-function pauseGalaxyForDocumentHidden() {
+function pauseGalaxyForDocumentHidden(): void {
   if (animationPausedByVisibility || animationId == null) return
   cancelAnimationFrame(animationId)
   animationId = null
@@ -1886,7 +1952,7 @@ function pauseGalaxyForDocumentHidden() {
   lastFrameMs = 0
 }
 
-function resumeGalaxyFromDocumentVisible() {
+function resumeGalaxyFromDocumentVisible(): void {
   if (!animationPausedByVisibility) return
   animationPausedByVisibility = false
   lastFrameMs = 0
@@ -1895,7 +1961,7 @@ function resumeGalaxyFromDocumentVisible() {
   }
 }
 
-function onDocumentVisibilityChange() {
+function onDocumentVisibilityChange(): void {
   if (document.hidden) {
     pauseGalaxyForDocumentHidden()
     return
@@ -1904,7 +1970,7 @@ function onDocumentVisibilityChange() {
   markRender()
 }
 
-function animate(now) {
+function animate(now: number): void {
   animationId = requestAnimationFrame(animate)
 
   const dtSec =
@@ -1913,7 +1979,7 @@ function animate(now) {
 
   const cameraAnimating =
     cameraTransition?.active && controls && camera
-      ? cameraTransition.tick(now, controls, camera)
+      ? cameraTransition.tick(now, asOrbitControls(controls), camera)
       : false
   if (!cameraAnimating) {
     applyCameraAutoRotate(dtSec)
@@ -1954,7 +2020,7 @@ function animate(now) {
   needsRender = false
 }
 
-function dispose() {
+function dispose(): void {
   if (animationId != null) cancelAnimationFrame(animationId)
   if (hoverRaf) cancelAnimationFrame(hoverRaf)
   cancelCameraTransition()
