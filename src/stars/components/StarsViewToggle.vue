@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import { useStarsStore } from '../composables/useStarsStore'
@@ -9,7 +9,7 @@ const { t } = useStarsI18n()
 
 const webglOk = computed(() => isWebGLAvailable())
 
-function setMode(mode) {
+const setMode = (mode: string): void => {
   if (mode === 'galaxy' && !webglOk.value) return
   store.setViewMode(mode)
 }
