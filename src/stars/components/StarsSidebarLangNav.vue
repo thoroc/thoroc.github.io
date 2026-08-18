@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import {
@@ -11,9 +11,8 @@ import { buildLanguageOptions } from '../utils/stars-filter'
 const store = useStarsStore()
 const { t } = useStarsI18n()
 
-function langLabel(name) {
-  return name === '其他' ? t.value('otherLang') : name
-}
+const langLabel = (name: string): string =>
+  name === '其他' ? t.value('otherLang') : name
 
 const allItem = computed(() => ({
   key: 'all',
@@ -34,7 +33,7 @@ const langItems = computed(() => {
   }))
 })
 
-function onLangClick(key) {
+const onLangClick = (key: string): void => {
   patchLanguageInQuery(key === 'all' ? 'all' : key)
 }
 </script>
