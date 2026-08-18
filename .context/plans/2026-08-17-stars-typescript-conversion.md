@@ -1,7 +1,7 @@
 ---
 title: "Plan: Bring the ported stars app into TypeScript convention compliance"
 type: plan
-status: active
+status: done
 date: 2026-08-17
 effort: "L"
 value: "MEDIUM"
@@ -161,7 +161,7 @@ regression fixture is confirmed deterministic.
 
 Dependencies: none.
 
-### Phase 2: Pure modules — galaxy math, utils, storage, theme, i18n, config
+### Phase 2: Pure modules — galaxy math, utils, storage, theme, i18n, config — ✅ done
 
 Exit criterion: every non-Vue, non-composable module is `.ts`, one function
 per file (or a declared data/cohesive-state exemption from Phase 1) with a
@@ -210,7 +210,7 @@ against the frozen fixture — not one diff at the end of the whole wave.
 
 Dependencies: Phase 1.
 
-### Phase 3: Composables
+### Phase 3: Composables — ✅ done
 
 Exit criterion: `src/stars/composables/*.js` are one-function-per-file `.ts`
 with a barrel and colocated tests at the Phase-1 coverage convention, and
@@ -231,7 +231,7 @@ pattern decided in Phase 1.
 
 Dependencies: Phase 2 (composables import galaxy/utils modules).
 
-### Phase 5: Build scripts
+### Phase 5: Build scripts — ✅ done
 
 Exit criterion: `scripts/stars/generate.mjs` and
 `scripts/stars/compute-galaxy-layout.mjs` are one-function-per-file `.ts`
@@ -255,7 +255,7 @@ don't import Vue components, so this phase can run concurrently with either,
 rather than strictly last. Sequence it whenever convenient once Phase 2 is
 done.
 
-### Phase 4: Vue components
+### Phase 4: Vue components — ✅ done
 
 Exit criterion: every `.vue` file uses `<script setup lang="ts">`;
 `StarsGalaxyView.vue` is split into focused sub-components by concern (scene
