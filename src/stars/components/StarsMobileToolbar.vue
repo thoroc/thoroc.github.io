@@ -1,11 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import { useStarsStore } from '../composables/useStarsStore'
 
 import StarsViewToggle from './StarsViewToggle.vue'
 
-const emit = defineEmits(['open-filters'])
+const emit = defineEmits<{
+  'open-filters': []
+}>()
 
 const store = useStarsStore()
 const { t } = useStarsI18n()
