@@ -1,15 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { StarsRepoItem } from '../composables/useStarsStore'
 import { useStarsStore } from '../composables/useStarsStore'
 import StarCard from './StarCard.vue'
 
-const props = defineProps({
-  item: { type: Object, required: true },
-  isMobile: { type: Boolean, default: false },
+interface StarsGalaxyDetailProps {
+  item: StarsRepoItem
+  isMobile?: boolean
+}
+
+const props = withDefaults(defineProps<StarsGalaxyDetailProps>(), {
+  isMobile: false,
 })
 
-const emit = defineEmits(['close', 'locate'])
+const emit = defineEmits<{
+  close: []
+  locate: []
+}>()
 
 const store = useStarsStore()
 const { t } = useStarsI18n()
@@ -22,15 +30,15 @@ watch(
   },
 )
 
-function isTypingTarget() {
+const isTypingTarget = (): boolean => {
   const el = document.activeElement
   if (!el) return false
   const tag = el.tagName
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true
-  return Boolean(el.isContentEditable)
+  return Boolean((el as HTMLElement).isContentEditable)
 }
 
-function onKeydown(e) {
+const onKeydown = (e: KeyboardEvent): void => {
   if (isTypingTarget()) return
   if (e.key === 'Escape') {
     emit('close')
