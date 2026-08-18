@@ -1,28 +1,37 @@
-<script setup>
+<script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
-const props = defineProps({
-  modelValue: { type: String, required: true },
-  options: {
-    type: Array,
-    default: () => [],
-  },
-  ariaLabel: { type: String, default: '' },
+export interface SelectOption {
+  value: string
+  label: string
+}
+
+interface StarsSelectProps {
+  modelValue: string
+  options?: SelectOption[]
+  ariaLabel?: string
+}
+
+const props = withDefaults(defineProps<StarsSelectProps>(), {
+  options: () => [],
+  ariaLabel: '',
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+}>()
 
 const open = ref(false)
-const triggerRef = ref(null)
-const panelRef = ref(null)
-const panelStyle = ref({})
+const triggerRef = ref<HTMLButtonElement | null>(null)
+const panelRef = ref<HTMLUListElement | null>(null)
+const panelStyle = ref<Record<string, string | number>>({})
 
 const selectedLabel = computed(() => {
   const hit = props.options.find((o) => o.value === props.modelValue)
   return hit?.label ?? props.modelValue
 })
 
-function updatePanelPosition() {
+const updatePanelPosition = (): void => {
   const el = triggerRef.value
   if (!el || typeof window === 'undefined') return
 
@@ -46,7 +55,7 @@ function updatePanelPosition() {
   }
 }
 
-async function setOpen(next) {
+const setOpen = async (next: boolean): Promise<void> => {
   open.value = next
   if (next) {
     await nextTick()
@@ -54,26 +63,26 @@ async function setOpen(next) {
   }
 }
 
-function toggleOpen() {
+const toggleOpen = (): void => {
   setOpen(!open.value)
 }
 
-function pick(value) {
+const pick = (value: string): void => {
   emit('update:modelValue', value)
   setOpen(false)
 }
 
-function onDocumentPointer(e) {
-  const t = e.target
+const onDocumentPointer = (e: PointerEvent): void => {
+  const t = e.target as Node
   if (triggerRef.value?.contains(t) || panelRef.value?.contains(t)) return
   setOpen(false)
 }
 
-function onEscape(e) {
+const onEscape = (e: KeyboardEvent): void => {
   if (e.key === 'Escape') setOpen(false)
 }
 
-function onLayoutChange() {
+const onLayoutChange = (): void => {
   if (open.value) updatePanelPosition()
 }
 
