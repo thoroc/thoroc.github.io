@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import {
@@ -8,11 +8,17 @@ import {
   useStarsStore,
 } from '../composables/useStarsStore'
 
+interface ActiveFilterTag {
+  id: string
+  text: string
+  clear: () => void
+}
+
 const store = useStarsStore()
 const { t } = useStarsI18n()
 
 const tags = computed(() => {
-  const list = []
+  const list: ActiveFilterTag[] = []
   if (store.qApplied?.trim()) {
     list.push({
       id: 'q',
