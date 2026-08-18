@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { computeGalaxyLayout } from '../scripts/stars/compute-galaxy-layout.mjs'
+import { computeGalaxyLayout } from '../scripts/stars/compute-galaxy-layout'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const FIXTURE_PATH = path.join(__dirname, 'fixtures', 'stars.fixture.json')

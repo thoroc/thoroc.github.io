@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "generate:stars": "bun run scripts/stars/generate.mjs",
+    "generate:stars": "bun run scripts/stars/generate/main.ts",
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check",
