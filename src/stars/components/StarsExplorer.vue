@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {
   computed,
   defineAsyncComponent,
@@ -8,6 +8,7 @@ import {
   watch,
 } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
+import type { StarsRepoItem } from '../composables/useStarsStore'
 import { useStarsStore } from '../composables/useStarsStore'
 import StarsActiveFilters from './StarsActiveFilters.vue'
 import StarsListPane from './StarsListPane.vue'
@@ -19,11 +20,17 @@ const StarsGalaxyView = defineAsyncComponent(
   () => import('./StarsGalaxyView.vue'),
 )
 
-defineProps({
-  isMobile: { type: Boolean, default: false },
+interface StarsExplorerProps {
+  isMobile?: boolean
+}
+
+withDefaults(defineProps<StarsExplorerProps>(), {
+  isMobile: false,
 })
 
-const emit = defineEmits(['open-filters'])
+const emit = defineEmits<{
+  'open-filters': []
+}>()
 
 const store = useStarsStore()
 const { t } = useStarsI18n()
@@ -34,11 +41,11 @@ const showGalaxy = computed(
   () => store.viewMode === 'galaxy' && store.filtered.length > 0,
 )
 
-function onGalaxySelect(item) {
+const onGalaxySelect = (item: StarsRepoItem): void => {
   store.selectGalaxyItem(item)
 }
 
-function syncFocusSelection() {
+const syncFocusSelection = (): void => {
   if (!store.galaxyFocus || store.galaxySelected) return
   const found = store.filtered.find((item) => item.id === store.galaxyFocus)
   if (found) store.galaxySelected = found
