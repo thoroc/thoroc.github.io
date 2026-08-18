@@ -18,12 +18,19 @@ export interface StarsRepoItem {
   topics?: string[]
   language: string | null
   license: string | null
+  licenseUrl?: string
   fork: boolean
   stars: number
   forksCount?: number
   watchersCount?: number
   starredAt: string
+  createdAt?: string
   pushedAt: string
+  homepage?: string
+  // Not produced by scripts/stars/generate — StarCard.vue reads it
+  // defensively, same vestigial-upstream-field class as StarsSiteMeta's
+  // toolRepoOwner/toolRepoName/toolVersion.
+  url?: string
 }
 
 export interface StarsUiConfig {
