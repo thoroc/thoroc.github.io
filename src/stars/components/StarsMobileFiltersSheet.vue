@@ -1,25 +1,31 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUnmounted, toRef, watch } from 'vue'
 import { useMobileSheetInset } from '../composables/useMobileSheetInset'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import StarsSidebarFilters from './StarsSidebarFilters.vue'
 import StarsSidebarLangNav from './StarsSidebarLangNav.vue'
 
-const props = defineProps({
-  open: { type: Boolean, default: false },
+interface StarsMobileFiltersSheetProps {
+  open?: boolean
+}
+
+const props = withDefaults(defineProps<StarsMobileFiltersSheetProps>(), {
+  open: false,
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits<{
+  close: []
+}>()
 
 const { t } = useStarsI18n()
 
 useMobileSheetInset(toRef(props, 'open'))
 
-function onBackdropClick() {
+const onBackdropClick = (): void => {
   emit('close')
 }
 
-function onKeydown(e) {
+const onKeydown = (e: KeyboardEvent): void => {
   if (e.key === 'Escape' && props.open) emit('close')
 }
 
