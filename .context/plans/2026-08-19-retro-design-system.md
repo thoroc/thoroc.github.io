@@ -205,7 +205,7 @@ plan and this plan doesn't alter it.
 
 - [x] Create `src/styles/tokens.css` with the retro palette and font
       variables (light + dark).
-- [ ] Wire `@import` of `tokens.css` into `src/styles/global.css`, **and
+- [x] Wire `@import` of `tokens.css` into `src/styles/global.css`, **and
       delete** the pre-existing flat `:root` block in `global.css`
       (`--bg`, `--fg`, `--muted`, `--accent`, `--accent-2`, `--accent-3`,
       `--border`, `--card-bg`, `--radius`, `--maxw`) so there is exactly one
@@ -214,7 +214,7 @@ plan and this plan doesn't alter it.
       values, defeating this phase's exit criterion. `--radius`/`--maxw`
       have direct equivalents already in `tokens.css`; everything else maps
       1:1 onto the table in the Decisions section above.
-- [ ] Add Google Fonts `preconnect`/stylesheet `<link>` tags to
+- [x] Add Google Fonts `preconnect`/stylesheet `<link>` tags to
       `src/layouts/BaseLayout.astro`, scoped to exactly the weights/axes
       specified in the Decisions section (`Fraunces:opsz,wght@9..144,600;
       9..144,900` + `Space+Grotesk:wght@400;500;600;700`, both
