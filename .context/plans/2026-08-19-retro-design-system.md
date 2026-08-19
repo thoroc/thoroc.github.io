@@ -80,7 +80,32 @@ downloads.
 custom properties in `tokens.css`, rather than adopting Tailwind or
 restyling each page's markup ad hoc. The user was open to suggestion and
 leaned toward a component library; Tailwind was rejected as too large a
-build-tooling change for the value delivered right now.
+build-tooling change for the value delivered right now. Recorded durably in
+`docs/ADR/adr-002-shared-astro-component-library.md`.
+
+**Tailwind reconsidered, reaffirmed (new context: ~5 pages planned soon):**
+the user is considering adding up to five more pages soon, each with a
+shared topbar and shared form controls (button, textfield, dropdown,
+select) plus page-specific content. ADR-002's conclusion stands unchanged
+— more upcoming pages argues for widening the *same* component library,
+not switching to Tailwind — so no new or superseding ADR was created.
+
+**Building the form controls (`TextField`/`Select`/`Dropdown`) now was
+considered and rejected, twice.** First pass: widen Phase 2 to include them
+speculatively, ahead of the 5 pages. A re-review with 3 independent
+reviewers unanimously pushed back — Technical flagged `Dropdown` as
+under-specified to the point of being unbuildable (no interaction model, no
+ARIA contract) and the effort estimate no longer fitting "M"; Strategic
+called it a scope violation (`rule-of-three` fires on *observed* repetition
+in existing code, not a verbal forecast of unscoped pages, and `Dropdown`
+as a "future action/filter menu" was an invented use case — the user said
+"dropdown, select," not two distinct widget types) and noted the plan's own
+Risks section already half-admitted the component shapes could be wrong;
+Risk flagged that their API is being guessed with no real consumer to
+correct it. Put back to the user directly: cut all three. They stay out of
+this plan; building them is deferred to a follow-up plan once the 5 pages
+are actually scoped (routing, content model, layout, real form-control
+requirements) — see Open Questions.
 
 **Component scope, revised after plan review:** the strategic reviewer
 noted that a "component library" consisting only of `Button`/`Badge` still
@@ -155,6 +180,9 @@ plan and this plan doesn't alter it.
   header markup replaced with `<SiteHeader>`.
 - `src/components/ui/Button.astro`, `src/components/ui/Badge.astro`,
   `src/components/ui/SiteHeader.astro` — new shared components.
+- `src/components/ui/index.ts` — barrel module re-exporting the three
+  components above, per this repo's own barrel-module convention (missed in
+  the first pass of this plan).
 - `src/components/ProjectCard.astro` — refactored to use `Button`/`Badge`.
 - `src/pages/[lang]/projects/[slug].astro` — same tag/link markup refactored
   for consistency with the card.
@@ -163,7 +191,11 @@ plan and this plan doesn't alter it.
 
 - `src/pages/stars/index.astro` and everything under `src/stars/` — kept as
   the separate dark galaxy theme it already is.
-- Any Tailwind or build-tooling migration.
+- Any Tailwind or build-tooling migration (reconsidered once more given the
+  ~5 upcoming pages, reaffirmed — see Decisions).
+- `TextField`/`Select`/`Dropdown` and any other form controls — considered
+  for this plan, cut after unanimous re-review pushback; deferred to a
+  follow-up plan once the 5 upcoming pages are actually scoped.
 - A user-facing light/dark theme toggle for the main site chrome (currently
   follows OS preference only, same as before this plan).
 
@@ -189,7 +221,12 @@ plan and this plan doesn't alter it.
       `&display=swap`) — not the full default family.
 
 Exit criterion: the landing page renders in the new palette/fonts with no
-component refactor yet (raw token swap only), and `grep -rn "6b6b80\|e0346e\|5a5cf0\|12a37a\|e7e5df" src/` (the old hard-coded hex values) returns nothing outside `tokens.css`'s git history.
+component refactor yet (raw token swap only). `grep -rn
+"6b6b80\|e0346e\|5a5cf0\|12a37a\|e7e5df" src/` (the old hard-coded hex
+values) is a starting point to spot-check, not an automatic pass/fail — a
+match inside a comment or a data URI isn't necessarily a real leftover
+reference, so review any hits rather than treating a nonzero count as
+failure.
 
 ### Phase 2: Component library
 
@@ -203,10 +240,13 @@ component refactor yet (raw token swap only), and `grep -rn "6b6b80\|e0346e\|5a5
       switch — the markup currently inline in `BaseLayout.astro`'s
       `<header class="site-header">`), per the widened component-scope
       decision above.
+- [ ] Add `src/components/ui/index.ts` barrel module re-exporting all
+      three components above, per this repo's barrel-module convention.
 
 Exit criterion: all three components render correctly in isolation with
-sample props/slots, checked via the dev server (no new test framework
-introduced — see the "Test tooling" decision above).
+sample props/slots, checked via the dev server in both light and dark OS
+preference (no new test framework introduced — see the "Test tooling"
+decision above).
 
 ### Phase 3: Apply to site chrome
 
@@ -232,6 +272,9 @@ introduced — see the "Test tooling" decision above).
 - [ ] Visual check of `/en/`, `/fr/`, and a project detail page in a
       browser (light and dark OS preference), capturing before/after
       screenshots per the `documentation--proof-of-work` convention.
+      Specifically check that `SiteHeader`'s nav/lang-switch text doesn't
+      overflow or wrap awkwardly on `/fr/`, where labels run longer than
+      `/en/`.
 
 Exit criterion: landing page, project cards, project detail pages, and the
 site header all render through the new tokens and components; no leftover
@@ -256,6 +299,12 @@ recorded and passing.
   looks good on the landing page will be to "just" carry it into the galaxy
   view. Explicitly resist this per the Scope section above — that's a
   separate decision.
+- **Building form controls ahead of any consumer, considered and declined:**
+  an earlier pass of this plan widened Phase 2 to include `TextField`/
+  `Select`/`Dropdown` speculatively, ahead of the 5 upcoming pages. A
+  re-review confirmed this was the wrong call for this plan (see Decisions
+  and Open Questions) — recorded here so the reasoning isn't lost, not as a
+  live risk.
 
 ## Verification
 
@@ -268,10 +317,10 @@ recorded and passing.
   earlier draft only named lint/typecheck/test.
 - Contrast ratios recorded for each text-on-background pairing (see Phase
   3's contrast-check task) — fill in once measured:
-  - `--fg` on `--bg`: _TBD_
-  - `--fg` on `--card-bg`: _TBD_
-  - `--muted` on `--bg`/`--card-bg`: _TBD_
-  - each accent used as link/badge text on `--bg`/`--card-bg`: _TBD_
+  - `--fg` on `--bg`: *TBD*
+  - `--fg` on `--card-bg`: *TBD*
+  - `--muted` on `--bg`/`--card-bg`: *TBD*
+  - each accent used as link/badge text on `--bg`/`--card-bg`: *TBD*
 - `grep -rn "class=\"card-link\"\|class=\"card-tag\"" src/pages src/components` returns nothing once Phase 3 lands — confirms no template still
   references the pre-component classes that Phase 3 replaces.
 - Manual browser check (per `run` skill / dev server) of `/en/`, `/fr/`,
@@ -282,6 +331,10 @@ recorded and passing.
 
 ## Open Questions
 
+- A separate plan is needed to scope the ~5 upcoming pages (routing under
+  `[lang]/`, content model, layout conventions, and their actual
+  form-control requirements) before `TextField`/`Select`/`Dropdown`-style
+  components get built against them — not part of this plan.
 - Should the main site chrome get an explicit light/dark toggle (matching
   the pattern `/stars` already has), or keep following OS preference only?
   Not decided — out of scope for this plan unless the user asks for it.
