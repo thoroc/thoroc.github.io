@@ -1,7 +1,7 @@
 ---
 title: "Finding: current state of /stars vs landing page, ahead of superseding ADR-004"
 type: finding
-status: active
+status: done
 date: 2026-08-19
 related:
   - ../plans/2026-08-19-retro-design-system.md

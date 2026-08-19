@@ -1,7 +1,7 @@
 ---
 title: "Plan: Supersede ADR-004 — align /stars with the landing page"
 type: plan
-status: active
+status: done
 date: 2026-08-19
 effort: "L"
 value: "MEDIUM"
