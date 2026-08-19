@@ -15,7 +15,68 @@ const t = useTranslations(lang)
     <a href={`/${lang}/`}>{t('nav.home')}</a>
     <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
   </nav>
+  <div class="theme-toggle" role="group" aria-label={t('theme.label')}>
+    <button
+      type="button"
+      class="theme-toggle__btn"
+      data-theme-choice="light"
+      aria-pressed="false"
+    >
+      {t('theme.light')}
+    </button>
+    <button
+      type="button"
+      class="theme-toggle__btn"
+      data-theme-choice="dark"
+      aria-pressed="false"
+    >
+      {t('theme.dark')}
+    </button>
+    <button
+      type="button"
+      class="theme-toggle__btn"
+      data-theme-choice="system"
+      aria-pressed="false"
+    >
+      {t('theme.system')}
+    </button>
+  </div>
   <a class="lang-switch" href={lang === 'en' ? '/fr/' : '/en/'}>
     {lang === 'en' ? 'Français' : 'English'}
   </a>
 </header>
+
+<script>
+  import {
+    applyColorTheme,
+    persistColorThemePreference,
+    readColorThemePreference,
+  } from '../../lib/theme/color-theme'
+
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    '[data-theme-choice]',
+  )
+
+  const setActiveButton = (preference: string): void => {
+    for (const button of buttons) {
+      button.setAttribute(
+        'aria-pressed',
+        String(button.dataset.themeChoice === preference),
+      )
+    }
+  }
+
+  setActiveButton(readColorThemePreference())
+
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const preference = button.dataset.themeChoice as
+        | 'light'
+        | 'dark'
+        | 'system'
+      persistColorThemePreference(preference)
+      applyColorTheme(preference)
+      setActiveButton(preference)
+    })
+  }
+</script>

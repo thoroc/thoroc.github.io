@@ -22,6 +22,10 @@ export const ui = {
     'notFound.title': 'Page not found',
     'notFound.text': 'This page does not exist.',
     'notFound.back': 'Back home',
+    'theme.label': 'Theme',
+    'theme.light': 'Light',
+    'theme.dark': 'Dark',
+    'theme.system': 'System',
   },
   fr: {
     'site.title': 'thoroc — travaux choisis',
@@ -37,6 +41,10 @@ export const ui = {
     'notFound.title': 'Page introuvable',
     'notFound.text': 'Cette page n’existe pas.',
     'notFound.back': 'Retour à l’accueil',
+    'theme.label': 'Thème',
+    'theme.light': 'Clair',
+    'theme.dark': 'Sombre',
+    'theme.system': 'Système',
   },
 } as const
 

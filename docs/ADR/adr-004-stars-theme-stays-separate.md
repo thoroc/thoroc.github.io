@@ -1,7 +1,8 @@
 ---
 title: "ADR-004: /stars keeps its own theme system, separate from sitewide tokens"
-status: accepted
+status: superseded
 date: 2026-08-19
+superseded_by: "adr-005"
 context:
   - path: .context/plans/2026-08-19-retro-design-system.md
 ---

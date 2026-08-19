@@ -1,0 +1,16 @@
+---
+import BaseLayout from './BaseLayout.astro'
+---
+
+<BaseLayout lang="en" title="Stars">
+  <Fragment slot="head">
+    <link
+      rel="preconnect"
+      href="https://avatars.githubusercontent.com"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
+    <link rel="preload" href="/stars/data/stars.json" as="fetch" crossorigin />
+  </Fragment>
+  <slot />
+</BaseLayout>

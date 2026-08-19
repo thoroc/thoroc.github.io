@@ -25,7 +25,16 @@ entries:
   - path: "ADR/adr-004-stars-theme-stays-separate.md"
     adr: "ADR-004"
     title: "ADR-004: /stars keeps its own theme system, separate from sitewide tokens"
+    status: superseded
+    date: 2026-08-19
+    superseded_by: "adr-005"
+    context:
+      - path: ".context/plans/2026-08-19-retro-design-system.md"
+  - path: "ADR/adr-005-stars-adopts-sitewide-theme.md"
+    adr: "ADR-005"
+    title: "ADR-005: /stars adopts the sitewide page shell and retro design tokens"
     status: accepted
     date: 2026-08-19
     context:
-      - path: ".context/plans/2026-08-19-retro-design-system.md"
+      - path: "docs/ADR/adr-004-stars-theme-stays-separate.md"
+      - path: ".context/plans/2026-08-19-supersede-adr-004-stars-landing-alignment.md"

@@ -1,12 +1,9 @@
 import { readColorThemePreference } from './readColorThemePreference'
-import type {
-  StarsColorThemePreference,
-  StarsResolvedColorTheme,
-} from './types'
+import type { ColorThemePreference, ResolvedColorTheme } from './types'
 
 export const resolveColorTheme = (
-  preference: StarsColorThemePreference = readColorThemePreference(),
-): StarsResolvedColorTheme => {
+  preference: ColorThemePreference = readColorThemePreference(),
+): ResolvedColorTheme => {
   if (preference === 'light') return 'light'
   if (preference === 'dark') return 'dark'
   if (

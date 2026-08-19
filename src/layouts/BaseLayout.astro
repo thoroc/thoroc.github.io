@@ -27,6 +27,21 @@ const fullTitle = title ? `${title} — ${t('site.title')}` : t('site.title')
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
     />
+    <script is:inline>
+      (function () {
+        try {
+          var stored =
+            localStorage.getItem('color-theme') ||
+            localStorage.getItem('stars-color-theme')
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+        } catch (e) {}
+      })()
+    </script>
+    <slot name="head" />
   </head>
   <body>
     <div class="shell">

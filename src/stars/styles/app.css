@@ -2,59 +2,45 @@
   --stars-nav-height: 60px;
   --stars-sidebar-width: 248px;
   --stars-chrome-offset: 5.5rem;
-  --stars-font:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-    Arial, sans-serif;
+  --stars-font: var(--font-body);
   --stars-radius-sm: 6px;
   --stars-radius-md: 8px;
   --stars-radius-lg: 12px;
   --stars-shadow-sm: 0 1px 0 rgba(31, 35, 40, 0.04);
   --stars-shadow-md: 0 3px 12px rgba(31, 35, 40, 0.08);
   --stars-shadow-card: 0 1px 3px rgba(31, 35, 40, 0.06);
-  --stars-c-bg: #f6f8fa;
-  --stars-c-surface: #ffffff;
-  --stars-c-bg-soft: #f6f8fa;
-  --stars-c-bg-alt: #eaeef2;
-  --stars-c-text-1: #1f2328;
-  --stars-c-text-2: #656d76;
-  --stars-c-text-3: #8b949e;
-  --stars-c-divider: #d0d7de;
-  --stars-c-brand-1: #0969da;
-  --stars-c-brand-2: #0550ae;
-  --stars-c-brand-soft: #ddf4ff;
-  --stars-c-muted-surface: #24292f;
-  --stars-c-accent: #9a6700;
-  --stars-c-star-bg: #fff8c5;
-  --stars-c-star-border: #d4a72c;
-  --stars-c-danger-1: #cf222e;
-  --stars-header-bg: #ffffff;
+  --stars-c-bg: var(--bg);
+  --stars-c-surface: var(--card-bg);
+  --stars-c-bg-soft: var(--bg);
+  --stars-c-bg-alt: var(--bg-alt);
+  --stars-c-text-1: var(--fg);
+  --stars-c-text-2: var(--muted);
+  --stars-c-text-3: var(--muted);
+  --stars-c-divider: var(--border);
+  --stars-c-brand-1: var(--accent);
+  --stars-c-brand-2: var(--accent-strong);
+  --stars-c-brand-soft: color-mix(in srgb, var(--accent) 16%, var(--card-bg));
+  /* Always a dark chip regardless of theme (matches the original GitHub
+     palette, where this surface barely changed between light/dark) — the
+     logo icon's fixed near-white text depends on it staying dark. */
+  --stars-c-muted-surface: #1b3a4b;
+  --stars-c-accent: var(--accent-3);
+  --stars-c-star-bg: color-mix(in srgb, var(--accent-3) 22%, var(--card-bg));
+  --stars-c-star-border: var(--accent-3);
+  --stars-c-danger-1: var(--danger);
+  --stars-header-bg: var(--card-bg);
   /* macOS 风格滚动条：细、圆角胶囊、半透明滑块、透明轨道 */
   --stars-scrollbar-thumb: rgba(31, 35, 40, 0.32);
   --stars-scrollbar-thumb-hover: rgba(31, 35, 40, 0.48);
   color-scheme: light;
 }
 
-:root[data-stars-theme="dark"] {
+:root[data-theme="dark"] {
   --stars-shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.2);
   --stars-shadow-md: 0 3px 12px rgba(0, 0, 0, 0.35);
   --stars-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.28);
-  --stars-c-bg: #010409;
-  --stars-c-surface: #0d1117;
-  --stars-c-bg-soft: #161b22;
-  --stars-c-bg-alt: #21262d;
-  --stars-c-text-1: #e6edf3;
-  --stars-c-text-2: #8b949e;
-  --stars-c-text-3: #6e7681;
-  --stars-c-divider: #30363d;
-  --stars-c-brand-1: #4493f8;
-  --stars-c-brand-2: #79c0ff;
-  --stars-c-brand-soft: #051d4d;
-  --stars-c-muted-surface: #21262d;
-  --stars-c-accent: #d4a72c;
-  --stars-c-star-bg: #3d2e00;
-  --stars-c-star-border: #9e6a03;
-  --stars-c-danger-1: #f85149;
-  --stars-header-bg: #0d1117;
+  --stars-c-brand-soft: color-mix(in srgb, var(--accent) 22%, var(--card-bg));
+  --stars-c-star-bg: color-mix(in srgb, var(--accent-3) 28%, var(--card-bg));
   --stars-scrollbar-thumb: rgba(230, 237, 243, 0.32);
   --stars-scrollbar-thumb-hover: rgba(230, 237, 243, 0.5);
   color-scheme: dark;
@@ -1794,21 +1780,19 @@ a.star-card__avatar:focus-visible {
   background: linear-gradient(180deg, #f0cc53 0%, #d4a72c 55%, #b8870f 100%);
 }
 
-:root[data-stars-theme="dark"] .star-card__shield {
+:root[data-theme="dark"] .star-card__shield {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
 
-:root[data-stars-theme="dark"] .star-card__shield-label {
+:root[data-theme="dark"] .star-card__shield-label {
   background: linear-gradient(180deg, #57606a 0%, #3d444d 50%, #2f363d 100%);
 }
 
-:root[data-stars-theme="dark"] .star-card__shield-value {
+:root[data-theme="dark"] .star-card__shield-value {
   background: linear-gradient(180deg, #58a6ff 0%, #388bfd 55%, #1f6feb 100%);
 }
 
-:root[data-stars-theme="dark"]
-  .star-card__shield--stars
-  .star-card__shield-value {
+:root[data-theme="dark"] .star-card__shield--stars .star-card__shield-value {
   background: linear-gradient(180deg, #eac54f 0%, #bf8700 55%, #9a6700 100%);
 }
 
