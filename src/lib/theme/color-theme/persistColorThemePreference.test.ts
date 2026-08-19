@@ -1,15 +1,15 @@
 import { afterEach, describe, expect, it } from 'bun:test'
-import { STARS_COLOR_THEME_KEY } from './constants'
+import { COLOR_THEME_KEY } from './constants'
 import { persistColorThemePreference } from './persistColorThemePreference'
 
 describe('persistColorThemePreference', () => {
   afterEach(() => {
-    localStorage.removeItem(STARS_COLOR_THEME_KEY)
+    localStorage.removeItem(COLOR_THEME_KEY)
   })
 
   it('stores the preference for later reads', () => {
     persistColorThemePreference('dark')
-    expect(localStorage.getItem(STARS_COLOR_THEME_KEY)).toBe('dark')
+    expect(localStorage.getItem(COLOR_THEME_KEY)).toBe('dark')
   })
 
   it('does not throw when localStorage.setItem fails', () => {

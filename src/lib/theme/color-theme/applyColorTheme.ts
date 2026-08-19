@@ -1,15 +1,12 @@
 import { readColorThemePreference } from './readColorThemePreference'
 import { resolveColorTheme } from './resolveColorTheme'
-import type {
-  StarsColorThemePreference,
-  StarsResolvedColorTheme,
-} from './types'
+import type { ColorThemePreference, ResolvedColorTheme } from './types'
 
 export const applyColorTheme = (
-  preference: StarsColorThemePreference = readColorThemePreference(),
-): StarsResolvedColorTheme => {
+  preference: ColorThemePreference = readColorThemePreference(),
+): ResolvedColorTheme => {
   if (typeof document === 'undefined') return resolveColorTheme(preference)
   const resolved = resolveColorTheme(preference)
-  document.documentElement.dataset.starsTheme = resolved
+  document.documentElement.dataset.theme = resolved
   return resolved
 }

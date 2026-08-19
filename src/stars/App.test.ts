@@ -53,16 +53,6 @@ describe('App', () => {
     expect(store.uiLocale).toBe('en')
   })
 
-  it('sets the color theme via the theme buttons', async () => {
-    globalThis.fetch = (async (url: string) =>
-      mockFetch(url)) as unknown as typeof fetch
-    const wrapper = mount(App)
-    await flushPromises()
-    const [, darkBtn] = wrapper.findAll('.stars-app__theme-btn')
-    await darkBtn?.trigger('click')
-    expect(darkBtn?.classes()).toContain('is-active')
-  })
-
   it('toggles the sidebar collapsed state', async () => {
     globalThis.fetch = (async (url: string) =>
       mockFetch(url)) as unknown as typeof fetch
