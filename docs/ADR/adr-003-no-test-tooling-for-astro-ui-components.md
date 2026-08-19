@@ -1,6 +1,6 @@
 ---
 title: "ADR-003: No automated test tooling for presentational Astro UI components"
-status: proposed
+status: accepted
 date: 2026-08-19
 context:
   - path: .context/plans/2026-08-19-retro-design-system.md

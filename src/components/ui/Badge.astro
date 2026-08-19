@@ -13,6 +13,10 @@
     padding: 0.2rem 0.65rem;
     border-radius: 999px;
     background: var(--accent-3);
-    color: var(--fg);
+    /* Fixed dark navy, not var(--fg): --accent-3 (mustard) stays a light
+       colour in both themes, so the text needs to stay dark regardless of
+       page theme -- var(--fg) flips to a light cream in dark mode, which
+       measured 1.33:1 against dark-mode --accent-3 (WCAG AA needs 4.5:1). */
+    color: #1b3a4b;
   }
 </style>

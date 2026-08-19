@@ -156,32 +156,12 @@ a {
   list-style: none;
 }
 
-.card-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-  color: var(--accent);
-}
-
 .card-links {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: auto;
   padding-top: 0.5rem;
-}
-
-.card-link {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  color: var(--accent-2);
-}
-
-.card-link:hover {
-  text-decoration: underline;
 }
 
 .project-page {

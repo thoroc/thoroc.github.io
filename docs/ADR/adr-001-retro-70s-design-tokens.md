@@ -1,6 +1,6 @@
 ---
 title: "ADR-001: Retro 70s design tokens as the site's visual identity"
-status: proposed
+status: accepted
 date: 2026-08-19
 context:
   - path: .context/plans/2026-08-19-retro-design-system.md

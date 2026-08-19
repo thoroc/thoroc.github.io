@@ -1,6 +1,6 @@
 ---
 title: "ADR-002: Shared Astro component library over Tailwind or per-page CSS"
-status: proposed
+status: accepted
 date: 2026-08-19
 context:
   - path: .context/plans/2026-08-19-retro-design-system.md

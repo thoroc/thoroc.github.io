@@ -1,6 +1,7 @@
 ---
 import { type Lang, useTranslations } from '../i18n/ui'
 import '../styles/global.css'
+import SiteHeader from '../components/ui/SiteHeader.astro'
 
 interface Props {
   lang: Lang
@@ -29,16 +30,7 @@ const fullTitle = title ? `${title} — ${t('site.title')}` : t('site.title')
   </head>
   <body>
     <div class="shell">
-      <header class="site-header">
-        <a class="site-title" href={`/${lang}/`}>thoroc</a>
-        <nav class="site-nav">
-          <a href={`/${lang}/`}>{t('nav.home')}</a>
-          <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
-        </nav>
-        <a class="lang-switch" href={lang === 'en' ? '/fr/' : '/en/'}>
-          {lang === 'en' ? 'Français' : 'English'}
-        </a>
-      </header>
+      <SiteHeader lang={lang} />
 
       <main><slot /></main>
 

@@ -1,5 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content'
+import Badge from '../../../components/ui/Badge.astro'
+import Button from '../../../components/ui/Button.astro'
 import { type Lang, useTranslations } from '../../../i18n/ui'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import { projects, projectTagline } from '../../../lib/projects'
@@ -37,11 +39,15 @@ const title = deepDive?.data.title ?? project.name
       <h1>{title}</h1>
       <p class="card-tagline">{projectTagline(project, lang as 'en' | 'fr')}</p>
       <ul class="card-tags">
-        {project.tags.map((tag) => <li class="card-tag">{tag}</li>)}
+        {project.tags.map((tag) => <li><Badge>{tag}</Badge></li>)}
       </ul>
       <div class="card-links">
-        {project.github && <a class="card-link" href={project.github} rel="noopener">{t('card.source')}</a>}
-        {project.demo && <a class="card-link" href={project.demo} rel="noopener">{t('card.demo')}</a>}
+        {project.github && (
+          <Button href={project.github} rel="noopener" variant="ghost">{t('card.source')}</Button>
+        )}
+        {project.demo && (
+          <Button href={project.demo} rel="noopener" variant="ghost">{t('card.demo')}</Button>
+        )}
       </div>
     </header>
     <div class="prose">

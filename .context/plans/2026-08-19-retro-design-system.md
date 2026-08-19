@@ -1,7 +1,7 @@
 ---
 title: "Plan: Retro 70s design system and shared component library for the site chrome"
 type: plan
-status: draft
+status: done
 date: 2026-08-19
 effort: "M"
 value: "MEDIUM"
@@ -148,6 +148,49 @@ system — it processes no participant data and isn't in scope of PLG's
 GDPR/Article 9 posture. Noted here only so a future reader of this context
 file doesn't need to re-derive that.
 
+### Contrast fixes found by Phase 3's contrast-check task
+
+**Decision:** Phase 3's contrast check (WCAG relative-luminance formula,
+computed directly rather than assumed) found four real AA failures the
+palette hadn't been checked against before. Fixed all four, each narrowly
+scoped to the failing pairing rather than touching the palette broadly:
+
+1. **`Button` primary text on `--accent` fill measured 3.44:1 (light) /
+   4.29:1 (dark)** — both short of 4.5:1, and neither direction (trying
+   `--fg` instead of `--card-bg` as the text colour) cleared both themes at
+   once, because `--accent` itself isn't dark/light enough in either mode
+   to give a single text colour 4.5:1 against it. Fixed by adding a new
+   token pair, `--accent-strong` (`#b94530` light / `#f17a63` dark — each
+   independently tuned against its theme's `--card-bg`, not derived
+   mechanically from `--accent`), used only for this one solid-fill
+   pairing. `--accent` itself is unchanged everywhere else it's used
+   (gradients, borders, hover states).
+2. **`Button` ghost used `--accent` for both text and border**, which
+   measured 2.11–4.42:1 against `--bg`/`--card-bg` depending on theme and
+   accent variant — failing in the light-mode cases that matter (plain
+   text at button size doesn't qualify for the WCAG large-text exemption).
+   Fixed by switching ghost's text and border to `--fg`, which clears
+   9:1+ in every combination this button appears in. This does remove
+   `--accent` from the ghost variant entirely — the accent identity now
+   comes through via `Button` primary's fill instead.
+3. **`Badge` used `--fg` for text on an `--accent-3` fill**, which passed
+   in light mode (5.93:1) but measured 1.33:1 in dark mode — because
+   `--fg` flips to a light colour in dark mode while `--accent-3` stays a
+   light/mustard tone in *both* themes, so a theme-flipping text colour is
+   the wrong tool here. Fixed by hardcoding a fixed dark navy
+   (`#1b3a4b`, deliberately not a var that flips with theme) as the
+   badge's text colour, which clears 5.9:1+ against both `--accent-3`
+   variants.
+4. **`--muted` on `--bg` measured 4.01:1 in light mode**, just short of
+   4.5:1 — pre-existing since Phase 1's token creation, only caught now
+   because this is the first time the pairing was actually computed rather
+   than eyeballed. Fixed by darkening light mode's `--muted` value
+   slightly (`#5b727d` → `#546973`), which also improves (not just
+   preserves) every other `--muted` pairing.
+
+None of these fixes touch `tokens.css`'s other values, `--accent`'s use
+elsewhere, or any pairing that was already passing.
+
 ### Scope: `/stars` is explicitly deferred
 
 **Decision:** `/stars` (`src/pages/stars/index.astro` + `src/stars/**`) is a
@@ -193,6 +236,8 @@ plan and this plan doesn't alter it.
 - `src/components/ProjectCard.astro` — refactored to use `Button`/`Badge`.
 - `src/pages/[lang]/projects/[slug].astro` — same tag/link markup refactored
   for consistency with the card.
+- `src/pages/404.astro` — not originally listed, added when Phase 3's grep
+  gate found it still referencing the deleted `.card-link` class.
 
 ### Out of scope
 
@@ -259,31 +304,43 @@ decision above).
 
 ### Phase 3: Apply to site chrome
 
-- [ ] Refactor `src/components/ProjectCard.astro` to use `Button` for
+- [x] Refactor `src/components/ProjectCard.astro` to use `Button` for
       source/demo/read-more links and `Badge` for tags.
-- [ ] Apply the same refactor to
+- [x] Apply the same refactor to
       `src/pages/[lang]/projects/[slug].astro`'s header links/tags.
-- [ ] Update `.site-title`'s gradient text-clip and `.card--featured`'s
+- [x] Update `.site-title`'s gradient text-clip and `.card--featured`'s
       gradient border-box trick in `global.css` to use the new
       `--accent`/`--accent-2` values (both mechanisms already exist and
       reference accent tokens by name, so they pick up the new colours
       automatically once Phase 1's cutover lands — this task is to
       eyeball them and confirm the retro palette actually looks right in
-      a gradient, not just as flat colour).
-- [ ] Swap `BaseLayout.astro`'s inline header markup for `<SiteHeader>`.
-- [ ] Contrast check: compute the actual contrast ratio for every
+      a gradient, not just as flat colour). Confirmed via screenshot — no
+      code change needed, both mechanisms picked up the new palette
+      automatically as expected.
+- [x] Swap `BaseLayout.astro`'s inline header markup for `<SiteHeader>`.
+- [x] Contrast check: compute the actual contrast ratio for every
       text-on-background pairing this plan introduces or changes
       (`--fg`/`--muted` on `--bg`/`--card-bg`, each accent used as link or
       badge text) and confirm ≥4.5:1 for normal text / ≥3:1 for large text
       and non-text UI (WCAG AA). Record the ratios in this plan's
       Verification section once measured; adjust only the specific failing
-      token pairing if one fails, not the whole palette.
-- [ ] Visual check of `/en/`, `/fr/`, and a project detail page in a
+      token pairing if one fails, not the whole palette. **Found 4 real
+      failures, fixed all 4** (see Verification for ratios and Decisions
+      for the fixes: a new `--accent-strong` token for `Button`'s solid
+      fill, `Button` ghost switching from `--accent` to `--fg`, `Badge`
+      using a fixed dark navy instead of `--fg`, and `--muted`'s light
+      value darkened slightly).
+- [x] Visual check of `/en/`, `/fr/`, and a project detail page in a
       browser (light and dark OS preference), capturing before/after
       screenshots per the `documentation--proof-of-work` convention.
       Specifically check that `SiteHeader`'s nav/lang-switch text doesn't
       overflow or wrap awkwardly on `/fr/`, where labels run longer than
-      `/en/`.
+      `/en/`. Confirmed via `agent-browser` screenshots in both themes —
+      no overflow, all components render as intended, `/stars` untouched.
+- [x] (Discovered mid-phase, fixed) `src/pages/404.astro` also referenced
+      the now-deleted `.card-link` class — not in this plan's original
+      scope list, but leaving it would have shipped an unstyled link.
+      Refactored to use `Button` for consistency.
 
 Exit criterion: landing page, project cards, project detail pages, and the
 site header all render through the new tokens and components; no leftover
@@ -324,12 +381,23 @@ recorded and passing.
 - `aislop scan` (or the per-edit hook) stays clean on every touched file —
   this is a pre-commit gate in this repo, listed explicitly here since the
   earlier draft only named lint/typecheck/test.
-- Contrast ratios recorded for each text-on-background pairing (see Phase
-  3's contrast-check task) — fill in once measured:
-  - `--fg` on `--bg`: *TBD*
-  - `--fg` on `--card-bg`: *TBD*
-  - `--muted` on `--bg`/`--card-bg`: *TBD*
-  - each accent used as link/badge text on `--bg`/`--card-bg`: *TBD*
+- Contrast ratios (WCAG relative-luminance formula), light/dark, all ≥4.5:1
+  unless noted. Four failures were found and fixed — see the "Contrast
+  fixes" decision below for what changed and why.
+  - `--fg` on `--bg`: 9.49 / 11.67
+  - `--fg` on `--card-bg`: 10.92 / 10.34
+  - `--muted` on `--bg`: 4.57 / 7.62 (light was 4.01 before the fix — see
+    below)
+  - `--muted` on `--card-bg`: 5.25 / 6.75
+  - `Button` primary (`--card-bg` text on `--accent-strong` fill): 4.84 /
+    4.79 (was 3.44 / 4.29 on plain `--accent` before the fix)
+  - `Button` ghost (`--fg` text/border on `--bg`/`--card-bg`): 9.49–10.92 in
+    every combination (was `--accent` as text/border, 2.11–4.42, failing
+    in light mode, before the fix)
+  - `Badge` (fixed navy `#1b3a4b` text on `--accent-3` fill): 5.93 / 7.12
+    (was `--fg` text, 5.93 / 1.33 — the dark-mode case failed badly, since
+    `--fg` flips to a light colour but `--accent-3` stays light-toned in
+    both themes, before the fix)
 - `grep -rn "class=\"card-link\"\|class=\"card-tag\"" src/pages src/components` returns nothing once Phase 3 lands — confirms no template still
   references the pre-component classes that Phase 3 replaces.
 - Manual browser check (per `run` skill / dev server) of `/en/`, `/fr/`,

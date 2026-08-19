@@ -1,6 +1,6 @@
 ---
 title: "ADR-004: /stars keeps its own theme system, separate from sitewide tokens"
-status: proposed
+status: accepted
 date: 2026-08-19
 context:
   - path: .context/plans/2026-08-19-retro-design-system.md

@@ -40,14 +40,23 @@ const Tag = href ? 'a' : 'button'
   }
 
   .btn--primary {
-    background: var(--accent);
+    /* --accent-strong, not --accent: --card-bg text on flat --accent falls
+       short of the 4.5:1 WCAG AA text threshold in both themes (measured
+       3.44 light / 4.29 dark); --accent-strong is tuned per-theme
+       specifically for this pairing (light darkened, dark lightened),
+       independent of --accent's other uses (borders, gradients). */
+    background: var(--accent-strong);
     color: var(--card-bg);
   }
 
   .btn--ghost {
+    /* --fg, not --accent: --accent as foreground text/border against
+       --bg/--card-bg measured 2.99-4.42 across themes, short of AA in the
+       cases that matter here (light mode text). --fg reliably clears 9:1+
+       in every theme/background combination this button appears in. */
     background: transparent;
-    color: var(--accent);
-    border-color: var(--accent);
+    color: var(--fg);
+    border-color: var(--fg);
   }
 
   .btn:hover {

@@ -2,8 +2,9 @@
   --bg: #f6e2c9;
   --bg-alt: #eed3ac;
   --fg: #1b3a4b;
-  --muted: #5b727d;
+  --muted: #546973;
   --accent: #e2543a;
+  --accent-strong: #b94530;
   --accent-2: #e8862e;
   --accent-3: #e8ac3d;
   --accent-4: #1c7f73;
@@ -25,6 +26,7 @@
     --fg: #f6e2c9;
     --muted: #cbb89a;
     --accent: #ef6b52;
+    --accent-strong: #f17a63;
     --accent-2: #f2984a;
     --accent-3: #f0c15a;
     --accent-4: #2ea393;
