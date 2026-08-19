@@ -1,0 +1,21 @@
+---
+import { type Lang, useTranslations } from '../../i18n/ui'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const t = useTranslations(lang)
+---
+
+<header class="site-header">
+  <a class="site-title" href={`/${lang}/`}>thoroc</a>
+  <nav class="site-nav">
+    <a href={`/${lang}/`}>{t('nav.home')}</a>
+    <a href={`/${lang}/#projects`}>{t('nav.projects')}</a>
+  </nav>
+  <a class="lang-switch" href={lang === 'en' ? '/fr/' : '/en/'}>
+    {lang === 'en' ? 'Français' : 'English'}
+  </a>
+</header>
