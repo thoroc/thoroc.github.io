@@ -12,7 +12,7 @@ projects:
     name: Stars
     featured: true
     year: 2026
-    github: https://github.com/thoroc/stars
+    github: https://github.com/thoroc/thoroc.github.io/tree/main/src/stars
     demo: /stars/
     tags: [vue, three.js, astro]
     tagline:
