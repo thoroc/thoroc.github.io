@@ -1,48 +1,8 @@
 ---
+import StarsLayout from '../../layouts/StarsLayout.astro'
 import StarsApp from '../../stars/App.vue'
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="icon" href="/stars/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/stars/favicon.ico" sizes="32x32" />
-    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
-    <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
-    <link rel="preload" href="/stars/data/stars.json" as="fetch" crossorigin />
-    <title>Stars</title>
-    <script is:inline>
-      (function () {
-        try {
-          var p = localStorage.getItem('stars-color-theme')
-          var dark =
-            p === 'dark' ||
-            (p !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          document.documentElement.dataset.starsTheme = dark ? 'dark' : 'light'
-        } catch (e) {}
-      })()
-    </script>
-    <style>
-      .stars-back-link {
-        position: fixed;
-        top: 0.5rem;
-        left: 0.5rem;
-        z-index: 1000;
-        font: 12px system-ui, sans-serif;
-        color: inherit;
-        opacity: 0.6;
-        text-decoration: none;
-      }
-      .stars-back-link:hover {
-        opacity: 1;
-      }
-    </style>
-  </head>
-  <body>
-    <a class="stars-back-link" href="/">&larr; thoroc.github.io</a>
-    <StarsApp client:only="vue" />
-  </body>
-</html>
+<StarsLayout>
+  <StarsApp client:only="vue" />
+</StarsLayout>

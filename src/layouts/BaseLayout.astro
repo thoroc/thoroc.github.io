@@ -41,6 +41,7 @@ const fullTitle = title ? `${title} — ${t('site.title')}` : t('site.title')
         } catch (e) {}
       })()
     </script>
+    <slot name="head" />
   </head>
   <body>
     <div class="shell">
