@@ -179,10 +179,17 @@ plan and this plan doesn't alter it.
 - `src/layouts/BaseLayout.astro` — Google Fonts `<link>` tags in `<head>`,
   header markup replaced with `<SiteHeader>`.
 - `src/components/ui/Button.astro`, `src/components/ui/Badge.astro`,
-  `src/components/ui/SiteHeader.astro` — new shared components.
-- `src/components/ui/index.ts` — barrel module re-exporting the three
-  components above, per this repo's own barrel-module convention (missed in
-  the first pass of this plan).
+  `src/components/ui/SiteHeader.astro` — new shared components, imported
+  directly by path (`import Button from '.../ui/Button.astro'`), matching
+  this repo's existing convention for `.astro` components (`ProjectCard.astro`
+  has never been barrel-exported either). **No `index.ts` barrel:** one was
+  added, then removed — `aislop`'s TypeScript check cannot resolve a
+  `.astro`-extension import re-exported through a plain `.ts` file (`TS2307:
+  Cannot find module './Button.astro'`), even though `astro check` resolves
+  the same import fine when it's inside another `.astro` file. This repo's
+  barrel-module convention was written for `.ts` modules; it doesn't extend
+  cleanly to `.astro` components, and no existing component in this repo
+  was barrelled that way either.
 - `src/components/ProjectCard.astro` — refactored to use `Button`/`Badge`.
 - `src/pages/[lang]/projects/[slug].astro` — same tag/link markup refactored
   for consistency with the card.
@@ -230,18 +237,20 @@ failure.
 
 ### Phase 2: Component library
 
-- [ ] Add `src/components/ui/Button.astro` (variants: primary/ghost, hard
+- [x] Add `src/components/ui/Button.astro` (variants: primary/ghost, hard
       offset-shadow retro style using `--shadow-color`), covering hover,
       focus-visible, and active states explicitly (not just default/hover)
       — the risk reviewer flagged that undefined interaction states get
       invented ad hoc by whoever writes the next page.
-- [ ] Add `src/components/ui/Badge.astro` (solid-fill tag chip).
-- [ ] Add `src/components/ui/SiteHeader.astro` (site title, nav links, lang
+- [x] Add `src/components/ui/Badge.astro` (solid-fill tag chip).
+- [x] Add `src/components/ui/SiteHeader.astro` (site title, nav links, lang
       switch — the markup currently inline in `BaseLayout.astro`'s
       `<header class="site-header">`), per the widened component-scope
       decision above.
-- [ ] Add `src/components/ui/index.ts` barrel module re-exporting all
-      three components above, per this repo's barrel-module convention.
+- [x] ~~Add `src/components/ui/index.ts` barrel module~~ — added, then
+      removed: `aislop` blocks a `.ts` file re-exporting `.astro`-extension
+      modules (`TS2307`), and this repo has no precedent for barrelling
+      `.astro` components anyway. See Scope for the full reasoning.
 
 Exit criterion: all three components render correctly in isolation with
 sample props/slots, checked via the dev server in both light and dark OS

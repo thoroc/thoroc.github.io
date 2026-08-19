@@ -1,0 +1,73 @@
+---
+interface Props {
+  href?: string
+  rel?: string
+  target?: string
+  variant?: 'primary' | 'ghost'
+}
+
+const { href, rel, target, variant = 'primary' } = Astro.props
+const Tag = href ? 'a' : 'button'
+---
+
+<Tag
+  class={`btn btn--${variant}`}
+  href={href}
+  rel={rel}
+  target={target}
+  type={href ? undefined : 'button'}
+>
+  <slot />
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.1rem;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--fg);
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--shadow-color);
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.1s ease;
+  }
+
+  .btn--primary {
+    background: var(--accent);
+    color: var(--card-bg);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--shadow-color);
+  }
+
+  .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--shadow-color);
+  }
+
+  .btn:focus-visible {
+    outline: 3px solid var(--accent-3);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
+  }
+</style>
