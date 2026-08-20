@@ -1,7 +1,4 @@
-export const formatRepoDate = (
-  iso: string,
-  locale: string = 'zh-CN',
-): string => {
+export const formatRepoDate = (iso: string, locale: string = 'en'): string => {
   if (!iso) return ''
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return ''
@@ -12,7 +9,7 @@ export const formatRepoDate = (
       day: 'numeric',
     })
   }
-  return date.toLocaleDateString('zh-CN', {
+  return date.toLocaleDateString('fr-FR', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

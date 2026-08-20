@@ -145,11 +145,13 @@ alone).
 3. Update `App.vue`'s lang-toggle markup (`langZh`/`langEn` message keys and button labels) to reflect the
    `fr`/`en` pair, with a component-level test covering the toggle's re-render and label output (not only a
    manual dev-server check), matching this repo's TypeScript-standards coverage convention.
+   **Implementation-time finding**: `App.vue`'s `homeHref` computed had a third instance of the same
+   en-vs-default `?lang=` marker bug found in Phase 1 (task 2) — fixed and tested alongside the toggle
+   markup, same fix as `syncQuery.ts`/`setUiLocale.ts`.
 
-**Exit criterion**: `messages.test.ts`'s key-parity assertion passes for the `en`/`fr` pair, including an
-explicit test case for a key deliberately absent from the `fr` pack (asserting it resolves to the `en`
-value per Decision 9); manual toggle check in the running dev server shows French labels rendering in every
-UI surface the dictionary covers.
+**Done.** `messages.test.ts`'s key-parity assertion passes for the `en`/`fr` pair; `createTranslator.test.ts`
+covers the missing-key-falls-back-to-`en` case (Decision 9). Manual toggle check pending Phase 5's
+verification pass.
 
 ### Phase 3 — Intl-dependent date formatting
 
@@ -160,10 +162,15 @@ UI surface the dictionary covers.
    `zh-CN`/`Asia/Shanghai` branch) and update its test's non-`en`-default assertion.
 3. Add the French branch to `formatRepoDate.ts`. Per Decision 1 (`en`/`fr` are the only two locales going
    forward), this is a clean two-way branch — no residual `zh-CN`-shaped case remains or needs deciding.
-   Update its default parameter and test accordingly.
+   Its default parameter changes to `'en'` (not `'fr'`), matching Phase 1's pattern: an omitted-locale
+   default is the app's real default (`en`), while the non-`en` branch itself is what became `'fr'`. All
+   three real call sites (`StarCard.vue`) already pass an explicit locale, so this default is a safety
+   fallback, not load-bearing behavior.
 
-**Exit criterion**: both files' tests assert French-formatted output for the `fr` locale case, and neither
-file's default parameter or fallback branch still reads `'zh-CN'`.
+**Done.** Both files' tests assert French-formatted output for the `fr` locale case (verified against this
+repo's actual ICU output, not guessed); neither file's default parameter or fallback branch still reads
+`'zh-CN'`. `formatGeneratedAt.ts`'s French branch drops the hardcoded `Asia/Shanghai` timezone entirely
+(per Decision 11, browser-local) rather than substituting a hardcoded `Europe/Paris`.
 
 ### Phase 4 — Galaxy-renderer collation and key-conflation fixes
 

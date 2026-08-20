@@ -14,9 +14,9 @@ describe('formatGeneratedAt', () => {
     expect(result).toContain('Jan')
   })
 
-  it('formats with zh-CN for any other locale', () => {
-    const result = formatGeneratedAt('2026-01-15T08:00:00Z', 'zh-CN')
+  it('formats with fr-FR for any other locale', () => {
+    const result = formatGeneratedAt('2026-01-15T08:00:00Z', 'fr')
     expect(result).toContain('2026')
-    expect(result).toContain('1')
+    expect(result).toContain('janvier')
   })
 })
