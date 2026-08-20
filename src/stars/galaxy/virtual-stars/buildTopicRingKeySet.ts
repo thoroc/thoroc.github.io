@@ -1,3 +1,4 @@
+import { stableCollator } from '../../utils/stable-collator'
 import { GALAXY } from '../constants'
 import { topicRingKey } from './topicRingKey'
 import type { LayoutLike, VirtualStar } from './types'
@@ -36,7 +37,7 @@ export const buildTopicRingKeySet = (
     )
     const candidates = [...topicMap.entries()]
       .filter(([, count]) => count >= TOPIC_RING_MIN_COUNT)
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh-CN'))
+      .sort((a, b) => b[1] - a[1] || stableCollator(a[0], b[0]))
       .slice(0, cap)
 
     for (const [topic] of candidates) {

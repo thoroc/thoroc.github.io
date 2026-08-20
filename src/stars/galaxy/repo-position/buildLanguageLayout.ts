@@ -1,3 +1,4 @@
+import { stableCollator } from '../../utils/stable-collator'
 import { GALAXY, R_MAX, R_MIN } from '../constants'
 import { hashStr, hashUnit } from '../hash'
 import type { LanguageLayout, RepoLike } from './types'
@@ -14,7 +15,7 @@ export const buildLanguageLayout = (
   }
 
   const sorted = [...counts.entries()].sort(
-    (a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), 'zh-CN'),
+    (a, b) => b[1] - a[1] || stableCollator(a[0], b[0]),
   )
   const topN = GALAXY.LAYOUT_LANG_TOP
   const primaryTop = sorted.slice(0, topN).map(([name]) => name)
