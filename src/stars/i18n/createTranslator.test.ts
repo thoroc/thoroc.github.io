@@ -17,12 +17,12 @@ describe('createTranslator', () => {
     expect(t('type')).toBe('Type')
   })
 
-  it('falls back to zh-CN for an unknown locale', () => {
-    const t = createTranslator(() => 'fr')
-    expect(t('type')).toBe('类型')
+  it('falls back to en for an unknown locale', () => {
+    const t = createTranslator(() => 'xx')
+    expect(t('type')).toBe('Type')
   })
 
-  it('falls back to the zh-CN pack for a key missing in the active locale', () => {
+  it('falls back to the en pack for a key missing in the active locale', () => {
     const t = createTranslator(() => 'en')
     expect(t('nonexistent-key')).toBe('nonexistent-key')
   })

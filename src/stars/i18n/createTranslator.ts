@@ -8,10 +8,8 @@ export const createTranslator = (localeRef: LocaleRef): Translator => {
         ? localeRef()
         : ((localeRef as { value?: string | null })?.value ?? localeRef)
     const pack =
-      messages[locale as string] ||
-      (messages['zh-CN'] as Record<string, string>)
-    let text =
-      pack[key] ?? (messages['zh-CN'] as Record<string, string>)[key] ?? key
+      messages[locale as string] || (messages.en as Record<string, string>)
+    let text = pack[key] ?? (messages.en as Record<string, string>)[key] ?? key
     for (const [k, v] of Object.entries(params)) {
       text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v))
     }
