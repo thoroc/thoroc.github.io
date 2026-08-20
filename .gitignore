@@ -4,6 +4,10 @@ node_modules/
 public/stars/data/
 .env
 .env.production
+.env.*
+.mcp.json
+.claude/settings.local.json
+.aws/
 .DS_Store
 npm-debug.log*
 *.local
