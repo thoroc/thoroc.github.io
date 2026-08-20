@@ -191,15 +191,26 @@ repo's actual ICU output, not guessed); neither file's default parameter or fall
    composite-key assertion (currently `'其他\0legacy'`), plus any fixture/snapshot file task 0 surfaced.
 4. Re-grep the entire repo for `其他` again after the edit lands, confirming task 0's pre-edit sweep and the
    edit itself together leave zero hits.
-5. Manually verify the collation fix in the running dev server: confirm tied entries render in a stable,
-   non-crashing order, and — per Decision 8 — that the order does **not** change when toggling between `en`
-   and `fr`. This is the behavior the fix is meant to produce, not a side effect to merely tolerate; a
-   passing unit test alone does not close this risk (see Risks).
+5. **Done.** Manually verified in the running dev server (`bun install` first — a fresh worktree has no
+   `node_modules`; a hand-crafted `public/stars/data/stars.json` fixture with six repos across five tied
+   languages plus one no-language repo, since local dev has no real generated data). Confirmed via live DOM
+   (not a screenshot — see below): the sidebar language list renders `Other, C++, Go, Python, Rust, Vue`
+   under `en` and `Autre, C++, Go, Python, Rust, Vue` under `fr` — **identical underlying order**, only the
+   "other" bucket's display label changes, exactly matching Decision 8. No console errors during the
+   toggle. French UI content (Phase 2) also confirmed rendering correctly live (`Échec du chargement de
+   stars.json`, `Filtres`, `Mis à jour … Données issues de l'API GitHub`).
+   **Caveat**: the galaxy WebGL canvas's own *visual* rendering could not be screenshotted — headless
+   Chromium renders the `/stars` page's layout as a collapsed near-zero-height container below the header,
+   reproducible even with zero data loaded (i.e. before any of this plan's code runs) and on the unmodified
+   landing page's sibling route working fine, so it is a pre-existing/environment rendering quirk, not a
+   regression from this plan's changes. The sidebar-list check above exercises the identical
+   `countBy`/`stableCollator` code path the galaxy renderer calls, so the collation fix itself is verified;
+   only the WebGL canvas's pixel-level appearance is unconfirmed.
 
 **Exit criterion**: sort output for tied entries no longer depends on `'zh-CN'` collation rules under any
 UI locale; no test, fixture, or production file references `'其他'` as a key (display text sourced from
-`messages.ts` is unaffected); task 5's manual dev-server check has been performed and recorded, not merely
-implied by green tests.
+`messages.ts` is unaffected); task 5's manual dev-server check has been performed and recorded (above), not
+merely implied by green tests.
 
 ### Phase 5 — Verification
 
