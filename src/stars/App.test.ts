@@ -48,9 +48,27 @@ describe('App', () => {
     const wrapper = mount(App)
     await flushPromises()
     const store = useStarsStore()
-    const [, enBtn] = wrapper.findAll('.stars-app__lang-btn')
+    const [frBtn, enBtn] = wrapper.findAll('.stars-app__lang-btn')
     await enBtn?.trigger('click')
     expect(store.uiLocale).toBe('en')
+    await frBtn?.trigger('click')
+    expect(store.uiLocale).toBe('fr')
+  })
+
+  it('marks the home link with ?lang=fr only when fr is active', async () => {
+    globalThis.fetch = (async (url: string) =>
+      mockFetch(url)) as unknown as typeof fetch
+    const wrapper = mount(App)
+    await flushPromises()
+    const store = useStarsStore()
+    expect(wrapper.find('.stars-app__brand').attributes('href')).not.toMatch(
+      /lang=/,
+    )
+    store.setUiLocale('fr')
+    await flushPromises()
+    expect(wrapper.find('.stars-app__brand').attributes('href')).toMatch(
+      /lang=fr/,
+    )
   })
 
   it('toggles the sidebar collapsed state', async () => {
