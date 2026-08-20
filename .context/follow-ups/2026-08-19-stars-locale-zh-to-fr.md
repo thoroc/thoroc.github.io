@@ -1,10 +1,11 @@
 ---
 title: "Follow-up: replace /stars's internal zh-CN UI locale with fr"
 type: follow-up
-status: active
+status: done
 date: 2026-08-19
 related:
   - ../plans/2026-08-19-supersede-adr-004-stars-landing-alignment.md
+  - ../plans/2026-08-20-stars-locale-zh-to-fr.md
 ---
 
 # Follow-up: replace `/stars`'s internal zh-CN UI locale with fr
@@ -89,6 +90,14 @@ that utility's approach (loading mechanism, file format, typing) as part of
 this follow-up's findings pass — it may replace `messages.ts`'s structure
 rather than just adding an `fr` entry to it, which would change the shape
 of the swap described above.
+
+## Resolution
+
+Landed via `.context/plans/2026-08-20-stars-locale-zh-to-fr.md` (5 phases, `fix/stars-locale-zh-to-fr`).
+The `mcpx-cli` comparison above was evaluated during that plan's findings pass — its `i18next`-based
+approach was not adopted (wrong scale, mismatched locale-negotiation model), but `messages.ts` was still
+split into `messages.en.ts`/`messages.fr.ts` plus `keyof`-derived key typing (Phase 5), addressing the
+structural concern raised here without the library.
 
 ## Action
 

@@ -1,7 +1,7 @@
 ---
 title: "Plan: Replace /stars's internal zh-CN UI locale with fr"
 type: plan
-status: active
+status: done
 date: 2026-08-20
 effort: "L"
 value: "MEDIUM"
@@ -11,6 +11,7 @@ related:
   - ../findings/2026-08-20-stars-locale-zh-to-fr-findings.md
   - ../follow-ups/2026-08-19-stars-locale-zh-to-fr.md
   - ../follow-ups/2026-08-20-stars-fr-translation-native-review.md
+  - ../follow-ups/2026-08-20-stars-headless-layout-collapse.md
 ---
 
 ## Goal
@@ -214,17 +215,24 @@ merely implied by green tests.
 
 ### Phase 5 — Verification
 
-1. Run the full `/stars` suite (`bun test --config=bunfig.stars.toml src/stars`) and root `hk check -c`;
-   confirm zero failures (per this project's testing convention — do not sum "passed" counts across
-   suites).
-2. Re-grep the repo for stray `zh-CN`/`zh_CN`/`'zh'`/`其他` literals to confirm nothing was missed.
-3. Check `README.md` and `docs/*.md` for any `/stars`-feature references to the `zh-CN`/Chinese toggle and
-   update them if found, per this project's standing session-end documentation convention.
-4. Implement the `messages.en.ts`/`messages.fr.ts` file split and `keyof typeof messages.en`-based typing
-   on `MessagePack`/`Translator` per Decision 12 (ships in this phase, not deferred), with tests covering
-   the new typed key surface.
+1. **Done.** Full `/stars` suite (752 tests) and root `hk check -c` pass clean; `astro check` reports 0
+   errors.
+2. **Done.** Re-grepped the whole repo for `zh-CN`/`zh_CN`/`'zh'`/`其他` — zero hits in production code;
+   remaining hits are this plan's own history in `.context/`, this repo's other `.md` docs discussing the
+   swap, one Chinese-language source *comment* (`galaxy/constants.ts`, out of scope — comments aren't
+   user-facing locale content), and test fixtures deliberately using `'zh-CN'` as an invalid/legacy-value
+   example.
+3. **Done.** `README.md` has no `/stars`-locale references. `docs/ADR/adr-005-stars-adopts-sitewide-theme.md`
+   described the old `zh-CN`/`en` toggle as a known, separately-tracked issue — added an update note
+   rather than rewriting the historical bullet.
+4. **Done.** `messages.en.ts`/`messages.fr.ts` file split and `MessageKey = keyof typeof en`-based typing on
+   `MessagePack`/`Translator` shipped (Decision 12). `fr` missing or adding a key versus `en` is now a
+   compile-time error (`satisfies MessagePack`), not just `messages.test.ts`'s runtime assertion; every
+   `t()`/`t.value()` call site across `/stars` was confirmed to already use literal keys, so tightening
+   `Translator`'s `key` parameter broke nothing (`astro check`: 0 errors) except one test's own
+   deliberately-invalid key, now marked `@ts-expect-error`.
 
-**Exit criterion**: `hk check -c` passes clean; the originating follow-up
+**Exit criterion — met**: `hk check -c` passes clean; the originating follow-up
 (`.context/follow-ups/2026-08-19-stars-locale-zh-to-fr.md`) is set `status: done`.
 
 ## Risks
