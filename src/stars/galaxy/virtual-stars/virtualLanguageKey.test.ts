@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import type { LayoutLike, VirtualStar } from './types'
 import { virtualLanguageKey } from './virtualLanguageKey'
 
@@ -20,13 +21,15 @@ describe('virtualLanguageKey', () => {
     )
   })
 
-  it('falls back to 其他 for an unknown language', () => {
+  it('falls back to the other-language key for an unknown language', () => {
     expect(virtualLanguageKey(makeStar('COBOL'), makeLayout(['Rust']))).toBe(
-      '其他',
+      OTHER_LANGUAGE_KEY,
     )
   })
 
-  it('falls back to 其他 when language is empty', () => {
-    expect(virtualLanguageKey(makeStar(''), makeLayout(['Rust']))).toBe('其他')
+  it('falls back to the other-language key when language is empty', () => {
+    expect(virtualLanguageKey(makeStar(''), makeLayout(['Rust']))).toBe(
+      OTHER_LANGUAGE_KEY,
+    )
   })
 })

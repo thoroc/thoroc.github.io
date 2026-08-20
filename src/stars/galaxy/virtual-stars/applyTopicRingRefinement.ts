@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { GALAXY } from '../constants'
 import { hashStr } from '../hash'
 import { galaxyRadiusForLanguage } from '../morphological-layout'
@@ -42,7 +43,7 @@ export const applyTopicRingRefinement = (
   }
 
   for (const [ringKey, indices] of ringGroups) {
-    const lang = ringKey.split('\0')[0] || '其他'
+    const lang = ringKey.split('\0')[0] || OTHER_LANGUAGE_KEY
     const group = measureGroupFromPositions(indices, positions)
     const gR = galaxyRadiusForLanguage(lang, layout, totalRepos) * sf
     const maxRingR =

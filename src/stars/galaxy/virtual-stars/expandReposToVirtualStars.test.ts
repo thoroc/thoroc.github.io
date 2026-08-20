@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { expandReposToVirtualStars } from './expandReposToVirtualStars'
 import type { RepoLike } from './types'
 
@@ -40,6 +41,6 @@ describe('expandReposToVirtualStars', () => {
     const repos = [{ fullName: 'owner/repo' }] as unknown as RepoLike[]
     const stars = expandReposToVirtualStars(repos)
     expect(stars[0]?.repoId).toBe('owner/repo')
-    expect(stars[0]?.language).toBe('其他')
+    expect(stars[0]?.language).toBe(OTHER_LANGUAGE_KEY)
   })
 })

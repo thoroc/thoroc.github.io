@@ -6,13 +6,14 @@ import {
   useStarsStore,
 } from '../composables/useStarsStore'
 import { langColor, langSlug } from '../utils/lang-colors'
+import { OTHER_LANGUAGE_KEY } from '../utils/other-language'
 import { buildLanguageOptions } from '../utils/stars-filter'
 
 const store = useStarsStore()
 const { t } = useStarsI18n()
 
 const langLabel = (name: string): string =>
-  name === '其他' ? t.value('otherLang') : name
+  name === OTHER_LANGUAGE_KEY ? t.value('otherLang') : name
 
 const allItem = computed(() => ({
   key: 'all',

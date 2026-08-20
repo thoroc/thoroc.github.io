@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { stableCollator } from '../../utils/stable-collator'
 import { GALAXY } from '../constants'
 import { topicRingKey } from './topicRingKey'
@@ -19,7 +20,9 @@ export const buildTopicRingKeySet = (
 
   for (const v of virtualStars) {
     if (!v.topic) continue
-    const lang = layout?.langKeys?.has(v.language) ? v.language : '其他'
+    const lang = layout?.langKeys?.has(v.language)
+      ? v.language
+      : OTHER_LANGUAGE_KEY
     if (!langTopicCounts.has(lang)) {
       langTopicCounts.set(lang, new Map())
       langTopicKinds.set(lang, new Set())

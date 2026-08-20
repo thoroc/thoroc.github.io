@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { layoutLanguageKey } from './layoutLanguageKey'
 
 describe('layoutLanguageKey', () => {
@@ -9,9 +10,11 @@ describe('layoutLanguageKey', () => {
     )
   })
 
-  it('falls back to 其他 for unknown or missing languages', () => {
+  it('falls back to the other-language key for unknown or missing languages', () => {
     const layout = { langKeys: new Set(['TypeScript']) }
-    expect(layoutLanguageKey({ language: 'Rust' }, layout)).toBe('其他')
-    expect(layoutLanguageKey({}, layout)).toBe('其他')
+    expect(layoutLanguageKey({ language: 'Rust' }, layout)).toBe(
+      OTHER_LANGUAGE_KEY,
+    )
+    expect(layoutLanguageKey({}, layout)).toBe(OTHER_LANGUAGE_KEY)
   })
 })

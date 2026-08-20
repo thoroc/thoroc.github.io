@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../other-language'
 import { filterAndSortStars } from './filterAndSortStars'
 import type { FilterOptions, StarItem } from './types'
 
@@ -74,16 +75,17 @@ describe('filterAndSortStars', () => {
     ).toEqual(['b/py-web'])
   })
 
-  it('filters by language, including 其他 for null language', () => {
+  it('filters by language, including the other-language key for null language', () => {
     expect(
       filterAndSortStars(items, { ...baseOpts, language: 'Rust' }).map(
         (i) => i.fullName,
       ),
     ).toEqual(['a/rust-cli'])
     expect(
-      filterAndSortStars(items, { ...baseOpts, language: '其他' }).map(
-        (i) => i.fullName,
-      ),
+      filterAndSortStars(items, {
+        ...baseOpts,
+        language: OTHER_LANGUAGE_KEY,
+      }).map((i) => i.fullName),
     ).toEqual(['c/no-lang'])
   })
 

@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { nebulaLangTint, repoLangRgb } from '../colors'
 import { gauss3, hashSeed, hashStr, hashUnit } from '../hash'
 import type { GasBuffers, GasField } from './types'
@@ -45,7 +46,7 @@ export const emitFieldGasParticles = (
 
     const pick =
       kernels[Math.floor(hashUnit(h, 10) * kernels.length) % kernels.length]
-    const lang = pick?.lang ?? '其他'
+    const lang = pick?.lang ?? OTHER_LANGUAGE_KEY
     const [br, bg, bb] = repoLangRgb(lang)
     const d = 0.28 + hashUnit(h, 11) * 0.42
     const [nr, ng, nb] = nebulaLangTint([br, bg, bb], d)

@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { stableCollator } from '../../utils/stable-collator'
 import type { LegendEntry, RepoLike } from './types'
 
@@ -7,7 +8,7 @@ export const buildLanguageLegend = (
 ): LegendEntry[] => {
   const counts = new Map<string, number>()
   for (const item of items || []) {
-    const key = item.language || '其他'
+    const key = item.language || OTHER_LANGUAGE_KEY
     counts.set(key, (counts.get(key) || 0) + 1)
   }
   return [...counts.entries()]

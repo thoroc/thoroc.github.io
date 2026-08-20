@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { normalizeRepoTopics } from './normalizeRepoTopics'
 import type { RepoLike, VirtualStar } from './types'
 
@@ -10,7 +11,7 @@ export const expandReposToVirtualStars = (
   for (const item of list) {
     const repoId = String(item?.id || item?.fullName || '')
     if (!repoId) continue
-    const language = item.language || '其他'
+    const language = item.language || OTHER_LANGUAGE_KEY
     const topics = normalizeRepoTopics(item)
     if (!topics.length) {
       out.push({
