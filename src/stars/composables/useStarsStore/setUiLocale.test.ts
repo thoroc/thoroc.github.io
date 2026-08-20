@@ -6,18 +6,25 @@ import { uiLocale } from './state'
 describe('setUiLocale', () => {
   afterEach(resetStateForTests)
 
-  it('sets the locale to "en" and adds ?lang=en', () => {
-    window.history.replaceState({}, '', '/')
+  it('sets the locale to "en" and removes ?lang', () => {
+    window.history.replaceState({}, '', '/?lang=fr')
     setUiLocale('en')
     expect(uiLocale.value).toBe('en')
-    expect(new URLSearchParams(window.location.search).get('lang')).toBe('en')
+    expect(new URLSearchParams(window.location.search).has('lang')).toBe(false)
   })
 
-  it('normalizes any non-"en" value to "zh-CN" and removes ?lang', () => {
-    window.history.replaceState({}, '', '/?lang=en')
+  it('sets the locale to "fr" and adds ?lang=fr', () => {
+    window.history.replaceState({}, '', '/')
     setUiLocale('fr')
-    expect(uiLocale.value).toBe('zh-CN')
-    expect(new URLSearchParams(window.location.search).has('lang')).toBe(false)
+    expect(uiLocale.value).toBe('fr')
+    expect(new URLSearchParams(window.location.search).get('lang')).toBe('fr')
+  })
+
+  it('normalizes any other value to "fr" and adds ?lang=fr', () => {
+    window.history.replaceState({}, '', '/')
+    setUiLocale('zh-CN')
+    expect(uiLocale.value).toBe('fr')
+    expect(new URLSearchParams(window.location.search).get('lang')).toBe('fr')
   })
 
   it('does nothing when window is undefined', () => {

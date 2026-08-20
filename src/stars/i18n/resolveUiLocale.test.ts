@@ -7,14 +7,14 @@ describe('resolveUiLocale', () => {
   })
 
   it('normalizes an invalid ?lang= value', () => {
-    expect(resolveUiLocale('?lang=fr')).toBe('zh-CN')
+    expect(resolveUiLocale('?lang=zh-CN')).toBe('fr')
   })
 
   it('falls back to the fallback param when no query param', () => {
-    expect(resolveUiLocale('', 'en')).toBe('en')
+    expect(resolveUiLocale('', 'fr')).toBe('fr')
   })
 
-  it('defaults the fallback to zh-CN', () => {
-    expect(resolveUiLocale('')).toBe('zh-CN')
+  it('defaults the fallback to en', () => {
+    expect(resolveUiLocale('')).toBe('en')
   })
 })

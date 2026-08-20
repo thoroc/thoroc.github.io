@@ -25,7 +25,7 @@ describe('syncQuery', () => {
 
   it('writes each non-default filter into the query string', () => {
     window.history.replaceState({}, '', '/')
-    uiLocale.value = 'en'
+    uiLocale.value = 'fr'
     qApplied.value = ' vue '
     language.value = 'Rust'
     license.value = 'MIT'
@@ -34,7 +34,7 @@ describe('syncQuery', () => {
     sort.value = 'most_stars'
     syncQuery()
     const params = new URLSearchParams(window.location.search)
-    expect(params.get('lang')).toBe('en')
+    expect(params.get('lang')).toBe('fr')
     expect(params.get('stars-q')).toBe('vue')
     expect(params.get('stars-lang')).toBe('Rust')
     expect(params.get('stars-license')).toBe('MIT')

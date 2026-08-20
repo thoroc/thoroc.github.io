@@ -15,7 +15,7 @@ import {
 export const syncQuery = (): void => {
   if (typeof window === 'undefined') return
   const params = new URLSearchParams()
-  if (uiLocale.value === 'en') params.set('lang', 'en')
+  if (uiLocale.value === 'fr') params.set('lang', 'fr')
   if (qApplied.value.trim()) params.set('stars-q', qApplied.value.trim())
   if (language.value !== 'all') params.set('stars-lang', language.value)
   if (license.value !== 'all') params.set('stars-license', license.value)

@@ -13,8 +13,13 @@ describe('writeStoredUiLocale', () => {
     expect(readStoredUiLocale()).toBe('en')
   })
 
-  it('normalizes any non-"en" value to zh-CN', () => {
+  it('stores "fr" as-is', () => {
     writeStoredUiLocale('fr')
-    expect(readStoredUiLocale()).toBe('zh-CN')
+    expect(readStoredUiLocale()).toBe('fr')
+  })
+
+  it('normalizes any other value to fr', () => {
+    writeStoredUiLocale('zh-CN')
+    expect(readStoredUiLocale()).toBe('fr')
   })
 })

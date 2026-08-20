@@ -11,13 +11,21 @@ describe('readStoredUiLocale', () => {
     expect(readStoredUiLocale()).toBe('')
   })
 
-  it('returns a valid stored locale', () => {
+  it('returns a valid stored "en" locale', () => {
     localStorage.setItem(STARS_UI_PREFS_KEY, JSON.stringify({ uiLocale: 'en' }))
     expect(readStoredUiLocale()).toBe('en')
   })
 
-  it('returns an empty string for an invalid stored locale', () => {
+  it('returns a valid stored "fr" locale', () => {
     localStorage.setItem(STARS_UI_PREFS_KEY, JSON.stringify({ uiLocale: 'fr' }))
+    expect(readStoredUiLocale()).toBe('fr')
+  })
+
+  it('returns an empty string for an invalid stored locale', () => {
+    localStorage.setItem(
+      STARS_UI_PREFS_KEY,
+      JSON.stringify({ uiLocale: 'zh-CN' }),
+    )
     expect(readStoredUiLocale()).toBe('')
   })
 })

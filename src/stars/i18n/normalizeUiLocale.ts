@@ -1,3 +1,3 @@
 export const normalizeUiLocale = (value: unknown): string => {
-  return value === 'en' ? 'en' : 'zh-CN'
+  return value === 'en' ? 'en' : 'fr'
 }
