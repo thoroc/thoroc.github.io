@@ -1,4 +1,10 @@
-export type MessagePack = Record<string, string>
+import type { en } from './messages.en'
+
+/** The full set of translation keys, derived from the English pack (the
+ * canonical source all other packs translate from). */
+export type MessageKey = keyof typeof en
+
+export type MessagePack = Record<MessageKey, string>
 
 export type LocaleRef =
   | string
@@ -8,6 +14,6 @@ export type LocaleRef =
   | undefined
 
 export type Translator = (
-  key: string,
+  key: MessageKey,
   params?: Record<string, unknown>,
 ) => string

@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'bun:test'
-import { messages } from './messages'
+import { en } from './messages.en'
+import { fr } from './messages.fr'
 
 describe('messages', () => {
   it('has fr and en packs with matching key sets', () => {
-    const frKeys = Object.keys(messages.fr as Record<string, string>).sort()
-    const enKeys = Object.keys(messages.en as Record<string, string>).sort()
-    expect(frKeys).toEqual(enKeys)
+    expect(Object.keys(fr).sort()).toEqual(Object.keys(en).sort())
   })
 })
