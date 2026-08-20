@@ -91,6 +91,13 @@ Resolved before drafting this plan:
     `formatGeneratedAt.ts` and `formatRepoDate.ts`. Referenced in Phase 3, task 1.
 12. **The `messages.en.ts`/`messages.fr.ts` file split and `keyof`-based typing improvement ship in this
     plan's Phase 5**, not deferred to a separate follow-up. Referenced in Phase 5, task 4.
+13. **`state.ts:61`'s `localeConfig.configured` is not a duplicate of `uiLocale`'s default — it resolves
+    Open Question 1.** Traced during Phase 1, task 1: it's the per-deployment configured default locale,
+    read from `stars.json`'s `ui.defaultUiLocale` field (`loadData.ts`), itself sourced from
+    `scripts/stars/generate/constants.ts`'s `DEFAULT_UI_LOCALE` (already `'en'`) and consumed as the
+    `fallback` argument to `resolveUiLocale` in `applyQuery.ts` when no query param or stored preference is
+    present. Distinct purpose, but the fix is the same as `uiLocale`'s: its own hardcoded pre-load initial
+    value changes from `'zh-CN'` to `'en'` alongside `uiLocale`'s, per Decision 1 — no scope growth.
 
 ## Phases
 
@@ -100,25 +107,33 @@ Resolved before drafting this plan:
    unmerged edits to the files this phase and Phase 2-4 touch (`App.vue`, `state.ts`, `formatRepoDate.ts` in
    particular) — check before opening this plan's branch, not after hitting a merge conflict.
 1. Trace every consumer of `state.ts:61`'s `localeConfig.configured` box before touching it — confirm
-   whether it's a plain duplicate of `uiLocale`'s default or carries distinct meaning. (Open Question 1 —
-   resolve here, before the rest of this phase.)
+   whether it's a plain duplicate of `uiLocale`'s default or carries distinct meaning. **Done — see
+   Decision 13**: it's the per-deployment configured default, distinct from `uiLocale`, but its own
+   hardcoded initial literal changes the same way.
 2. Swap the literal fallback from `'zh-CN'` to `'fr'`, and the default-locale literal from wherever it
    currently reads `'zh-CN'` to `'en'` (per Decision 1), across: `normalizeUiLocale.ts`,
    `resolveUiLocale.ts`, `readStoredUiLocale.ts`, `writeStoredUiLocale.ts`, `setUiLocale.ts`, `state.ts`,
    `resetStateForTests.ts`. Include an explicit test case for a stored/legacy `'zh-CN'` value being read
-   back post-swap and resetting to `en` (Decision 7).
-3. Consolidate the six independently-reimplemented `value === 'en' ? 'en' : <other>` binary checks (in the
-   files above plus `createTranslator.ts`'s fallback lookup) to call the shared `normalizeUiLocale` instead
-   of reimplementing the check inline — while every one of these files is already being touched. Land this
-   as a separate commit from task 2's literal swap, so a regression can be attributed to the content change
-   or the refactor, not both at once.
+   back post-swap and resetting to `en` (Decision 7). **Implementation-time finding**: `syncQuery.ts` and
+   `setUiLocale.ts` both write an explicit `?lang=` URL marker for whichever locale is *not* the default —
+   previously `en` (since `zh-CN` was default), now `fr` (since `en` is default per Decision 1). This is a
+   direct, necessary consequence of Decision 1, not new scope: both files' marker condition flips from
+   `=== 'en'` to `=== 'fr'`, with matching test updates in `syncQuery.test.ts` and `setUiLocale.test.ts`.
+3. Consolidate the independently-reimplemented `value === 'en' ? 'en' : <other>` binary checks to call the
+   shared `normalizeUiLocale` instead of reimplementing inline. **Implementation-time correction**: only
+   `writeStoredUiLocale.ts` and `setUiLocale.ts` actually duplicate this shape — `resolveUiLocale.ts`
+   already calls `normalizeUiLocale` (the findings pass was wrong on this one file), `readStoredUiLocale.ts`
+   has a different allowlist contract (returns `''` for unset, not "the other locale" — not safe to
+   collapse into `normalizeUiLocale`), `state.ts`/`resetStateForTests.ts` hold plain default literals with
+   nothing to call, and `createTranslator.ts`'s fallback-*pack* lookup is a distinct concept governed by
+   Decision 9 in Phase 2, not this task. Land as a separate commit from task 2's literal swap, so a
+   regression can be attributed to the content change or the refactor, not both at once.
 4. Update the corresponding test files' literals and assertions — several currently assert the pre-swap
    direction (e.g. `'fr'` normalizing to `'zh-CN'`) and will invert, not just need a renamed literal.
 
 **Exit criterion**: `bun test --config=bunfig.stars.toml src/stars/i18n src/stars/storage/ui-prefs src/stars/composables/useStarsStore`
 passes with zero `zh-CN` literals remaining in the touched files (confirm by re-grep, not by test pass
-alone), **and** Open Question 1's trace is resolved one way or the other (not merely started) — this phase
-cannot exit with that trace inconclusive.
+alone).
 
 ### Phase 2 — Translator fallback and message content
 
@@ -210,16 +225,13 @@ implied by green tests.
 - **Translation quality.** The initial French content is machine-translated (Decision 10) — a user-facing
   surface with wording/tone risk until the native-speaker review tracked in
   `.context/follow-ups/2026-08-20-stars-fr-translation-native-review.md` lands.
-- **`localeConfig.configured` scope creep.** If Phase 1's trace (task 1) finds this box has hidden
-  consumers beyond duplicating `uiLocale`'s default, this plan's scope may grow before Phase 1 can close —
-  Phase 1's exit criterion now requires this trace to reach a conclusion, not merely start, so scope growth
-  surfaces before the rest of the plan proceeds rather than mid-way through.
+- ~~`localeConfig.configured` scope creep.~~ Resolved (Decision 13): its only consumers are `loadData.ts`
+  and `applyQuery.ts`, both already in Phase 1's file list; no hidden scope surfaced.
 
 ## Open Questions
 
-1. **`state.ts:61`'s `localeConfig.configured`**: what actually reads it, and does it need separate handling
-   from `uiLocale`? This is an investigative trace, not a preference decision — it resolves during Phase 1,
-   task 1's execution, not before. Blocks Phase 1, task 1 (first task of the plan).
+None outstanding. The sole item (`state.ts:61`'s `localeConfig.configured`) was resolved during Phase 1,
+task 1's trace — see Decision 13.
 
 ## Verification
 

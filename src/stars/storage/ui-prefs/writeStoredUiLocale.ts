@@ -1,6 +1,6 @@
+import { normalizeUiLocale } from '../../i18n'
 import { writeUiPrefs } from './writeUiPrefs'
 
 export const writeStoredUiLocale = (locale: string): void => {
-  const next = locale === 'en' ? 'en' : 'fr'
-  writeUiPrefs({ uiLocale: next })
+  writeUiPrefs({ uiLocale: normalizeUiLocale(locale) })
 }
