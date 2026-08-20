@@ -7,6 +7,7 @@ import {
   patchStarredYearInQuery,
   useStarsStore,
 } from '../composables/useStarsStore'
+import { OTHER_LANGUAGE_KEY } from '../utils/other-language'
 
 interface ActiveFilterTag {
   id: string
@@ -29,7 +30,7 @@ const tags = computed(() => {
   if (store.language !== 'all') {
     list.push({
       id: 'lang',
-      text: `${t.value('filterLang')}: ${store.language === '其他' ? t.value('otherLang') : store.language}`,
+      text: `${t.value('filterLang')}: ${store.language === OTHER_LANGUAGE_KEY ? t.value('otherLang') : store.language}`,
       clear: () => patchLanguageInQuery('all'),
     })
   }

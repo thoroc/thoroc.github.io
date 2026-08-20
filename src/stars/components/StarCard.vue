@@ -19,6 +19,7 @@ import {
 } from '../utils/github-avatar'
 import { githubRepoUrl } from '../utils/github-repo'
 import { langColor, langSlug } from '../utils/lang-colors'
+import { OTHER_LANGUAGE_KEY } from '../utils/other-language'
 
 interface StarCardProps {
   item: StarsRepoItem
@@ -67,7 +68,9 @@ const repoUrl = computed(
 )
 const avatarLetter = computed(() => (owner.value[0] || '?').toUpperCase())
 const langText = computed(() => props.item.language || t.value('otherLang'))
-const langAccent = computed(() => langColor(props.item.language || '其他'))
+const langAccent = computed(() =>
+  langColor(props.item.language || OTHER_LANGUAGE_KEY),
+)
 const langClass = computed(() => `lang--${langSlug(langText.value)}`)
 const hasLicense = computed(() => !!props.item.license)
 const hasLicenseLink = computed(

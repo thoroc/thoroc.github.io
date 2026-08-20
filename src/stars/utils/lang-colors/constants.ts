@@ -1,3 +1,5 @@
+import { OTHER_LANGUAGE_KEY } from '../other-language'
+
 /** GitHub Linguist–style accent colors for language chips */
 export const LANG_COLORS: Record<string, string> = {
   TypeScript: '#3178c6',
@@ -17,5 +19,5 @@ export const LANG_COLORS: Record<string, string> = {
   Vue: '#41b883',
   CSS: '#563d7c',
   HTML: '#e34c26',
-  其他: '#8b949e',
+  [OTHER_LANGUAGE_KEY]: '#8b949e',
 }

@@ -90,7 +90,7 @@ const footerMetaHtml = computed(() => {
 
 const homeHref = computed(() => {
   const params = new URLSearchParams()
-  if (locale.value === 'en') params.set('lang', 'en')
+  if (locale.value === 'fr') params.set('lang', 'fr')
   const qs = params.toString()
   return `${basePath.value}${qs ? `?${qs}` : ''}`
 })
@@ -145,12 +145,12 @@ watch(siteTitle, (title) => {
           <button
             type="button"
             class="stars-app__lang-btn"
-            :class="{ 'is-active': locale === 'zh-CN' }"
-            :aria-label="t('langZh')"
-            @click="switchUiLang('zh-CN')"
+            :class="{ 'is-active': locale === 'fr' }"
+            :aria-label="t('langFr')"
+            @click="switchUiLang('fr')"
           >
-            <span class="stars-app__lang-short" aria-hidden="true">中</span>
-            <span class="stars-app__lang-full">{{ t('langZh') }}</span>
+            <span class="stars-app__lang-short" aria-hidden="true">FR</span>
+            <span class="stars-app__lang-full">{{ t('langFr') }}</span>
           </button>
           <button
             type="button"

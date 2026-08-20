@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { buildLanguageLayout } from './buildLanguageLayout'
 
 describe('buildLanguageLayout', () => {
-  it('includes a 其他 bucket for overflow languages', () => {
+  it('includes an other-language bucket for overflow languages', () => {
     const layout = buildLanguageLayout([
       { language: 'TypeScript' },
       { language: 'Rust' },
     ])
-    expect(layout.langKeys.has('其他')).toBe(true)
+    expect(layout.langKeys.has(OTHER_LANGUAGE_KEY)).toBe(true)
   })
 
   it('assigns each language an angle and radius', () => {

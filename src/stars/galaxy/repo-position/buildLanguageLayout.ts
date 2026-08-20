@@ -1,3 +1,5 @@
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
+import { stableCollator } from '../../utils/stable-collator'
 import { GALAXY, R_MAX, R_MIN } from '../constants'
 import { hashStr, hashUnit } from '../hash'
 import type { LanguageLayout, RepoLike } from './types'
@@ -9,18 +11,18 @@ export const buildLanguageLayout = (
   const list = items || []
   const counts = new Map<string, number>()
   for (const item of list) {
-    const key = item.language || '其他'
+    const key = item.language || OTHER_LANGUAGE_KEY
     counts.set(key, (counts.get(key) || 0) + 1)
   }
 
   const sorted = [...counts.entries()].sort(
-    (a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), 'zh-CN'),
+    (a, b) => b[1] - a[1] || stableCollator(a[0], b[0]),
   )
   const topN = GALAXY.LAYOUT_LANG_TOP
   const primaryTop = sorted.slice(0, topN).map(([name]) => name)
   const topSet = new Set(primaryTop)
   const layoutLangs = [...primaryTop]
-  if (!topSet.has('其他')) layoutLangs.push('其他')
+  if (!topSet.has(OTHER_LANGUAGE_KEY)) layoutLangs.push(OTHER_LANGUAGE_KEY)
 
   const n = Math.max(layoutLangs.length, 1)
   const total = Math.max(list.length, 1)
@@ -33,12 +35,13 @@ export const buildLanguageLayout = (
 
   layoutLangs.forEach((name, i) => {
     let count = 0
-    if (name === '其他') {
+    if (name === OTHER_LANGUAGE_KEY) {
       for (const item of list) {
-        const key = item.language || '其他'
+        const key = item.language || OTHER_LANGUAGE_KEY
         if (!topSet.has(key)) count += 1
       }
-      if (topSet.has('其他')) count += counts.get('其他') || 0
+      if (topSet.has(OTHER_LANGUAGE_KEY))
+        count += counts.get(OTHER_LANGUAGE_KEY) || 0
     } else {
       count = counts.get(name) || 0
     }

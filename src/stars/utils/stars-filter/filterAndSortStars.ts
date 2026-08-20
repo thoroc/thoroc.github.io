@@ -1,3 +1,4 @@
+import { OTHER_LANGUAGE_KEY } from '../other-language'
 import { itemTopicKeys } from './itemTopicKeys'
 import { parseSearchQuery } from './parseSearchQuery'
 import type { FilterOptions, StarItem } from './types'
@@ -30,7 +31,7 @@ export const filterAndSortStars = (
   }
 
   if (language && language !== 'all') {
-    if (language === '其他') {
+    if (language === OTHER_LANGUAGE_KEY) {
       list = list.filter((item) => !item.language)
     } else {
       list = list.filter((item) => item.language === language)

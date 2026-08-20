@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useStarsI18n } from '../composables/useStarsI18n'
 import type { LegendEntry, StarTierBucket } from '../galaxy/star-visuals'
 import { langColor } from '../utils/lang-colors'
+import { OTHER_LANGUAGE_KEY } from '../utils/other-language'
 
 interface GalaxyLegendActiveFilter {
   langs: string[]
@@ -54,7 +55,7 @@ const tierLabel = (key: string): string => {
 }
 
 const langLabel = (name: string): string =>
-  name === '其他' ? t.value('otherLang') : name
+  name === OTHER_LANGUAGE_KEY ? t.value('otherLang') : name
 
 const isTierActive = (key: string): boolean =>
   props.activeFilter?.tiers?.includes(key) ?? false

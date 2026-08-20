@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { buildLanguageLayout } from './buildLanguageLayout'
 import { layoutLanguageKey } from './layoutLanguageKey'
 
@@ -10,8 +11,10 @@ describe('layoutLanguageKey', () => {
     )
   })
 
-  it('falls back to 其他 for a language outside the layout', () => {
+  it('falls back to the other-language key for a language outside the layout', () => {
     const layout = buildLanguageLayout([{ language: 'TypeScript' }])
-    expect(layoutLanguageKey({ language: 'Cobol' }, layout)).toBe('其他')
+    expect(layoutLanguageKey({ language: 'Cobol' }, layout)).toBe(
+      OTHER_LANGUAGE_KEY,
+    )
   })
 })

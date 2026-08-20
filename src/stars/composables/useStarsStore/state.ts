@@ -27,7 +27,7 @@ export const license = ref('all')
 export const starredYear = ref('all')
 export const type = ref('all')
 export const sort = ref('recently_starred')
-export const uiLocale = ref('zh-CN')
+export const uiLocale = ref('en')
 export const showLanguage = ref(true)
 export const showStarsCount = ref(true)
 export const showLicense = ref(true)
@@ -58,7 +58,7 @@ export const debounceState: {
   timer: undefined,
 }
 export const searchConfig = { debounceMs: 300 }
-export const localeConfig = { configured: 'zh-CN' }
+export const localeConfig = { configured: 'en' }
 export const galaxyLayoutState: {
   promise: Promise<GalaxyLayout | null> | null
 } = {

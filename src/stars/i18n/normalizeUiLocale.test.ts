@@ -6,10 +6,10 @@ describe('normalizeUiLocale', () => {
     expect(normalizeUiLocale('en')).toBe('en')
   })
 
-  it('returns "zh-CN" for anything else', () => {
-    expect(normalizeUiLocale('zh-CN')).toBe('zh-CN')
-    expect(normalizeUiLocale('fr')).toBe('zh-CN')
-    expect(normalizeUiLocale(null)).toBe('zh-CN')
-    expect(normalizeUiLocale(undefined)).toBe('zh-CN')
+  it('returns "fr" for anything else', () => {
+    expect(normalizeUiLocale('fr')).toBe('fr')
+    expect(normalizeUiLocale('zh-CN')).toBe('fr')
+    expect(normalizeUiLocale(null)).toBe('fr')
+    expect(normalizeUiLocale(undefined)).toBe('fr')
   })
 })

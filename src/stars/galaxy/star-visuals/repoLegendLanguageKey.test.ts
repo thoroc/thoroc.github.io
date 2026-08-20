@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { repoLegendLanguageKey } from './repoLegendLanguageKey'
 
 describe('repoLegendLanguageKey', () => {
@@ -11,9 +12,9 @@ describe('repoLegendLanguageKey', () => {
     ).toBe('TypeScript')
   })
 
-  it('falls back to 其他 for a language outside the legend', () => {
+  it('falls back to the other-language key for a language outside the legend', () => {
     expect(repoLegendLanguageKey({ language: 'Cobol' }, ['TypeScript'])).toBe(
-      '其他',
+      OTHER_LANGUAGE_KEY,
     )
   })
 })

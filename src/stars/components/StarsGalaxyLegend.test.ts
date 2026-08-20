@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'bun:test'
 import { mount } from '@vue/test-utils'
 import { setUiLocale } from '../composables/useStarsStore'
 import { resetStateForTests } from '../composables/useStarsStore/resetStateForTests'
+import { OTHER_LANGUAGE_KEY } from '../utils/other-language'
 import StarsGalaxyLegend from './StarsGalaxyLegend.vue'
 
 describe('StarsGalaxyLegend', () => {
@@ -63,12 +64,12 @@ describe('StarsGalaxyLegend', () => {
     ).toBe('true')
   })
 
-  it('translates the "其他" language bucket to the localized "other" label', () => {
+  it('translates the "other" language bucket to the localized label', () => {
     setUiLocale('en')
     const wrapper = mount(StarsGalaxyLegend, {
-      props: { items: [{ name: '其他', count: 1 }] },
+      props: { items: [{ name: OTHER_LANGUAGE_KEY, count: 1 }] },
     })
     expect(wrapper.text()).toContain('Other')
-    expect(wrapper.text()).not.toContain('其他')
+    expect(wrapper.text()).not.toContain(OTHER_LANGUAGE_KEY)
   })
 })

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { GALAXY } from '../constants'
 import { buildTopicRingKeySet } from './buildTopicRingKeySet'
 import type { LayoutLike, VirtualStar } from './types'
@@ -53,12 +54,12 @@ describe('buildTopicRingKeySet', () => {
     expect(buildTopicRingKeySet(stars, makeLayout(['Rust'])).size).toBe(0)
   })
 
-  it('buckets unknown languages under 其他', () => {
+  it('buckets unknown languages under the other-language key', () => {
     GALAXY.TOPIC_RINGS_ENABLED = true
     GALAXY.TOPIC_RING_MIN_COUNT = 1
     const stars = [makeStar('COBOL', 'legacy')]
     const keys = buildTopicRingKeySet(stars, makeLayout(['Rust']))
-    expect(keys.has('其他\0legacy')).toBe(true)
+    expect(keys.has(`${OTHER_LANGUAGE_KEY}\0legacy`)).toBe(true)
   })
 
   it('sorts multiple qualifying topics by count, then alphabetically', () => {

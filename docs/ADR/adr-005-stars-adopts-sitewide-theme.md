@@ -83,4 +83,7 @@ unified, not their structure or density.
   ported from the upstream tool it was based on), unrelated to this
   decision's `en`/`fr` site-locale toggle — tracked separately as a
   follow-up (`.context/follow-ups/2026-08-19-stars-locale-zh-to-fr.md`),
-  not resolved by this ADR.
+  not resolved by this ADR. (Update 2026-08-20: that follow-up's plan,
+  `.context/plans/2026-08-20-stars-locale-zh-to-fr.md`, replaces the
+  `zh-CN`/`en` pair with `fr`/`en` — this bullet describes the state before
+  that change, kept as-written for historical accuracy.)

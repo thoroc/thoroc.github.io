@@ -1,3 +1,5 @@
+import { stableCollator } from '../stable-collator'
+
 export const countBy = <T, K>(
   items: T[],
   keyFn: (item: T) => K,
@@ -8,9 +10,6 @@ export const countBy = <T, K>(
     counts.set(key, (counts.get(key) || 0) + 1)
   }
   return [...counts.entries()]
-    .sort(
-      (a, b) =>
-        b[1] - a[1] || String(a[0]).localeCompare(String(b[0]), 'zh-CN'),
-    )
+    .sort((a, b) => b[1] - a[1] || stableCollator(String(a[0]), String(b[0])))
     .map(([name, count]) => ({ name, count }))
 }

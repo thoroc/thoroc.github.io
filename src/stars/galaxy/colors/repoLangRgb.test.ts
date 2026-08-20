@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test'
+import { OTHER_LANGUAGE_KEY } from '../../utils/other-language'
 import { repoLangRgb } from './repoLangRgb'
 
 describe('repoLangRgb', () => {
@@ -13,6 +14,6 @@ describe('repoLangRgb', () => {
   })
 
   it('falls back to a default language when none is given', () => {
-    expect(repoLangRgb(null)).toEqual(repoLangRgb('其他'))
+    expect(repoLangRgb(null)).toEqual(repoLangRgb(OTHER_LANGUAGE_KEY))
   })
 })

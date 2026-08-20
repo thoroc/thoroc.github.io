@@ -47,7 +47,7 @@ export const resetStateForTests = (): void => {
   starredYear.value = 'all'
   type.value = 'all'
   sort.value = 'recently_starred'
-  uiLocale.value = 'zh-CN'
+  uiLocale.value = 'en'
   showLanguage.value = true
   showStarsCount.value = true
   showLicense.value = true
@@ -69,7 +69,7 @@ export const resetStateForTests = (): void => {
   clearTimeout(debounceState.timer)
   debounceState.timer = undefined
   searchConfig.debounceMs = 300
-  localeConfig.configured = 'zh-CN'
+  localeConfig.configured = 'en'
   galaxyLayoutState.promise = null
   bootstrapState.promise = null
 
